@@ -109,7 +109,7 @@ function PetitionPager() {
   var self = this;
   var petitionLoader = new PetitionLoader();
   var pageLoader = new PetitionPageLoader();
-  var setPartitionData = function(data) {
+  var setPetitionData = function(data) {
     var update = self.petitions[data.id];
     self.petitions[data.id] = data;
     if (update) {
@@ -124,7 +124,7 @@ function PetitionPager() {
   this.populateAll = function () {
     // Load the next page
     var loadNextPage = function(data) {
-      data.data.forEach(setPartitionData);
+      data.data.forEach(setPetitionData);
       if (data.next != null) {
         var index = data.next.lastIndexOf('/');
         var nextPath = data.next.substring(index);
@@ -144,7 +144,7 @@ function PetitionPager() {
   this.populateRecent = function () {
     // Load first page
     pageLoader.load(1).on('loaded', function(data) {
-      data.data.forEach(setPartitionData);
+      data.data.forEach(setPetitionData);
       self.emit('recent-loaded', self);
     }).on('error', forwardError(self));
 
