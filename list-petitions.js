@@ -13,6 +13,33 @@ var forwardError = function (emitter) {
 }
 
 /**
+ * Request a JSON object over HTTPS. Returns an emitter. Emits 'response',
+ * 'data' and 'error' events.
+ * The response event is passed the HTTPS response.
+ * If the status code is 200 a 'data' event should be emitted, passed an object
+ * parsed from the JSON data.
+ * If there is an error making the request an error event will be emitted.
+ */
+var getJsonOverHttps = function(options) {
+  var emitter = new EventEmitter();
+
+  https.get(options, function (res) {
+    emitter.emit('response', res);
+    if (res.statusCode == 200) {
+      var buffers = [];
+      res.on('data', function(d) {
+        buffers.push(d);
+      }).on('end', function() {
+        var completeBuffer = Buffer.concat(buffers);
+        emitter.emit('data', JSON.parse(completeBuffer));
+      });
+    }
+  }).on('error', forwardError(emitter));
+
+  return emitter;
+}
+
+/**
  * Loads the data of a petition. It is stateless.
  */
 function PetitionLoader() {
@@ -23,20 +50,13 @@ function PetitionLoader() {
    */
   this.load = function(petitionId) {
     var emitter = new EventEmitter();
-    https.get({
+    getJsonOverHttps({
       hostname: 'petition.parliament.uk',
       port: 443,
       path: '/petitions/' + petitionId + '.json'
-    }, function (res) {
-      var buffers = [];
-      res.on('data', function(d) {
-        buffers.push(d);
-      }).on('end', function() {
-        var completeBuffer = Buffer.concat(buffers);
-        var jsonResponse = JSON.parse(completeBuffer);
-        emitter.emit('loaded', jsonResponse.data);
-      });
-    }).on('error', forwardError(emitter));
+    }).on('error', forwardError(emitter)).on('data', function(data) {
+      emitter.emit('loaded', data.data);
+    });
     return emitter;
   };
 }
