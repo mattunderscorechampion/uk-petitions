@@ -88,10 +88,17 @@ function InternalPetitions() {
 }
 util.inherits(InternalPetitions, EventEmitter);
 
+var logByCountry = function(data) {
+  console.log(data.attributes.action);
+  var total_signatures = data.attributes.signature_count;
+  data.attributes.signatures_by_country.forEach(function(pair) {
+    var percentage = (pair.signature_count / total_signatures) * 100;
+    console.log('%s: %d (%d%%)', pair.name, pair.signature_count, percentage.toFixed(4));
+  });
+}
+
 var loader = new PetitionLoader();
-loader.load(113064).on('loaded', function(data) {
-  console.log(data);
-});
+loader.load(113064).on('loaded', logByCountry);
 
 /*var p = new InternalPetitions();
 p.on('petition', function(data) {
