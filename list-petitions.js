@@ -3,7 +3,24 @@ const https = require("https");
 const util = require('util');
 const EventEmitter = require('events');
 
+/**
+ * Forward an error to another emitter.
+ */
+var forwardError = function (emitter) {
+  return function (error) {
+    emitter.emit('error', error);
+  }
+}
+
+/**
+ * Loads the data of a petition. It is stateless.
+ */
 function PetitionLoader() {
+  /**
+   * Load the petition by Id. Returns an emitter. Emits either 'loaded' or 'error' events.
+   * The 'loaded' event is passed the data of the petition.
+   * The 'error' event is passed the Error.
+   */
   this.load = function(petitionId) {
     var emitter = new EventEmitter();
     https.get({
@@ -19,14 +36,12 @@ function PetitionLoader() {
         var jsonResponse = JSON.parse(completeBuffer);
         emitter.emit('loaded', jsonResponse.data);
       });
-    }).on('error', function(e) {
-      console.log("Error: " + e.message);
-    });
+    }).on('error', forwardError(emitter));
     return emitter;
   };
 }
 
-function InternalPetitions() {
+function PetitionPager() {
   EventEmitter.call(this);
   var self = this;
   var setPartitionData = function(data) {
@@ -56,15 +71,11 @@ function InternalPetitions() {
         jsonResponse.data.forEach(setPartitionData);
         emitter.emit('page-loaded', {next : jsonResponse.links.next});
       });
-    }).on('error', function(e) {
-      console.log("Error: " + e.message);
-    });
+    }).on('error', forwardError(emitter));
     return emitter;
   }
 
   this.populateAll = function () {
-    var emitter = new EventEmitter();
-
     // Load the next page
     var loadNextPage = function(data) {
       if (data.next != null) {
@@ -73,20 +84,30 @@ function InternalPetitions() {
         loadPage(nextPath).on('page-loaded', loadNextPage);
       }
       else {
-        emitter.emit('all-loaded', self);
+        self.emit('all-loaded', self);
       }
     };
 
     // Load first page
-    loadPage('/petitions.json').on('page-loaded', loadNextPage);
+    loadPage('/petitions.json').on('page-loaded', loadNextPage).on('error', forwardError(self));
 
-    return emitter;
+    return self;
   };
+
+  this.populateRecent = function () {
+    // Load first page
+    loadPage('/petitions.json').on('page-loaded', function() {
+      self.emit('recent-loaded', self);
+    }).on('error', forwardError(self));
+
+    return self;
+  };
+
   this.petitions = {
     length: 0
   };
 }
-util.inherits(InternalPetitions, EventEmitter);
+util.inherits(PetitionPager, EventEmitter);
 
 var logByCountry = function(data) {
   console.log(data.attributes.action);
@@ -95,14 +116,33 @@ var logByCountry = function(data) {
     var percentage = (pair.signature_count / total_signatures) * 100;
     console.log('%s: %d (%d%%)', pair.name, pair.signature_count, percentage.toFixed(4));
   });
+};
+
+/**
+ * Print out all the attributes of a petition.
+ */
+var logAttributes = function(data) {
+  console.log(data.attributes);
+};
+
+/**
+ * Print out the action of a petition.
+ */
+var logAction = function(data) {
+  console.log(data.attributes.action);
+};
+
+/**
+ * Print out an error.
+ */
+var logError = function(error) {
+  console.error('Error: ' + error.message);
 }
 
 var loader = new PetitionLoader();
-loader.load(113064).on('loaded', logByCountry);
+loader.load(113064).on('error', logError).on('loaded', logAction);
 
-/*var p = new InternalPetitions();
-p.on('petition', function(data) {
-  console.log(data.attributes.action);
-}).populateAll().on('all-loaded', function() {
+var p = new PetitionPager();
+p.on('error', logError).on('petition', logAction).on('recent-loaded', function() {
   console.log(p.petitions.length);
-});*/
+}).populateRecent();
