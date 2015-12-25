@@ -134,6 +134,13 @@ function PetitionPager() {
   var self = this;
   var petitionLoader = new PetitionLoader();
   var pageLoader = new PetitionPageLoader();
+  this.petitions = {
+    length: 0
+  };
+
+  /**
+   * Store the petition data. Either new or updated.
+   */
   var setPetitionData = function(data) {
     var update = self.petitions[data.id];
     self.petitions[data.id] = data;
@@ -197,10 +204,6 @@ function PetitionPager() {
 
     return self;
   };
-
-  this.petitions = {
-    length: 0
-  };
 }
 util.inherits(PetitionPager, EventEmitter);
 
@@ -233,9 +236,6 @@ var logAction = function(data) {
 var logError = function(error) {
   console.error('Error: ' + error.message);
 }
-
-var loader = new PetitionLoader();
-loader.load(113064).on('error', logError).on('loaded', logAction);
 
 var p = new PetitionPager();
 p.on('error', logError).on('petition', logAction).on('recent-loaded', function() {
