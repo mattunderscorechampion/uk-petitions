@@ -77,21 +77,16 @@ function PetitionPager() {
   };
   var loadPage = function(path) {
     var emitter = new EventEmitter();
-    https.get({
+
+    getJsonOverHttps({
       hostname: 'petition.parliament.uk',
       port: 443,
       path: path
-    }, function (res) {
-      var buffers = [];
-      res.on('data', function(d) {
-        buffers.push(d);
-      }).on('end', function() {
-        var completeBuffer = Buffer.concat(buffers);
-        var jsonResponse = JSON.parse(completeBuffer);
-        jsonResponse.data.forEach(setPartitionData);
-        emitter.emit('page-loaded', {next : jsonResponse.links.next});
-      });
-    }).on('error', forwardError(emitter));
+    }).on('error', forwardError(emitter)).on('data', function(data) {
+      data.data.forEach(setPartitionData);
+      emitter.emit('page-loaded', {next : data.links.next});
+    });
+
     return emitter;
   }
 
