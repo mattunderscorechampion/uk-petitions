@@ -3,6 +3,31 @@ const https = require("https");
 const util = require('util');
 const EventEmitter = require('events');
 
+function CountDownLatch(number) {
+  var number = number;
+  var callbacks = [];
+
+  this.countDown = function() {
+    if (number > 0) {
+      number--;
+      if (number == 0) {
+        callbacks.forEach(function(callback) {
+          callback();
+        });
+      }
+    }
+  };
+
+  this.await = function(callback) {
+    if (number == 0) {
+      callback();
+    }
+    else {
+      callbacks.push(callback);
+    }
+  }
+}
+
 /**
  * Forward an error to another emitter.
  */
@@ -124,15 +149,26 @@ function PetitionPager() {
   this.populateAll = function () {
     // Load the next page
     var loadNextPage = function(data) {
-      data.data.forEach(setPetitionData);
-      if (data.next != null) {
-        var index = data.next.lastIndexOf('/');
-        var nextPath = data.next.substring(index);
-        pageLoader.load(nextPath).on('loaded', loadNextPage);
-      }
-      else {
-        self.emit('all-loaded', self);
-      }
+      var latch = new CountDownLatch(data.data.length);
+      latch.await(function() {
+        if (data.links.next != null) {
+          var index = data.links.next.lastIndexOf('/');
+          var nextPath = data.links.next.substring(index);
+          pageLoader.load(nextPath).on('loaded', loadNextPage);
+        }
+        else {
+          self.emit('all-loaded', self);
+        }
+      });
+      data.data.forEach(function(data) {
+        petitionLoader.load(data.id).on('error', function(error) {
+          self.emit('error', error);
+          latch.countDown();
+        }).on('loaded', function(data) {
+          setPetitionData(data);
+          latch.countDown();
+        });
+      });
     };
 
     // Load first page
@@ -144,8 +180,19 @@ function PetitionPager() {
   this.populateRecent = function () {
     // Load first page
     pageLoader.load(1).on('loaded', function(data) {
-      data.data.forEach(setPetitionData);
-      self.emit('recent-loaded', self);
+      var countDown = new CountDownLatch(data.data.length);
+      countDown.await(function() {
+        self.emit('recent-loaded', self);
+      });
+      data.data.forEach(function(data) {
+        petitionLoader.load(data.id).on('error', function(error) {
+          self.emit('error', error);
+          countDown.countDown();
+        }).on('loaded', function(data) {
+          setPetitionData(data);
+          countDown.countDown();
+        });
+      });
     }).on('error', forwardError(self));
 
     return self;
