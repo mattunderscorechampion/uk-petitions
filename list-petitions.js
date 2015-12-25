@@ -61,9 +61,54 @@ function PetitionLoader() {
   };
 }
 
+function PetitionPageLoader() {
+  /**
+   * Load a page of petitions by number. Returns an emitter. Emits either 'loaded' or 'error' events.
+   * The 'loaded' event is passed the data of the petition.
+   * The 'error' event is passed the Error.
+   */
+  this.load = function(page) {
+    var pathToLoad;
+    if (typeof page === 'number') {
+      pathToLoad = '/petitions.json?page=' + page;
+    }
+    else if (typeof page === 'string') {
+      pathToLoad = page;
+    }
+    else if (typeof page === 'object') {
+      if (page instanceof String) {
+        pathToLoad = page;
+      }
+      else if (page instanceof Integer) {
+        pathToLoad = '/petitions.json?page=' + page;
+      }
+      else {
+        emitter.emit('error', new Error('Problem parameter'));
+        return emitter;
+      }
+    }
+    else {
+      emitter.emit('error', new Error('Problem parameter'));
+      return emitter;
+    }
+
+    var emitter = new EventEmitter();
+    getJsonOverHttps({
+      hostname: 'petition.parliament.uk',
+      port: 443,
+      path: pathToLoad
+    }).on('error', forwardError(emitter)).on('data', function(data) {
+      emitter.emit('loaded', data);
+    });
+    return emitter;
+  };
+};
+
 function PetitionPager() {
   EventEmitter.call(this);
   var self = this;
+  var petitionLoader = new PetitionLoader();
+  var pageLoader = new PetitionPageLoader();
   var setPartitionData = function(data) {
     var update = self.petitions[data.id];
     self.petitions[data.id] = data;
@@ -75,28 +120,15 @@ function PetitionPager() {
       self.emit('petition', data);
     }
   };
-  var loadPage = function(path) {
-    var emitter = new EventEmitter();
-
-    getJsonOverHttps({
-      hostname: 'petition.parliament.uk',
-      port: 443,
-      path: path
-    }).on('error', forwardError(emitter)).on('data', function(data) {
-      data.data.forEach(setPartitionData);
-      emitter.emit('page-loaded', {next : data.links.next});
-    });
-
-    return emitter;
-  }
 
   this.populateAll = function () {
     // Load the next page
     var loadNextPage = function(data) {
+      data.data.forEach(setPartitionData);
       if (data.next != null) {
         var index = data.next.lastIndexOf('/');
         var nextPath = data.next.substring(index);
-        loadPage(nextPath).on('page-loaded', loadNextPage);
+        pageLoader.load(nextPath).on('loaded', loadNextPage);
       }
       else {
         self.emit('all-loaded', self);
@@ -104,14 +136,15 @@ function PetitionPager() {
     };
 
     // Load first page
-    loadPage('/petitions.json').on('page-loaded', loadNextPage).on('error', forwardError(self));
+    pageLoader.load(1).on('loaded', loadNextPage).on('error', forwardError(self));
 
     return self;
   };
 
   this.populateRecent = function () {
     // Load first page
-    loadPage('/petitions.json').on('page-loaded', function() {
+    pageLoader.load(1).on('loaded', function(data) {
+      data.data.forEach(setPartitionData);
       self.emit('recent-loaded', self);
     }).on('error', forwardError(self));
 
