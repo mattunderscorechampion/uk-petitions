@@ -2,7 +2,7 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint');
 
 gulp.task('checks', function() {
-    gulp.src(['./list-petitions.js'])
+    gulp.src(['./src/*.js'])
         .pipe(jshint({node: true}))
         .pipe(jshint.reporter('jshint-stylish'))
         .pipe(jshint.reporter('fail'))
