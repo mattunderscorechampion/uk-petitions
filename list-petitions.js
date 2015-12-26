@@ -3,7 +3,8 @@
 
 var https = require("https"),
     util = require('util'),
-    EventEmitter = require('events');
+    EventEmitter = require('events'),
+    equal = require('deep-equal');
 
 function CountDownLatch(num) {
     var number = num, callbacks = [];
@@ -137,18 +138,23 @@ function PetitionPageLoader() {
 function PetitionPager() {
     EventEmitter.call(this);
     var self = this,
-      petitionLoader = new PetitionLoader(),
-      pageLoader = new PetitionPageLoader(),
-      setPetitionData = function (data) {
-          var update = self.petitions[data.id];
-          self.petitions[data.id] = data;
-          if (update) {
-              self.emit('petition', data);
-          } else {
-              self.petitions.length = self.petitions.length + 1;
-              self.emit('petition', data);
-          }
-      };
+        petitionLoader = new PetitionLoader(),
+        pageLoader = new PetitionPageLoader(),
+        setPetitionData = function (data) {
+            var update = self.petitions[data.id];
+            if (update) {
+                // Replace with changed data
+                if (!equal(update, data)) {
+                    self.petitions[data.id] = data;
+                    self.emit('petition', data);
+                }
+            } else {
+                // Add new data
+                self.petitions[data.id] = data;
+                self.petitions.length = self.petitions.length + 1;
+                self.emit('petition', data);
+            }
+        };
     this.petitions = {
         length: 0
     };

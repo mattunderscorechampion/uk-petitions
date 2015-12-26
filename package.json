@@ -1,5 +1,8 @@
 {
     "name" : "petitions",
+    "dependencies" : {
+      "deep-equal" : "1.0.1"
+    },
     "devDependencies" : {
       "gulp" : "3.9.0",
       "gulp-jshint" : "2.0.0",
