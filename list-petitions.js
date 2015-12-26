@@ -244,11 +244,12 @@ var logWithTop5Countries = function (data) {
     console.log('Top 5 countries:');
     var total_signatures = data.attributes.signature_count;
     data.attributes.signatures_by_country
+        .slice()
         .sort(function(country0, country1) {
             return country1.signature_count - country0.signature_count;
         })
-        .slice(0, Math.min(5, data.attributes.signatures_by_country.length)).
-        forEach(function (pair) {
+        .slice(0, Math.min(5, data.attributes.signatures_by_country.length))
+        .forEach(function (pair) {
             var percentage = (pair.signature_count / total_signatures) * 100;
             console.log('%s: %d (%d%%)', pair.name, pair.signature_count, percentage.toFixed(4));
         });
