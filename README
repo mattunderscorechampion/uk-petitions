@@ -14,7 +14,8 @@ Build with ```npm run build```.
 
 ##Running
 
-Running ```npm run list``` will print a list of recent petitions and signature counts.
+Running ```npm run list-hot``` will print a list of hot petitions and signature counts.
+Running ```npm run list-all``` will print a list of hot petitions and signature counts.
 
 ##Format
 
