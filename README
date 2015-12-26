@@ -16,6 +16,7 @@ Build with ```npm run build```.
 
 Running ```npm run list-hot``` will print a list of hot petitions and signature counts.
 Running ```npm run list-all``` will print a list of hot petitions and signature counts.
+Running ```npm run monitor``` will persistently monitor the petitions for changes.
 
 ##Format
 
