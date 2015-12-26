@@ -9,7 +9,8 @@
       "jshint" : "2.8.0",
       "jshint-stylish" : "2.1.0"
     },
-    "scripts": {
-        "build": "npm install && gulp"
+    "scripts" : {
+        "build" : "npm install && gulp",
+        "list" : "npm run build && node src/list-petitions.js"
     }
 }
