@@ -280,6 +280,7 @@ var p = new PetitionPager();
 p.on('error', logError)
     .on('petition', logWithTop5Countries)
     .on('recent-loaded', function () {
-        console.log(p.petitions.length);
+        // Check the first page for any changes
+        p.populateRecent();
     })
     .populateRecent();
