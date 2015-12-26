@@ -292,6 +292,39 @@ var logError = function (error) {
     console.error('Error: ' + error.message);
 };
 
+var petitions = {
+    preconditions : {
+        samePetitionId : function(petition0, petition1) {
+            if (!petitions.predicates.samePetitionId(petition0, petition1)) {
+                throw new Error('Petition IDs should be the same but are different');
+            }
+        }
+    },
+    predicates : {
+        samePetitionId : function(petition0, petition1) {
+            return petition0.id === petition1.id;
+        },
+        delta : {
+            goneOver10_000 : function(newData, oldData) {
+                petitions.preconditions.samePetitionId(oldData, newData);
+                return newData.attributes.signature_count >= 10000 && oldData.attributes.signature_count < 10000;
+            },
+            goneOver100_000 : function(newData, oldData) {
+                petitions.preconditions.samePetitionId(oldData, newData);
+                return newData.attributes.signature_count >= 100000 && oldData.attributes.signature_count < 100000;
+            },
+            governmentResponded : function(newData, oldData) {
+                petitions.preconditions.samePetitionId(oldData, newData);
+                return newData.attributes.government_response !== null && oldData.attributes.government_response === null;
+            },
+            debated : function(newData, oldData) {
+                petitions.preconditions.samePetitionId(oldData, newData);
+                return newData.attributes.debate !== null && oldData.attributes.debate === null;
+            }
+        }
+    }
+};
+
 var p = new PetitionPager();
 p.on('error', logError)
     .on('petition', logWithSignatureCountDiff)
