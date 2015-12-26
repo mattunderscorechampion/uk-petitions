@@ -70,7 +70,7 @@ var getJsonOverHttps = function (options) {
 /**
  * Loads the data of a petition. It is stateless.
  */
-function PetitionLoader() {
+function PetitionLoader(agent) {
     /**
      * Load the petition by Id. Returns an emitter. Emits either 'loaded' or 'error' events.
      * The 'loaded' event is passed the data of the petition.
@@ -82,7 +82,8 @@ function PetitionLoader() {
         getJsonOverHttps({
             hostname: 'petition.parliament.uk',
             port: 443,
-            path: '/petitions/' + petitionId + '.json'
+            path: '/petitions/' + petitionId + '.json',
+            agent: agent
         })
             .on('error', forwardError(emitter))
             .on('data', function (data) {
@@ -93,7 +94,7 @@ function PetitionLoader() {
     };
 }
 
-function PetitionPageLoader() {
+function PetitionPageLoader(agent) {
     /**
      * Load a page of petitions by number. Returns an emitter. Emits either 'loaded' or 'error' events.
      * The 'loaded' event is passed the data of the petition.
@@ -124,7 +125,8 @@ function PetitionPageLoader() {
         getJsonOverHttps({
             hostname: 'petition.parliament.uk',
             port: 443,
-            path: pathToLoad
+            path: pathToLoad,
+            agent: agent
         })
             .on('error', forwardError(emitter))
             .on('data', function (data) {
@@ -138,6 +140,7 @@ function PetitionPageLoader() {
 function PetitionPager() {
     EventEmitter.call(this);
     var self = this,
+        agent = new https.Agent({ keepAlive: true, maxSockets: 1 }),
         petitionLoader = new PetitionLoader(),
         pageLoader = new PetitionPageLoader(),
         setPetitionData = function (data) {
