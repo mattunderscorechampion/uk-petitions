@@ -5,6 +5,7 @@ gulp.task('checks', function() {
     gulp.src(['./list-petitions.js'])
         .pipe(jshint({node: true}))
         .pipe(jshint.reporter('jshint-stylish'))
+        .pipe(jshint.reporter('fail'))
         .on('end', function() {
           console.log('Checks complete');
         })
