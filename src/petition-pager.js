@@ -60,20 +60,20 @@ function PetitionPager() {
 
     this.populateAll = function () {
         var emitter = new EventEmitter();
-        emitter.on('page-loaded', loadNextPage);
 
         // Load the next page
         var loadNextPage = function (data) {
             if (data.links.next !== null) {
                 var index = data.links.next.lastIndexOf('/'),
                     nextPath = data.links.next.substring(index);
-                    internalLoadPage(1, nextPath);
+                    internalLoadPage(nextPath, emitter);
             }
             else {
                 self.emit('all-loaded', self);
             }
         };
 
+        emitter.on('page-loaded', loadNextPage);
         internalLoadPage(1, emitter);
 
         return self;
