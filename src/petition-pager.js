@@ -37,50 +37,11 @@ function PetitionPager() {
         length: 0
     };
 
-    this.populateAll = function () {
-        // Load the next page
-        var loadNextPage = function (data) {
+    var internalLoadPage = function(page, emitter) {
+        pageLoader.load(page).on('loaded', function (data) {
             var latch = new Latch(data.data.length);
             latch.onRelease(function () {
-                if (data.links.next !== null) {
-                    var index = data.links.next.lastIndexOf('/'),
-                        nextPath = data.links.next.substring(index);
-                    pageLoader
-                        .load(nextPath)
-                        .on('loaded', loadNextPage);
-                } else {
-                    self.emit('all-loaded', self);
-                }
-            });
-            data.data.forEach(function (data) {
-                petitionLoader
-                    .load(data.id)
-                    .on('error', function (error) {
-                        self.emit('error', error);
-                        latch.release();
-                    })
-                    .on('loaded', function (data) {
-                        setPetitionData(data);
-                        latch.release();
-                    });
-            });
-        };
-
-        // Load first page
-        pageLoader
-            .load(1)
-            .on('loaded', loadNextPage)
-            .on('error', forwardError(self));
-
-        return self;
-    };
-
-    this.populateRecent = function () {
-        // Load first page
-        pageLoader.load(1).on('loaded', function (data) {
-            var latch = new Latch(data.data.length);
-            latch.onRelease(function () {
-                self.emit('recent-loaded', self);
+                emitter.emit('page-loaded', data);
             });
             data.data.forEach(function (data) {
                 petitionLoader
@@ -95,7 +56,35 @@ function PetitionPager() {
                     });
             });
         }).on('error', forwardError(self));
+    };
 
+    this.populateAll = function () {
+        var emitter = new EventEmitter();
+        emitter.on('page-loaded', loadNextPage);
+
+        // Load the next page
+        var loadNextPage = function (data) {
+            if (data.links.next !== null) {
+                var index = data.links.next.lastIndexOf('/'),
+                    nextPath = data.links.next.substring(index);
+                    internalLoadPage(1, nextPath);
+            }
+            else {
+                self.emit('all-loaded', self);
+            }
+        };
+
+        internalLoadPage(1, emitter);
+
+        return self;
+    };
+
+    this.populateRecent = function () {
+        var emitter = new EventEmitter();
+        emitter.on('page-loaded', function() {
+            self.emit('recent-loaded', self);
+        });
+        internalLoadPage(1, emitter);
         return self;
     };
 }
