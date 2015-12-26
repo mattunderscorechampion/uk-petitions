@@ -11,7 +11,7 @@
     },
     "scripts" : {
         "build" : "npm install && gulp",
-        "list" : "npm run build && node src/list-petitions.js",
+        "list" : "npm run build && node src/list-hot-petitions.js",
         "list-all" : "npm run build && node src/list-all-petitions.js"
     }
 }

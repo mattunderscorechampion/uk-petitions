@@ -79,7 +79,7 @@ function PetitionPager() {
         return self;
     };
 
-    this.populateRecent = function () {
+    this.populateHot = function () {
         var emitter = new EventEmitter();
         emitter.on('page-loaded', function() {
             self.emit('recent-loaded', self);

@@ -7,4 +7,4 @@ var PetitionPager = require('./petition-pager'),
 new PetitionPager()
     .on('error', output.error)
     .on('petition', output.withSignatureCountDiff)
-    .populateRecent();
+    .populateHot();
