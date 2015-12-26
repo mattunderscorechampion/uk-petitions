@@ -148,12 +148,12 @@ function PetitionPager() {
         petitionLoader = new PetitionLoader(),
         pageLoader = new PetitionPageLoader(),
         setPetitionData = function (data) {
-            var update = self.petitions[data.id];
-            if (update) {
+            var oldData = self.petitions[data.id];
+            if (oldData) {
                 // Replace with changed data
-                if (!equal(update, data)) {
+                if (!equal(oldData, data)) {
                     self.petitions[data.id] = data;
-                    self.emit('petition', data);
+                    self.emit('petition', data, oldData);
                 }
             } else {
                 // Add new data
@@ -255,6 +255,22 @@ var logWithTop5Countries = function (data) {
         });
 };
 
+var logWithSignatureCount = function (data) {
+    console.log('Action: %s', data.attributes.action);
+    console.log('Signatures: %d', data.attributes.signature_count);
+};
+
+var logWithSignatureCountDiff = function (data, oldData) {
+    if (oldData) {
+        console.log('Action: %s', data.attributes.action);
+        console.log('Signatures: %d (was %d)', data.attributes.signature_count, oldData.attributes.signature_count);
+    }
+    else {
+        console.log('Action: %s', data.attributes.action);
+        console.log('Signatures: %d', data.attributes.signature_count);
+    }
+};
+
 /**
  * Print out all the attributes of a petition.
  */
@@ -278,7 +294,7 @@ var logError = function (error) {
 
 var p = new PetitionPager();
 p.on('error', logError)
-    .on('petition', logWithTop5Countries)
+    .on('petition', logWithSignatureCountDiff)
     .on('recent-loaded', function () {
         // Check the first page for any changes
         p.populateRecent();
