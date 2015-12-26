@@ -295,31 +295,49 @@ var logError = function (error) {
 var petitions = {
     preconditions : {
         samePetitionId : function(petition0, petition1) {
-            if (!petitions.predicates.samePetitionId(petition0, petition1)) {
+            if (!petitions.checks.samePetitionId(petition0, petition1)) {
                 throw new Error('Petition IDs should be the same but are different');
             }
         }
     },
     predicates : {
+        reached10_000 : function(data) {
+            return data.attributes.signature_count >= 10000;
+        },
+        reached100_000 : function(data) {
+            return data.attributes.signature_count >= 100000;
+        },
+        governmentResponded : function(data) {
+            return data.attributes.government_response !== null;
+        },
+        debated : function(data) {
+            return data.attributes.debate !== null;
+        }
+    },
+    checks : {
         samePetitionId : function(petition0, petition1) {
             return petition0.id === petition1.id;
         },
         delta : {
-            goneOver10_000 : function(newData, oldData) {
+            reached10_000 : function(newData, oldData) {
                 petitions.preconditions.samePetitionId(oldData, newData);
-                return newData.attributes.signature_count >= 10000 && oldData.attributes.signature_count < 10000;
+                var predicate = petitions.predicates.reached10_000;
+                return predicate(newData) && !predicate(oldData);
             },
-            goneOver100_000 : function(newData, oldData) {
+            reached100_000 : function(newData, oldData) {
                 petitions.preconditions.samePetitionId(oldData, newData);
-                return newData.attributes.signature_count >= 100000 && oldData.attributes.signature_count < 100000;
+                var predicate = petitions.predicates.reached100_000;
+                return predicate(newData) && !predicate(oldData);
             },
             governmentResponded : function(newData, oldData) {
                 petitions.preconditions.samePetitionId(oldData, newData);
-                return newData.attributes.government_response !== null && oldData.attributes.government_response === null;
+                var predicate = petitions.predicates.governmentResponded;
+                return predicate(newData) && !predicate(oldData);
             },
             debated : function(newData, oldData) {
                 petitions.preconditions.samePetitionId(oldData, newData);
-                return newData.attributes.debate !== null && oldData.attributes.debate === null;
+                var predicate = petitions.predicates.debated;
+                return predicate(newData) && !predicate(oldData);
             }
         }
     }
