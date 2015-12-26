@@ -33,10 +33,10 @@ function PetitionsMonitor() {
             }
         });
 
-        pager.on('all-loaded', function() {
-            pager.populateAll();
+        pager.on('open-loaded', function() {
+            pager.populateOpen();
         });
-        pager.populateAll();
+        pager.populateOpen();
 
         return self;
     };

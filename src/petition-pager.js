@@ -79,6 +79,27 @@ function PetitionPager() {
         return self;
     };
 
+    this.populateOpen = function () {
+        var emitter = new EventEmitter();
+
+        // Load the next page
+        var loadNextPage = function (data) {
+            if (data.links.next !== null) {
+                var index = data.links.next.lastIndexOf('/'),
+                    nextPath = data.links.next.substring(index);
+                    internalLoadPage(nextPath, emitter);
+            }
+            else {
+                self.emit('open-loaded', self);
+            }
+        };
+
+        emitter.on('page-loaded', loadNextPage);
+        internalLoadPage('/petitions.json?page=1&state=open', emitter);
+
+        return self;
+    };
+
     this.populateHot = function () {
         var emitter = new EventEmitter();
         emitter.on('page-loaded', function() {
