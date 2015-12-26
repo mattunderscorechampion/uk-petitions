@@ -6,10 +6,14 @@ var https = require("https"),
     EventEmitter = require('events'),
     equal = require('deep-equal');
 
-function CountDownLatch(num) {
+/**
+ * A simple latch that can be released once.  Release may need to be called
+ * muliple times before the latch is released.
+ */
+function Latch(num) {
     var number = num, callbacks = [];
 
-    this.countDown = function () {
+    this.release = function () {
         if (number > 0) {
             number = number - 1;
             if (number === 0) {
@@ -20,7 +24,7 @@ function CountDownLatch(num) {
         }
     };
 
-    this.await = function (callback) {
+    this.onRelease = function (callback) {
         if (number === 0) {
             callback();
         } else {
@@ -165,8 +169,8 @@ function PetitionPager() {
     this.populateAll = function () {
         // Load the next page
         var loadNextPage = function (data) {
-            var latch = new CountDownLatch(data.data.length);
-            latch.await(function () {
+            var latch = new Latch(data.data.length);
+            latch.onRelease(function () {
                 if (data.links.next !== null) {
                     var index = data.links.next.lastIndexOf('/'),
                         nextPath = data.links.next.substring(index);
@@ -182,11 +186,11 @@ function PetitionPager() {
                     .load(data.id)
                     .on('error', function (error) {
                         self.emit('error', error);
-                        latch.countDown();
+                        latch.release();
                     })
                     .on('loaded', function (data) {
                         setPetitionData(data);
-                        latch.countDown();
+                        latch.release();
                     });
             });
         };
@@ -203,8 +207,8 @@ function PetitionPager() {
     this.populateRecent = function () {
         // Load first page
         pageLoader.load(1).on('loaded', function (data) {
-            var countDown = new CountDownLatch(data.data.length);
-            countDown.await(function () {
+            var latch = new Latch(data.data.length);
+            latch.onRelease(function () {
                 self.emit('recent-loaded', self);
             });
             data.data.forEach(function (data) {
@@ -212,11 +216,11 @@ function PetitionPager() {
                     .load(data.id)
                     .on('error', function (error) {
                         self.emit('error', error);
-                        countDown.countDown();
+                        latch.release();
                     })
                     .on('loaded', function (data) {
                         setPetitionData(data);
-                        countDown.countDown();
+                        latch.release();
                     });
             });
         }).on('error', forwardError(self));
