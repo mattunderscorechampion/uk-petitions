@@ -226,6 +226,21 @@ var logByCountry = function (data) {
     });
 };
 
+var logWithTop5Countries = function (data) {
+    console.log('Action: %s', data.attributes.action);
+    console.log('Top 5 countries:');
+    var total_signatures = data.attributes.signature_count;
+    data.attributes.signatures_by_country
+        .sort(function(country0, country1) {
+            return country1.signature_count - country0.signature_count;
+        })
+        .slice(0, Math.min(5, data.attributes.signatures_by_country.length)).
+        forEach(function (pair) {
+            var percentage = (pair.signature_count / total_signatures) * 100;
+            console.log('%s: %d (%d%%)', pair.name, pair.signature_count, percentage.toFixed(4));
+        });
+};
+
 /**
  * Print out all the attributes of a petition.
  */
@@ -249,7 +264,7 @@ var logError = function (error) {
 
 var p = new PetitionPager();
 p.on('error', logError)
-    .on('petition', logAction)
+    .on('petition', logWithTop5Countries)
     .on('recent-loaded', function () {
         console.log(p.petitions.length);
     })
