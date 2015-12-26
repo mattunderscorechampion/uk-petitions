@@ -3,7 +3,7 @@ var gulp = require('gulp'),
 
 gulp.task('checks', function() {
     gulp.src(['./list-petitions.js'])
-        .pipe(jshint())
+        .pipe(jshint({node: true}))
         .pipe(jshint.reporter('jshint-stylish'))
         .on('end', function() {
           console.log('Checks complete');
