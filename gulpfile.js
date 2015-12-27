@@ -2,7 +2,7 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint');
 
 gulp.task('checks', function() {
-    gulp.src(['./src/*.js'])
+    gulp.src(['./src/*.js', './src/run/*.js'])
         .pipe(jshint({node: true}))
         .pipe(jshint.reporter('jshint-stylish'))
         .pipe(jshint.reporter('fail'))

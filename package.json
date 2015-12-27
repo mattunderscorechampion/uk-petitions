@@ -1,5 +1,7 @@
 {
     "name" : "petitions",
+    "version" : "0.0.1",
+    "main" : "src/main.js",
     "dependencies" : {
       "deep-equal" : "1.0.1"
     },
@@ -11,8 +13,9 @@
     },
     "scripts" : {
         "build" : "npm install && gulp",
-        "list" : "npm run build && node src/list-hot-petitions.js",
-        "list-all" : "npm run build && node src/list-all-petitions.js",
-        "monitor" : "npm run build && node src/monitor-petitions.js"
+        "list" : "npm run build && node src/run/list-hot-petitions.js",
+        "list-all" : "npm run build && node src/run/list-all-petitions.js",
+        "monitor" : "npm run build && node src/run/monitor-petitions.js",
+        "clean" : "rm -rf node_modules"
     }
 }
