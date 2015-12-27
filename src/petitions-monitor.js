@@ -45,9 +45,15 @@ function PetitionsMonitor() {
             .addDeltaCheck('government-response', queries.checks.delta.governmentResponded)
             .addDeltaCheck('debate-transcript', queries.checks.delta.debateTranscriptAvailable)
             .on('open-loaded', function() {
+                pager
+                    .removeAllListeners('open-loaded')
+                    .on('open-loaded', function() {
+                        pager.populateOpen();
+                    })
+                    .emit('initial-load');
                 pager.populateOpen();
-            });
-        pager.populateOpen();
+            })
+            .populateOpen();
 
         return self;
     };
