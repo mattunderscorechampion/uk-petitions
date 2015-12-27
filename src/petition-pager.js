@@ -7,6 +7,7 @@ var https = require("https"),
     PetitionLoader = require('./petition-loader'),
     PetitionPageLoader = require('./petition-page-loader'),
     Latch = require('./latch'),
+    LoaderExecutor = require('./loader-executor'),
     petitionUtil = require('./petition-util'),
     equal = require('deep-equal');
 
@@ -18,6 +19,7 @@ function PetitionPager() {
         agent = new https.Agent({ keepAlive: true, maxSockets: 1 }),
         petitionLoader = new PetitionLoader(),
         pageLoader = new PetitionPageLoader(),
+        executor = new LoaderExecutor(1000),
         setPetitionData = function (data) {
             var oldData = self.petitions[data.id];
             if (oldData) {
@@ -38,24 +40,37 @@ function PetitionPager() {
     };
 
     var internalLoadPage = function(page, emitter) {
-        pageLoader.load(page).on('loaded', function (data) {
-            var latch = new Latch(data.data.length);
+        var loadDetailProvider = function(latch) {
+            return function(summary) {
+                executor.execute(function() {
+                    petitionLoader
+                        .load(summary.id)
+                        .on('error', function (error) {
+                            self.emit('error', error);
+                            latch.release();
+                        })
+                        .on('loaded', function (data) {
+                            setPetitionData(data);
+                            latch.release();
+                        });
+                });
+            };
+        };
+
+        var onPageLoaded = function(summary) {
+            var latch = new Latch(summary.data.length);
             latch.onRelease(function () {
-                emitter.emit('page-loaded', data);
+                emitter.emit('page-loaded', summary);
             });
-            data.data.forEach(function (data) {
-                petitionLoader
-                    .load(data.id)
-                    .on('error', function (error) {
-                        self.emit('error', error);
-                        latch.release();
-                    })
-                    .on('loaded', function (data) {
-                        setPetitionData(data);
-                        latch.release();
-                    });
-            });
-        }).on('error', forwardError(self));
+            summary.data.forEach(loadDetailProvider(latch));
+        };
+
+        executor.execute(function() {
+            pageLoader
+                .load(page)
+                .on('loaded', onPageLoaded)
+                .on('error', forwardError(self));
+        });
     };
 
     this.populateAll = function () {
