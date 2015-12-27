@@ -12,115 +12,41 @@ function PetitionsMonitor() {
 
     this.start = function () {
         var pager = new PetitionPager();
+        pager.addDeltaCheck = function(event, check) {
+            this.on('petition', function(newData, oldData) {
+                if (oldData) {
+                    if (check(newData, oldData)) {
+                        self.emit(event, newData);
+                    }
+                }
+            });
+            return this;
+        };
 
         pager
-        .setMaxListeners(20)
-        .on('petition', function(newData, oldData) {
-            if (!oldData) {
-                self.emit('new-petition', newData);
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reached10(newData, oldData)) {
-                    self.emit('reached-10-signatures', newData);
+            .setMaxListeners(20)
+            .on('petition', function(newData, oldData) {
+                if (!oldData) {
+                    self.emit('new-petition', newData);
                 }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reached20(newData, oldData)) {
-                    self.emit('reached-20-signatures', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reached50(newData, oldData)) {
-                    self.emit('reached-50-signatures', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reached100(newData, oldData)) {
-                    self.emit('reached-100-signatures', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reached250(newData, oldData)) {
-                    self.emit('reached-250-signatures', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reached500(newData, oldData)) {
-                    self.emit('reached-500-signatures', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reached1_000(newData, oldData)) {
-                    self.emit('reached-1000-signatures', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reached5_000(newData, oldData)) {
-                    self.emit('reached-5000-signatures', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reachedResponseThreshold(newData, oldData)) {
-                    self.emit('reached-response-threshold', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reached50_000(newData, oldData)) {
-                    self.emit('reached-50000-signatures', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reachedDebateThreshold(newData, oldData)) {
-                    self.emit('reached-debate-threshold', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.reached500_000(newData, oldData)) {
-                    self.emit('reached-500000-signatures', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.governmentResponded(newData, oldData)) {
-                    self.emit('government-response', newData);
-                }
-            }
-        })
-        .on('petition', function(newData, oldData) {
-            if (oldData) {
-                if (queries.checks.delta.debated(newData, oldData)) {
-                    self.emit('debated', newData);
-                }
-            }
-        })
-        .on('open-loaded', function() {
-            pager.populateOpen();
-        });
+            })
+            .addDeltaCheck('reached-10-signatures', queries.checks.delta.reached10)
+            .addDeltaCheck('reached-20-signatures', queries.checks.delta.reached20)
+            .addDeltaCheck('reached-50-signatures', queries.checks.delta.reached50)
+            .addDeltaCheck('reached-100-signatures', queries.checks.delta.reached100)
+            .addDeltaCheck('reached-250-signatures', queries.checks.delta.reached250)
+            .addDeltaCheck('reached-500-signatures', queries.checks.delta.reached500)
+            .addDeltaCheck('reached-1000-signatures', queries.checks.delta.reached1_000)
+            .addDeltaCheck('reached-5000-signatures', queries.checks.delta.reached5_000)
+            .addDeltaCheck('reached-response-threshold', queries.checks.delta.reachedResponseThreshold)
+            .addDeltaCheck('reached-50000-signatures', queries.checks.delta.reached50_000)
+            .addDeltaCheck('reached-debate-threshold', queries.checks.delta.reachedDebateThreshold)
+            .addDeltaCheck('reached-500000-signatures', queries.checks.delta.reached500_000)
+            .addDeltaCheck('government-response', queries.checks.delta.governmentResponded)
+            .addDeltaCheck('debated', queries.checks.delta.debated)
+            .on('open-loaded', function() {
+                pager.populateOpen();
+            });
         pager.populateOpen();
 
         return self;
