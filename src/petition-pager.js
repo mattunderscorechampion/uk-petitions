@@ -39,10 +39,16 @@ function PetitionPager() {
         length: 0
     };
 
-    var internalLoadPage = function(page, emitter) {
+    var internalLoadPage = function(page, emitter, filter) {
         var loadDetailProvider = function(latch) {
             return function(summary) {
                 executor.execute(function() {
+                    if (filter && filter(summary)) {
+                        // Skip
+                        latch.release();
+                        return;
+                    }
+
                     petitionLoader
                         .load(summary.id)
                         .on('error', function (error) {
@@ -111,6 +117,31 @@ function PetitionPager() {
 
         emitter.on('page-loaded', loadNextPage);
         internalLoadPage('/petitions.json?page=1&state=open', emitter);
+
+        return self;
+    };
+
+    this.populateInteresting = function () {
+        var emitter = new EventEmitter();
+
+        var filter = function(summary) {
+            return summary.attributes.state !== 'rejected' && summary.attributes.state !== 'closed';
+        };
+
+        // Load the next page
+        var loadNextPage = function (data) {
+            if (data.links.next !== null) {
+                var index = data.links.next.lastIndexOf('/'),
+                    nextPath = data.links.next.substring(index);
+                    internalLoadPage(nextPath, emitter, filter);
+            }
+            else {
+                self.emit('interesting-loaded', self);
+            }
+        };
+
+        emitter.on('page-loaded', loadNextPage);
+        internalLoadPage('/petitions.json?page=1&state=all', emitter, filter);
 
         return self;
     };

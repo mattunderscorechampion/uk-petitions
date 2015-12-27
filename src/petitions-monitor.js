@@ -44,16 +44,16 @@ function PetitionsMonitor() {
             .addDeltaCheck('reached-500000-signatures', queries.checks.delta.reached500_000)
             .addDeltaCheck('government-response', queries.checks.delta.governmentResponded)
             .addDeltaCheck('debate-transcript', queries.checks.delta.debateTranscriptAvailable)
-            .on('open-loaded', function() {
+            .on('interesting-loaded', function() {
                 pager
                     .removeAllListeners('open-loaded')
-                    .on('open-loaded', function() {
-                        pager.populateOpen();
+                    .on('interesting-loaded', function() {
+                        pager.populateInteresting();
                     })
                     .emit('initial-load');
-                pager.populateOpen();
+                pager.populateInteresting();
             })
-            .populateOpen();
+            .populateInteresting();
 
         return self;
     };
