@@ -33,7 +33,7 @@ m.setMaxListeners(20)
         console.log('Petition \'%s\' has reached the threshold for a debate', data.attributes.action);
     })
     .addSignatureNotification(500000)
-    .on('government-responce', function(data) {
+    .on('government-response', function(data) {
         console.log('The government has responded to the petition \'%s\'', data.attributes.action);
     })
     .on('debated', function(data) {

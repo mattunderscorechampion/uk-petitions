@@ -107,7 +107,7 @@ function PetitionsMonitor() {
         .on('petition', function(newData, oldData) {
             if (oldData) {
                 if (queries.checks.delta.governmentResponded(newData, oldData)) {
-                    self.emit('government-responce', newData);
+                    self.emit('government-response', newData);
                 }
             }
         })
