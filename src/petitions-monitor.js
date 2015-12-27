@@ -43,7 +43,7 @@ function PetitionsMonitor() {
             .addDeltaCheck('reached-debate-threshold', queries.checks.delta.reachedDebateThreshold)
             .addDeltaCheck('reached-500000-signatures', queries.checks.delta.reached500_000)
             .addDeltaCheck('government-response', queries.checks.delta.governmentResponded)
-            .addDeltaCheck('debated', queries.checks.delta.debated)
+            .addDeltaCheck('debate-transcript', queries.checks.delta.debateTranscriptAvailable)
             .on('open-loaded', function() {
                 pager.populateOpen();
             });

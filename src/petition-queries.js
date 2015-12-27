@@ -31,6 +31,10 @@ function debated(data) {
     return data.attributes.debate !== null;
 }
 
+function debateTranscriptAvailable(data) {
+    return data.attributes.debate !== null && data.attributes.debate.transcript_url !== null;
+}
+
 var checks = {
     samePetitionId : function(petition0, petition1) {
         return petition0.id === petition1.id;
@@ -57,6 +61,10 @@ var checks = {
         debated : function(newData, oldData) {
             preconditions.samePetitionId(oldData, newData);
             return debated(newData) && !debated(oldData);
+        },
+        debateTranscriptAvailable : function(newData, oldData) {
+            preconditions.samePetitionId(oldData, newData);
+            return debateTranscriptAvailable(newData) && !debateTranscriptAvailable(oldData);
         }
     }
 };
@@ -78,7 +86,8 @@ module.exports = {
         reachedResponseThreshold : reachedSignatureCountProvider(10000),
         reachedDebateThreshold : reachedSignatureCountProvider(100000),
         governmentResponded : governmentResponded,
-        debated : debated
+        debated : debated,
+        debateTranscriptAvailable : debateTranscriptAvailable
     },
     checks : checks
 };

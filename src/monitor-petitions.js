@@ -34,9 +34,9 @@ m.setMaxListeners(20)
     })
     .addSignatureNotification(500000)
     .on('government-response', function(data) {
-        console.log('The government has responded to the petition \'%s\'', data.attributes.action);
+        console.log('The government has responded to the petition \'%s\' https://petition.parliament.uk/petitions/%s', data.attributes.action, data.id);
     })
-    .on('debated', function(data) {
-        console.log('Parliament has debated the petition \'%s\'', data.attributes.action);
+    .on('debate-transcript', function(data) {
+        console.log('The transcript for the debate of \'%s\' %s', data.attributes.action, data.attributes.debate.transcript_url);
     })
     .start();
