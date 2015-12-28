@@ -8,10 +8,11 @@ var EventEmitter = require('events');
  * Executor for loader tasks. Listens to the 'error' and 'loaded' events of an
  * emitter returned by the task to poll after task has finished.
  */
-function LoaderExecutor(interval) {
+function LoaderExecutor(initialInterval) {
     var tasks = [],
         stopped = false,
-        current = null;
+        current = null,
+        interval = initialInterval;
 
     var clearAndPoll = function() {
         current = null;
@@ -49,6 +50,10 @@ function LoaderExecutor(interval) {
 
     this.stop = function() {
         stopped = true;
+    };
+
+    this.setInterval = function(newInterval) {
+        interval = newInterval;
     };
 }
 
