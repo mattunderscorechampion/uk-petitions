@@ -13,13 +13,13 @@ var https = require("https"),
 
 var forwardError = petitionUtil.forwardError;
 
-function PetitionPager() {
+function PetitionPager(loadInterval) {
     EventEmitter.call(this);
     var self = this,
         agent = new https.Agent({ keepAlive: true, maxSockets: 1 }),
         petitionLoader = new PetitionLoader(),
         pageLoader = new PetitionPageLoader(),
-        executor = new LoaderExecutor(500),
+        executor = new LoaderExecutor(loadInterval || 500),
         setPetitionData = function (data) {
             var oldData = self.petitions[data.id];
             if (oldData) {
