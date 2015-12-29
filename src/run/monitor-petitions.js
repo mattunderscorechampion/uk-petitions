@@ -1,6 +1,6 @@
 
 'use strict';
 
-var monitor = require('../petitions-monitor');
+var monitor = require('../monitor-petitions');
 
 monitor.start();

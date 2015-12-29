@@ -4,7 +4,8 @@
 var util = require('util'),
     queries = require('./petition-queries'),
     EventEmitter = require('events'),
-    PetitionPager = require('./petition-pager');
+    PetitionPager = require('./petition-pager'),
+    equal = require('deep-equal');
 
 function PetitionsMonitor() {
     EventEmitter.call(this);
@@ -21,6 +22,22 @@ function PetitionsMonitor() {
                 }
             });
             return this;
+        };
+
+        // Only update when interesting details change
+        var filter = function (summary, petitions) {
+            if (summary.attributes.state !== 'rejected' && summary.attributes.state !== 'closed') {
+                var currentInfo = petitions[summary.id];
+                if (currentInfo) {
+                    return currentInfo.attributes.signature_count !== summary.attributes.signature_count ||
+                        !equal(currentInfo.attributes.government_response, summary.attributes.government_response) ||
+                        !equal(currentInfo.attributes.debate, summary.attributes.debate);
+                }
+                else {
+                    return true;
+                }
+            }
+            return false;
         };
 
         pager
@@ -44,16 +61,16 @@ function PetitionsMonitor() {
             .addDeltaCheck('reached-500000-signatures', queries.checks.delta.reached500_000)
             .addDeltaCheck('government-response', queries.checks.delta.governmentResponded)
             .addDeltaCheck('debate-transcript', queries.checks.delta.debateTranscriptAvailable)
-            .on('interesting-loaded', function() {
+            .on('loaded', function() {
                 pager
                     .removeAllListeners('open-loaded')
-                    .on('interesting-loaded', function() {
-                        pager.populateInteresting();
+                    .on('loaded', function() {
+                        pager.populate(filter);
                     })
                     .emit('initial-load');
-                pager.populateInteresting();
+                pager.populate(filter);
             })
-            .populateInteresting();
+            .populate(filter);
 
         return self;
     };

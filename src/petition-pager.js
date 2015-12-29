@@ -46,7 +46,7 @@ function PetitionPager(loadInterval) {
         var loadDetailProvider = function(latch) {
             return function(summary) {
                 executor.execute(function() {
-                    if (filter && filter(summary)) {
+                    if (filter && filter(summary, self.petitions)) {
                         // Skip
                         latch.release();
                         return;
@@ -155,6 +155,27 @@ function PetitionPager(loadInterval) {
             self.emit('recent-loaded', self);
         });
         internalLoadPage(1, emitter);
+        return self;
+    };
+
+    this.populate = function (filter) {
+        var emitter = new EventEmitter();
+
+        // Load the next page
+        var loadNextPage = function (data) {
+            if (data.links.next !== null) {
+                var index = data.links.next.lastIndexOf('/'),
+                    nextPath = data.links.next.substring(index);
+                    internalLoadPage(nextPath, emitter, filter);
+            }
+            else {
+                self.emit('loaded', self);
+            }
+        };
+
+        emitter.on('page-loaded', loadNextPage);
+        internalLoadPage('/petitions.json?page=1&state=all', emitter, filter);
+
         return self;
     };
 }
