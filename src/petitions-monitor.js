@@ -12,7 +12,7 @@ function PetitionsMonitor() {
     var self = this;
 
     this.start = function () {
-        var pager = new PetitionPager();
+        var pager = new PetitionPager(200);
         pager.addDeltaCheck = function(event, check) {
             this.on('petition', function(newData, oldData) {
                 if (oldData) {
@@ -63,6 +63,7 @@ function PetitionsMonitor() {
             .addDeltaCheck('debate-transcript', queries.checks.delta.debateTranscriptAvailable)
             .on('loaded', function() {
                 pager
+                    .setPageLoadInterval(2000)
                     .removeAllListeners('open-loaded')
                     .on('loaded', function() {
                         pager.populate(filter);

@@ -40,6 +40,7 @@ function PetitionPager(loadInterval) {
     };
     this.setPageLoadInterval = function(newInterval) {
         executor.setInterval(newInterval);
+        return self;
     };
 
     var internalLoadPage = function(page, emitter, filter) {
