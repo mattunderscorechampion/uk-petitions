@@ -50,6 +50,9 @@ function PetitionsMonitor() {
                 if (!oldData) {
                     self.emit('new-petition', newData);
                 }
+                else {
+                    self.emit('updated-petition', newData);
+                }
             })
             .addDeltaCheck('reached-10-signatures', queries.checks.delta.reached10)
             .addDeltaCheck('reached-20-signatures', queries.checks.delta.reached20)
