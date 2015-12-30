@@ -9,7 +9,8 @@
       "gulp" : "3.9.0",
       "gulp-jshint" : "2.0.0",
       "jshint" : "2.8.0",
-      "jshint-stylish" : "2.1.0"
+      "jshint-stylish" : "2.1.0",
+      "gulp-jsdoc" : "0.1.5"
     },
     "scripts" : {
         "build" : "npm install && gulp",

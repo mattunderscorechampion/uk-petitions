@@ -70,6 +70,9 @@ var checks = {
 };
 
 module.exports = {
+    /**
+     * @namespace
+     */
     predicates : {
         reached10 : reachedSignatureCountProvider(10),
         reached20 : reachedSignatureCountProvider(20),
@@ -89,5 +92,8 @@ module.exports = {
         debated : debated,
         debateTranscriptAvailable : debateTranscriptAvailable
     },
+    /**
+     * @namespace
+     */
     checks : checks
 };

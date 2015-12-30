@@ -1,5 +1,6 @@
 var gulp = require('gulp'),
-    jshint = require('gulp-jshint');
+    jshint = require('gulp-jshint'),
+    jsdoc = require('gulp-jsdoc');
 
 gulp.task('checks', function() {
     gulp.src(['./src/*.js', './src/run/*.js'])
@@ -14,4 +15,9 @@ gulp.task('checks', function() {
         });
 });
 
-gulp.task('default', ['checks']);
+gulp.task('doc', function() {
+    gulp.src(['./src/*.js', './src/run/*.js'])
+        .pipe(jsdoc('./target/doc'))
+});
+
+gulp.task('default', ['checks', 'doc']);

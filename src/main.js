@@ -1,6 +1,10 @@
 
 'use strict';
 
+/**
+ * The petitions module.
+ * @module petitions
+ */
 module.exports = {
     PetitionsMonitor : require('./petitions-monitor'),
     PetitionLoader : require('./petition-loader'),

@@ -7,6 +7,10 @@ var util = require('util'),
     PetitionPager = require('./petition-pager'),
     equal = require('deep-equal');
 
+/**
+ * Monitors the petitons data for changes and generates a notification event for changes.
+ * @constructor
+ */
 function PetitionsMonitor() {
     EventEmitter.call(this);
     var self = this;

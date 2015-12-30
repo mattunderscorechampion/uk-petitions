@@ -13,6 +13,10 @@ var https = require("https"),
 
 var forwardError = petitionUtil.forwardError;
 
+/**
+ * Loads all the petition data according to a filter.
+ * @constructor
+ */
 function PetitionPager(loadInterval) {
     EventEmitter.call(this);
     var self = this,

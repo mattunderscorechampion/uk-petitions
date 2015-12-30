@@ -9,6 +9,7 @@ var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 
 /**
  * Loads the data of a petition. It is stateless.
+ * @constructor
  */
 function PetitionLoader(agent) {
     /**

@@ -7,6 +7,10 @@ var EventEmitter = require('events'),
 var forwardError = petitionUtil.forwardError;
 var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 
+/**
+ * Loads a page of petition summaries. It is stateless.
+ * @constructor
+ */
 function PetitionPageLoader(agent) {
     /**
      * Load a page of petitions by number. Returns an emitter. Emits either 'loaded' or 'error' events.
