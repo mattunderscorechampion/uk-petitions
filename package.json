@@ -10,7 +10,10 @@
       "gulp-jshint" : "2.0.0",
       "jshint" : "2.8.0",
       "jshint-stylish" : "2.1.0",
-      "gulp-jsdoc" : "0.1.5"
+      "gulp-jsdoc" : "0.1.5",
+      "mockery" : "1.4.0",
+      "gulp-jasmine" : "2.2.1",
+      "gulp-istanbul" : "0.10.3"
     },
     "scripts" : {
         "build" : "npm install && gulp",
