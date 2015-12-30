@@ -13,7 +13,8 @@
       "gulp-jsdoc" : "0.1.5",
       "mockery" : "1.4.0",
       "gulp-jasmine" : "2.2.1",
-      "gulp-istanbul" : "0.10.3"
+      "gulp-istanbul" : "0.10.3",
+      "saywhen" : "1.1.0"
     },
     "scripts" : {
         "build" : "npm install && gulp",

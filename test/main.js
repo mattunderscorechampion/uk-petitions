@@ -23,7 +23,4 @@ describe("petitions", function() {
     it('has predefined output', function() {
         expect(petitions.output).toBeDefined();
     });
-    it('has extra', function() {
-        expect(petitions.extra).toBeDefined();
-    });
 });

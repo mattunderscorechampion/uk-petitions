@@ -37,7 +37,8 @@ var getJsonOverHttps = function (options) {
                     emitter.emit('data', JSON.parse(completeBuffer));
                 });
         }
-    }).on('error', forwardError(emitter));
+    })
+    .on('error', forwardError(emitter));
 
     return emitter;
 };
