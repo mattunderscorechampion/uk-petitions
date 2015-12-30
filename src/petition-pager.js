@@ -17,13 +17,24 @@ var forwardError = petitionUtil.forwardError;
  * Loads all the petition data according to a filter.
  * @constructor
  */
-function PetitionPager(loadInterval) {
+function PetitionPager(config) {
     EventEmitter.call(this);
+    var loadInterval = 500;
+    var debug = false;
+    if (config) {
+        if (config.loadInterval) {
+            loadInterval = config.loadInterval;
+        }
+        if (config.debug) {
+            debug = true;
+        }
+    }
+
     var self = this,
         agent = new https.Agent({ keepAlive: true, maxSockets: 1 }),
         petitionLoader = new PetitionLoader(),
         pageLoader = new PetitionPageLoader(),
-        executor = new LoaderExecutor(loadInterval || 500),
+        executor = new LoaderExecutor(loadInterval),
         setPetitionData = function (data) {
             var oldData = self.petitions[data.id];
             if (oldData) {
@@ -38,11 +49,17 @@ function PetitionPager(loadInterval) {
                 self.petitions.length = self.petitions.length + 1;
                 self.emit('petition', data);
             }
+        },
+        logDebug = function(args) {
+            if (debug) {
+                console.log(args);
+            }
         };
     this.petitions = {
         length: 0
     };
     this.setPageLoadInterval = function(newInterval) {
+        loadInterval = newInterval;
         executor.setInterval(newInterval);
         return self;
     };
@@ -53,6 +70,7 @@ function PetitionPager(loadInterval) {
                 executor.execute(function() {
                     if (filter && filter(summary, self.petitions)) {
                         // Skip
+                        logDebug('Petition filtered');
                         latch.release();
                         return;
                     }
@@ -60,10 +78,12 @@ function PetitionPager(loadInterval) {
                     petitionLoader
                         .load(summary.id)
                         .on('error', function (error) {
+                            logDebug('Error loading petiton detail');
                             self.emit('error', error);
                             latch.release();
                         })
                         .on('loaded', function (data) {
+                            logDebug('Petiton detail loaded');
                             setPetitionData(data);
                             latch.release();
                         });
@@ -74,12 +94,14 @@ function PetitionPager(loadInterval) {
         var onPageLoaded = function(summary) {
             var latch = new Latch(summary.data.length);
             latch.onRelease(function () {
+                logDebug('Page loaded');
                 emitter.emit('page-loaded', summary);
             });
             summary.data.forEach(loadDetailProvider(latch));
         };
 
         executor.execute(function() {
+            logDebug('Loading page');
             pageLoader
                 .load(page)
                 .on('loaded', onPageLoaded)

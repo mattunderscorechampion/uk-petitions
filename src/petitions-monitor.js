@@ -11,12 +11,33 @@ var util = require('util'),
  * Monitors the petitons data for changes and generates a notification event for changes.
  * @constructor
  */
-function PetitionsMonitor() {
+function PetitionsMonitor(config) {
     EventEmitter.call(this);
-    var self = this;
+    var self = this,
+        initialInterval = 200,
+        interval = 2000,
+        debug = true,
+        logDebug = function(args) {
+            if (debug) {
+                console.log(args);
+            }
+        };
+    if (config) {
+        if (config.initialInterval) {
+            initialInterval = config.initialInterval;
+        }
+        if (config.interval) {
+            interval = config.interval;
+        }
+        if (config.debug) {
+            debug = config.debug;
+        }
+    }
+    logDebug('Debug enabled');
 
     this.start = function () {
-        var pager = new PetitionPager(200);
+        logDebug('Starting monitor');
+        var pager = new PetitionPager({ loadInterval : initialInterval, debug : debug });
         pager.addDeltaCheck = function(event, check) {
             this.on('petition', function(newData, oldData) {
                 if (oldData) {
@@ -69,10 +90,12 @@ function PetitionsMonitor() {
             .addDeltaCheck('government-response', queries.checks.delta.governmentResponded)
             .addDeltaCheck('debate-transcript', queries.checks.delta.debateTranscriptAvailable)
             .on('loaded', function() {
+                logDebug('Initial petitions polled, going again');
                 pager
-                    .setPageLoadInterval(2000)
+                    .setPageLoadInterval(interval)
                     .removeAllListeners('loaded')
                     .on('loaded', function() {
+                        logDebug('All petitions polled, going again');
                         pager.populate(filter);
                     })
                     .emit('initial-load');
