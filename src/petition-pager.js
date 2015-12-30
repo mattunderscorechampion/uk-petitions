@@ -84,76 +84,27 @@ function PetitionPager(loadInterval) {
     };
 
     this.populateAll = function () {
-        var emitter = new EventEmitter();
-
-        // Load the next page
-        var loadNextPage = function (data) {
-            if (data.links.next !== null) {
-                var index = data.links.next.lastIndexOf('/'),
-                    nextPath = data.links.next.substring(index);
-                    internalLoadPage(nextPath, emitter);
-            }
-            else {
-                self.emit('all-loaded', self);
-            }
-        };
-
-        emitter.on('page-loaded', loadNextPage);
-        internalLoadPage(1, emitter);
-
-        return self;
+        return self.populate(function() {
+            return true;
+        });
     };
 
     this.populateOpen = function () {
-        var emitter = new EventEmitter();
-
-        // Load the next page
-        var loadNextPage = function (data) {
-            if (data.links.next !== null) {
-                var index = data.links.next.lastIndexOf('/'),
-                    nextPath = data.links.next.substring(index);
-                    internalLoadPage(nextPath, emitter);
-            }
-            else {
-                self.emit('open-loaded', self);
-            }
-        };
-
-        emitter.on('page-loaded', loadNextPage);
-        internalLoadPage('/petitions.json?page=1&state=open', emitter);
-
-        return self;
+        return self.populate(function(summary) {
+            return summary.attributes.state === 'open';
+        });
     };
 
     this.populateInteresting = function () {
-        var emitter = new EventEmitter();
-
-        var filter = function(summary) {
+        return self.populate(function(summary) {
             return summary.attributes.state !== 'rejected' && summary.attributes.state !== 'closed';
-        };
-
-        // Load the next page
-        var loadNextPage = function (data) {
-            if (data.links.next !== null) {
-                var index = data.links.next.lastIndexOf('/'),
-                    nextPath = data.links.next.substring(index);
-                    internalLoadPage(nextPath, emitter, filter);
-            }
-            else {
-                self.emit('interesting-loaded', self);
-            }
-        };
-
-        emitter.on('page-loaded', loadNextPage);
-        internalLoadPage('/petitions.json?page=1&state=all', emitter, filter);
-
-        return self;
+        });
     };
 
     this.populateHot = function () {
         var emitter = new EventEmitter();
         emitter.on('page-loaded', function() {
-            self.emit('recent-loaded', self);
+            self.emit('loaded', self);
         });
         internalLoadPage(1, emitter);
         return self;

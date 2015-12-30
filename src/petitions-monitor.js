@@ -64,7 +64,7 @@ function PetitionsMonitor() {
             .on('loaded', function() {
                 pager
                     .setPageLoadInterval(2000)
-                    .removeAllListeners('open-loaded')
+                    .removeAllListeners('loaded')
                     .on('loaded', function() {
                         pager.populate(filter);
                     })
