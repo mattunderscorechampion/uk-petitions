@@ -112,10 +112,10 @@ function PetitionsMonitor(config) {
                 .removeAllListeners('loaded')
                 .on('loaded', function() {
                     debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
-                    self.emit('loaded');
+                    self.emit('loaded', pager.petitions);
                     pager.populate(accepter);
                 });
-            self.emit('initial-load');
+            self.emit('initial-load', pager.petitions);
             pager.populate(accepter);
         })
         .populate(accepter);
