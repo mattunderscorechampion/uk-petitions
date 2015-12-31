@@ -49,7 +49,7 @@ function PetitionsMonitor(config) {
         };
 
         // Only update when interesting details change
-        var filter = function (summary, petitions) {
+        var accepter = function (summary, petitions) {
             if (summary.attributes.state !== 'rejected' && summary.attributes.state !== 'closed') {
                 var currentInfo = petitions[summary.id];
                 if (currentInfo) {
@@ -95,12 +95,12 @@ function PetitionsMonitor(config) {
                     .removeAllListeners('loaded')
                     .on('loaded', function() {
                         debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
-                        pager.populate(filter);
+                        pager.populate(accepter);
                     })
                     .emit('initial-load');
-                pager.populate(filter);
+                pager.populate(accepter);
             })
-            .populate(filter);
+            .populate(accepter);
 
         return self;
     };
