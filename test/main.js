@@ -5,7 +5,7 @@ describe("petitions", function() {
     it('has monitor', function() {
         expect(petitions.PetitionsMonitor).toBeDefined();
     });
-    it('has petiton loader', function() {
+    it('has petition loader', function() {
         expect(petitions.PetitionLoader).toBeDefined();
     });
     it('has page loader', function() {
