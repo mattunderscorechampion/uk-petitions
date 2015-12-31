@@ -22,7 +22,8 @@ Running ```npm run monitor``` will persistently monitor the petitions for change
 
 ####Example
 
-```{ type: 'petition',
+```JSON
+{ type: 'petition',
      id: 109702,
      attributes:
       { action: 'Restrict the use of fireworks to reduce stress and fear in animals and pets',
@@ -62,4 +63,5 @@ Running ```npm run monitor``` will persistently monitor the petitions for change
            { name: 'East Renfrewshire',
              ons_code: 'S14000021',
              mp: 'Kirsten Oswald MP',
-             signature_count: 110 } ] } }```
+             signature_count: 110 } ] } }
+```
