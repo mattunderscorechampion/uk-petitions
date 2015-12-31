@@ -100,8 +100,8 @@ function PetitionsMonitor(config) {
                     .on('loaded', function() {
                         debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
                         pager.populate(accepter);
-                    })
-                    .emit('initial-load');
+                    });
+                self.emit('initial-load');
                 pager.populate(accepter);
             })
             .populate(accepter);
