@@ -7,7 +7,7 @@ var Monitor = require('./petitions-monitor'),
 
 module.exports = {
     start : function() {
-        var m = new Monitor();
+        var m = new Monitor({debug: false, loadDetail: false});
         m.addSignatureNotification = function(signatures) {
             return this.on(util.format('reached-%d-signatures', signatures), function(data) {
                 console.log('Petition \'%s\' has reached %d signatures', data.attributes.action, signatures);
