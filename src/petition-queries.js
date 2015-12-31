@@ -65,7 +65,8 @@ var checks = {
         debateTranscriptAvailable : function(newData, oldData) {
             preconditions.samePetitionId(oldData, newData);
             return debateTranscriptAvailable(newData) && !debateTranscriptAvailable(oldData);
-        }
+        },
+        reachedSignatureDeltaCountProvider : reachedSignatureDeltaCountProvider
     }
 };
 
