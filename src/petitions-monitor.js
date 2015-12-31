@@ -82,37 +82,6 @@ function PetitionsMonitor(config) {
             loadDetail : loadDetail
         });
 
-        self
-        .addMonitorDeltaEvent('reached-10-signatures', queries.checks.delta.reached10)
-        .addMonitorDeltaEvent('reached-20-signatures', queries.checks.delta.reached20)
-        .addMonitorDeltaEvent('reached-50-signatures', queries.checks.delta.reached50)
-        .addMonitorDeltaEvent('reached-100-signatures', queries.checks.delta.reached100)
-        .addMonitorDeltaEvent('reached-250-signatures', queries.checks.delta.reached250)
-        .addMonitorDeltaEvent('reached-500-signatures', queries.checks.delta.reached500)
-        .addMonitorDeltaEvent('reached-1000-signatures', queries.checks.delta.reached1_000)
-        .addMonitorDeltaEvent('reached-2000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(2000))
-        .addMonitorDeltaEvent('reached-3000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(3000))
-        .addMonitorDeltaEvent('reached-4000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(4000))
-        .addMonitorDeltaEvent('reached-5000-signatures', queries.checks.delta.reached5_000)
-        .addMonitorDeltaEvent('reached-6000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(6000))
-        .addMonitorDeltaEvent('reached-7000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(7000))
-        .addMonitorDeltaEvent('reached-8000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(8000))
-        .addMonitorDeltaEvent('reached-9000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(9000))
-        .addMonitorDeltaEvent('reached-response-threshold', queries.checks.delta.reachedResponseThreshold)
-        .addMonitorDeltaEvent('reached-20000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(20000))
-        .addMonitorDeltaEvent('reached-30000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(30000))
-        .addMonitorDeltaEvent('reached-40000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(40000))
-        .addMonitorDeltaEvent('reached-50000-signatures', queries.checks.delta.reached50_000)
-        .addMonitorDeltaEvent('reached-60000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(60000))
-        .addMonitorDeltaEvent('reached-70000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(70000))
-        .addMonitorDeltaEvent('reached-80000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(80000))
-        .addMonitorDeltaEvent('reached-90000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(90000))
-        .addMonitorDeltaEvent('reached-debate-threshold', queries.checks.delta.reachedDebateThreshold)
-        .addMonitorDeltaEvent('reached-250000-signatures', queries.checks.delta.reachedSignatureDeltaCountProvider(250000))
-        .addMonitorDeltaEvent('reached-500000-signatures', queries.checks.delta.reached500_000)
-        .addMonitorDeltaEvent('government-response', queries.checks.delta.governmentResponded)
-        .addMonitorDeltaEvent('debate-transcript', queries.checks.delta.debateTranscriptAvailable);
-
         pager
         .on('petition', function(newData, oldData) {
             if (!oldData) {
