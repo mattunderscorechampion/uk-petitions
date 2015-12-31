@@ -17,7 +17,8 @@ function PetitionsMonitor(config) {
         initialInterval = 200,
         interval = 2000,
         passDebug = false,
-        debug = function() {};
+        debug = function() {},
+        loadDetail = true;
     if (config) {
         if (config.initialInterval) {
             initialInterval = config.initialInterval;
@@ -31,12 +32,15 @@ function PetitionsMonitor(config) {
                 console.log.apply(null, arguments);
             };
         }
+        if (config.loadDetail !== undefined) {
+            loadDetail = config.loadDetail;
+        }
     }
     debug('Debug enabled');
 
     this.start = function () {
         debug('Starting monitor');
-        var pager = new PetitionPager({ loadInterval : initialInterval, debug : passDebug });
+        var pager = new PetitionPager({ loadInterval : initialInterval, debug : passDebug, loadDetail : loadDetail });
         pager.addDeltaCheck = function(event, check) {
             this.on('petition', function(newData, oldData) {
                 if (oldData) {

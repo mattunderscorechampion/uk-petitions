@@ -21,6 +21,7 @@ function PetitionPager(config) {
     EventEmitter.call(this);
     var loadInterval = 500;
     var debug = function() {};
+    var loadDetail = true;
     if (config) {
         if (config.loadInterval) {
             loadInterval = config.loadInterval;
@@ -29,6 +30,9 @@ function PetitionPager(config) {
             debug = function() {
                 console.log.apply(null, arguments);
             };
+        }
+        if (config.loadDetail !== undefined) {
+            loadDetail = config.loadDetail;
         }
     }
 
@@ -62,16 +66,25 @@ function PetitionPager(config) {
     };
 
     var internalLoadPage = function(page, emitter, accepter) {
-        var loadDetailProvider = function(latch) {
+        var summaryHandlerProvider = function(latch) {
             return function(summary) {
-                executor.execute(function() {
-                    if (accepter && !accepter(summary, self.petitions)) {
-                        // Skip
-                        debug('Petition \'%s\' filtered', summary.attributes.action);
-                        latch.release();
-                        return;
-                    }
+                if (accepter && !accepter(summary, self.petitions)) {
+                    // Skip
+                    debug('Petition \'%s\' filtered', summary.attributes.action);
+                    latch.release();
+                    return;
+                }
 
+                if (!loadDetail) {
+                    // Store summary data
+                    debug('Petition \'%s\' summary stored', summary.attributes.action);
+                    setPetitionData(summary);
+                    latch.release();
+                    return;
+                }
+
+                // Schedule task for loading petition detail
+                executor.execute(function() {
                     petitionLoader
                         .load(summary.id)
                         .on('error', function (error) {
@@ -80,7 +93,7 @@ function PetitionPager(config) {
                             latch.release();
                         })
                         .on('loaded', function (data) {
-                            debug('Petition \'%s\' detail loaded', summary.attributes.action);
+                            debug('Petition \'%s\' detail stored', summary.attributes.action);
                             setPetitionData(data);
                             latch.release();
                         });
@@ -94,7 +107,7 @@ function PetitionPager(config) {
                 debug('Page \'%s\' loaded', page);
                 emitter.emit('page-loaded', summary);
             });
-            summary.data.forEach(loadDetailProvider(latch));
+            summary.data.forEach(summaryHandlerProvider(latch));
         };
 
         executor.execute(function() {
