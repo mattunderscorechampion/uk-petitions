@@ -8,7 +8,7 @@ var util = require('util'),
     equal = require('deep-equal');
 
 /**
- * Monitors the petitons data for changes and generates a notification event for changes.
+ * Monitors the petitions data for changes and generates a notification event for changes.
  * @constructor
  */
 function PetitionsMonitor(config) {
@@ -16,12 +16,8 @@ function PetitionsMonitor(config) {
     var self = this,
         initialInterval = 200,
         interval = 2000,
-        debug = true,
-        logDebug = function(args) {
-            if (debug) {
-                console.log(args);
-            }
-        };
+        passDebug = false,
+        debug = function() {};
     if (config) {
         if (config.initialInterval) {
             initialInterval = config.initialInterval;
@@ -30,14 +26,17 @@ function PetitionsMonitor(config) {
             interval = config.interval;
         }
         if (config.debug) {
-            debug = config.debug;
+            debug = function() {
+                passDebug = true;
+                console.log.apply(null, arguments);
+            };
         }
     }
-    logDebug('Debug enabled');
+    debug('Debug enabled');
 
     this.start = function () {
-        logDebug('Starting monitor');
-        var pager = new PetitionPager({ loadInterval : initialInterval, debug : debug });
+        debug('Starting monitor');
+        var pager = new PetitionPager({ loadInterval : initialInterval, debug : passDebug });
         pager.addDeltaCheck = function(event, check) {
             this.on('petition', function(newData, oldData) {
                 if (oldData) {
@@ -90,12 +89,12 @@ function PetitionsMonitor(config) {
             .addDeltaCheck('government-response', queries.checks.delta.governmentResponded)
             .addDeltaCheck('debate-transcript', queries.checks.delta.debateTranscriptAvailable)
             .on('loaded', function() {
-                logDebug('Initial petitions polled, going again');
+                debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
                 pager
                     .setPageLoadInterval(interval)
                     .removeAllListeners('loaded')
                     .on('loaded', function() {
-                        logDebug('All petitions polled, going again');
+                        debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
                         pager.populate(filter);
                     })
                     .emit('initial-load');

@@ -20,13 +20,15 @@ var forwardError = petitionUtil.forwardError;
 function PetitionPager(config) {
     EventEmitter.call(this);
     var loadInterval = 500;
-    var debug = false;
+    var debug = function() {};
     if (config) {
         if (config.loadInterval) {
             loadInterval = config.loadInterval;
         }
         if (config.debug) {
-            debug = true;
+            debug = function() {
+                console.log.apply(null, arguments);
+            };
         }
     }
 
@@ -49,11 +51,6 @@ function PetitionPager(config) {
                 self.petitions.length = self.petitions.length + 1;
                 self.emit('petition', data);
             }
-        },
-        logDebug = function(args) {
-            if (debug) {
-                console.log(args);
-            }
         };
     this.petitions = {
         length: 0
@@ -70,7 +67,7 @@ function PetitionPager(config) {
                 executor.execute(function() {
                     if (accepter && !accepter(summary, self.petitions)) {
                         // Skip
-                        logDebug('Petition filtered');
+                        debug('Petition \'%s\' filtered', summary.attributes.action);
                         latch.release();
                         return;
                     }
@@ -78,12 +75,12 @@ function PetitionPager(config) {
                     petitionLoader
                         .load(summary.id)
                         .on('error', function (error) {
-                            logDebug('Error loading petiton detail');
+                            debug('Error loading petition detail for \'%s\'', summary.attributes.action);
                             self.emit('error', error);
                             latch.release();
                         })
                         .on('loaded', function (data) {
-                            logDebug('Petiton detail loaded');
+                            debug('Petition \'%s\' detail loaded', summary.attributes.action);
                             setPetitionData(data);
                             latch.release();
                         });
@@ -94,14 +91,14 @@ function PetitionPager(config) {
         var onPageLoaded = function(summary) {
             var latch = new Latch(summary.data.length);
             latch.onRelease(function () {
-                logDebug('Page loaded');
+                debug('Page \'%s\' loaded', page);
                 emitter.emit('page-loaded', summary);
             });
             summary.data.forEach(loadDetailProvider(latch));
         };
 
         executor.execute(function() {
-            logDebug('Loading page');
+            debug('Loading page \'%s\'', page);
             pageLoader
                 .load(page)
                 .on('loaded', onPageLoaded)
