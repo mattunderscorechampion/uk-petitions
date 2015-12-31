@@ -112,6 +112,7 @@ function PetitionsMonitor(config) {
                 .removeAllListeners('loaded')
                 .on('loaded', function() {
                     debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
+                    self.emit('loaded');
                     pager.populate(accepter);
                 });
             self.emit('initial-load');
@@ -123,5 +124,25 @@ function PetitionsMonitor(config) {
     };
 }
 util.inherits(PetitionsMonitor, EventEmitter);
+
+/**
+ * New petition event.
+ * @event PetitionsMonitor#new-petition
+ */
+
+/**
+ * Updated petition event.
+ * @event PetitionsMonitor#updated-petition
+ */
+
+/**
+ * Emited after all the data has been loaded for the first time.
+ * @event PetitionsMonitor#initial-load
+ */
+
+/**
+ * Emited after all the data has been loaded after the first time.
+ * @event PetitionsMonitor#loaded
+ */
 
 module.exports = PetitionsMonitor;
