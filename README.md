@@ -22,7 +22,7 @@ Running ```npm run monitor``` will persistently monitor the petitions for change
 
 ####Example
 
-```JSON
+```JavaScript
 { type: 'petition',
      id: 109702,
      attributes:
