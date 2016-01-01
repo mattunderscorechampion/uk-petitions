@@ -1,6 +1,12 @@
 {
     "name" : "petitions",
     "version" : "0.0.1",
+    "repository" : {
+        "type" : "git",
+        "url" : "https://github.com/mattunderscorechampion/uk-petitions"
+    },
+    "license" : "MIT",
+
     "main" : "src/main.js",
     "dependencies" : {
       "deep-equal" : "1.0.1"
@@ -16,6 +22,7 @@
       "gulp-istanbul" : "0.10.3",
       "saywhen" : "1.1.0"
     },
+
     "scripts" : {
         "build" : "npm install && gulp",
         "list" : "npm run build && node src/run/list-hot-petitions.js",
