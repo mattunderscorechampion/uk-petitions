@@ -51,7 +51,7 @@ function PetitionPager(config) {
                 }
             } else {
                 // Add new data
-                self.petitions[data.id] = data;
+                self.petitions[data.id] = Object.freeze(data);
                 self.petitions.length = self.petitions.length + 1;
                 self.emit('petition', data);
             }
