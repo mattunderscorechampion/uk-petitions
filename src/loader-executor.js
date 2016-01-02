@@ -14,11 +14,17 @@ function LoaderExecutor(initialInterval) {
         current = null,
         interval = initialInterval;
 
+    /**
+     * Clear current task and poll.
+     */
     var clearAndPoll = function() {
         current = null;
         poll();
     };
 
+    /**
+     * Poll for the next task if there is no current work.
+     */
     var poll = function() {
         if (current || stopped) {
             return;
@@ -43,15 +49,24 @@ function LoaderExecutor(initialInterval) {
         }
     };
 
+    /**
+     * Execute a task.
+     */
     this.execute = function(task) {
         tasks.push(task);
         poll();
     };
 
+    /**
+     * Stop the execution of tasks.
+     */
     this.stop = function() {
         stopped = true;
     };
 
+    /**
+     * Change the interval between the execution of tasks.
+     */
     this.setInterval = function(newInterval) {
         interval = newInterval;
     };

@@ -2,16 +2,21 @@
 'use strict';
 
 /**
- * A simple latch that can be released once.  Release may need to be called
- * muliple times before the latch is released.
+ * Latch to invoke callbacks when a counter reaches 0.
  */
 function Latch(num) {
-    var number = num, callbacks = [];
+    var counter = num,
+        callbacks = [];
 
+    /**
+     * Release a counter.
+     */
     this.release = function () {
-        if (number > 0) {
-            number = number - 1;
-            if (number === 0) {
+        if (counter > 0) {
+            counter = counter - 1;
+
+            // If counter hit zero
+            if (counter === 0) {
                 callbacks.forEach(function (callback) {
                     callback();
                 });
@@ -19,8 +24,11 @@ function Latch(num) {
         }
     };
 
+    /**
+     * Add a callback.
+     */
     this.onRelease = function (callback) {
-        if (number === 0) {
+        if (counter === 0) {
             callback();
         } else {
             callbacks.push(callback);

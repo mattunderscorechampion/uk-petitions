@@ -45,13 +45,23 @@ function PetitionPageLoader(agent) {
             path: pathToLoad,
             agent: agent
         })
-            .on('error', forwardError(emitter))
-            .on('data', function (data) {
-                emitter.emit('loaded', data);
-            });
+        .on('error', forwardError(emitter))
+        .on('data', function (data) {
+            emitter.emit('loaded', data);
+        });
 
         return emitter;
     };
 }
+
+/**
+ * Emitted when there is an error loading the data.
+ * @event PetitionPageLoader#error
+ */
+
+/**
+ * Emitted when the data has been loaded successfuly.
+ * @event PetitionPageLoader#loaded
+ */
 
 module.exports = PetitionPageLoader;

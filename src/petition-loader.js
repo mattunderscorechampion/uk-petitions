@@ -26,13 +26,23 @@ function PetitionLoader(agent) {
             path: '/petitions/' + petitionId + '.json',
             agent: agent
         })
-            .on('error', forwardError(emitter))
-            .on('data', function (data) {
-                emitter.emit('loaded', data.data);
-            });
+        .on('error', forwardError(emitter))
+        .on('data', function (data) {
+            emitter.emit('loaded', data.data);
+        });
 
         return emitter;
     };
 }
+
+/**
+ * Emitted when there is an error loading the data.
+ * @event PetitionLoader#error
+ */
+
+/**
+ * Emitted when the data has been loaded successfuly.
+ * @event PetitionLoader#loaded
+ */
 
 module.exports = PetitionLoader;

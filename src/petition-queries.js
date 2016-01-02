@@ -72,6 +72,7 @@ var checks = {
 
 module.exports = {
     /**
+     * Predicates that can be used to evaluate petitions.
      * @namespace
      */
     predicates : {
@@ -94,6 +95,7 @@ module.exports = {
         debateTranscriptAvailable : debateTranscriptAvailable
     },
     /**
+     * Functions that can be used to check and compare petitions.
      * @namespace
      */
     checks : checks
