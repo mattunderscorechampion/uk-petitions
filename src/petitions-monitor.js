@@ -7,6 +7,25 @@ var util = require('util'),
     PetitionPager = require('./petition-pager'),
     equal = require('deep-equal');
 
+function logDebug () {
+    console.log.apply(null, arguments);
+}
+
+function standardAccepter (summary, petitions) {
+    if (summary.attributes.state !== 'rejected' && summary.attributes.state !== 'closed') {
+        var currentInfo = petitions[summary.id];
+        if (currentInfo) {
+            return currentInfo.attributes.signature_count !== summary.attributes.signature_count ||
+                !equal(currentInfo.attributes.government_response, summary.attributes.government_response) ||
+                !equal(currentInfo.attributes.debate, summary.attributes.debate);
+        }
+        else {
+            return true;
+        }
+    }
+    return false;
+}
+
 /**
  * Monitors the petitions data for changes and generates a notification event for changes.
  * @constructor
@@ -21,20 +40,7 @@ function PetitionsMonitor(config) {
         loadDetail = true,
         events = [],
         deltaEvents = [],
-        accepter = function (summary, petitions) {
-            if (summary.attributes.state !== 'rejected' && summary.attributes.state !== 'closed') {
-                var currentInfo = petitions[summary.id];
-                if (currentInfo) {
-                    return currentInfo.attributes.signature_count !== summary.attributes.signature_count ||
-                        !equal(currentInfo.attributes.government_response, summary.attributes.government_response) ||
-                        !equal(currentInfo.attributes.debate, summary.attributes.debate);
-                }
-                else {
-                    return true;
-                }
-            }
-            return false;
-        };
+        accepter = standardAccepter;
 
     if (config) {
         if (config.initialInterval) {
@@ -44,10 +50,8 @@ function PetitionsMonitor(config) {
             interval = config.interval;
         }
         if (config.debug) {
-            debug = function() {
-                passDebug = true;
-                console.log.apply(null, arguments);
-            };
+            passDebug = true;
+            debug = logDebug;
         }
         if (config.loadDetail !== undefined) {
             loadDetail = config.loadDetail;
@@ -56,7 +60,7 @@ function PetitionsMonitor(config) {
     debug('Debug enabled');
 
     /**
-     * Add an event to emit when the check function returns true. The check function is passed the the new data.
+     * Add an event to emit when the check function returns true. The check function is passed the the new data. Returns the monitor.
      */
     this.addMonitorEvent = function(event, check) {
         events.push({event : event, check : check});
@@ -64,7 +68,7 @@ function PetitionsMonitor(config) {
     };
 
     /**
-     * Add an event to emit when the check function returns true. The check function is passed the the new and old data.
+     * Add an event to emit when the check function returns true. The check function is passed the the new and old data. Returns the monitor.
      */
     this.addMonitorDeltaEvent = function(event, check) {
         deltaEvents.push({event : event, check : check});
@@ -72,7 +76,7 @@ function PetitionsMonitor(config) {
     };
 
     /**
-     * Start the monitor.
+     * Start the monitor. Returns the monitor.
      */
     this.start = function () {
         debug('Starting monitor');
@@ -84,6 +88,7 @@ function PetitionsMonitor(config) {
 
         pager
         .on('petition', function(newData, oldData) {
+            // Emit new or update event
             if (!oldData) {
                 self.emit('new-petition', newData);
             }
@@ -91,6 +96,7 @@ function PetitionsMonitor(config) {
                 self.emit('updated-petition', newData, oldData);
             }
 
+            // Check for events to emit based on the current value
             events.forEach(function(registeredEvent) {
                 if (registeredEvent.check(newData)) {
                     self.emit(registeredEvent.event, newData);
@@ -98,6 +104,7 @@ function PetitionsMonitor(config) {
             });
 
             if (oldData) {
+                // Check for events to emit based on the current and previous values
                 deltaEvents.forEach(function(registeredEvent) {
                     if (registeredEvent.check(newData, oldData)) {
                         self.emit(registeredEvent.event, newData);
