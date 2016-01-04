@@ -56,6 +56,9 @@ function PetitionsMonitor(config) {
         if (config.loadDetail !== undefined) {
             loadDetail = config.loadDetail;
         }
+        if (config.accepter !== undefined) {
+            accepter = config.accepter;
+        }
     }
     debug('Debug enabled');
 
