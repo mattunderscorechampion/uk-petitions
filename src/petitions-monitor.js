@@ -27,8 +27,19 @@ function standardAccepter (summary, petitions) {
 }
 
 /**
+ * Configuration for PetitionsMonitor.
+ * @typedef {object} PetitionsMonitor~Config
+ * @property {number} initialInterval - The initial interval.
+ * @property {number} interval - The interval.
+ * @property {boolean} debug - If debug logging should be enabled.
+ * @property {boolean} loadDetail - If detailed petition information should be loaded.
+ * @property {function} accepter - The accepting function.
+ */
+
+/**
  * Monitors the petitions data for changes and generates a notification event for changes.
  * @constructor
+ * @param {PetitionsMonitor~Config} config - Configuration for PetitionsMonitor.
  */
 function PetitionsMonitor(config) {
     EventEmitter.call(this);
