@@ -22,6 +22,7 @@ gulp.task('test', function(done) {
         .pipe(istanbul({
             includeUntested : true
         }))
+        .pipe(istanbul.hookRequire())
         .on('finish', function() {
             gulp.src(['./runner.js', 'test/*.js', 'test/**/*.js'])
                 .pipe(jasmine({
