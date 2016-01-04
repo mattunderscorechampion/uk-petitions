@@ -76,6 +76,52 @@ describe("Petition utilities", function() {
             });
         responseListener(response);
     });
+    it('fires an error event when http returns non-200 status code', function(done) {
+        var util = require('../src/petition-util');
+
+        var responseListener;
+        when(httpsMock.get)
+            .isCalledWith(
+                jasmine.any(Object),
+                jasmine.any(Function))
+            .then(function(options, callback) {
+                responseListener = callback;
+                return {
+                    on : jasmine.createSpy('on')
+                };
+            });
+
+        util.getJsonOverHttps({
+            hostname: 'localhost',
+            path: '/path'
+        })
+        .on('data', function(data) {
+            done.fail('Data not expected');
+        })
+        .on('error', function() {
+            done();
+        });
+
+        var response = {
+            statusCode : 404,
+            on : jasmine.createSpy('on')
+        };
+        var dataListener;
+        when(response.on).isCalledWith('data', jasmine.any(Function))
+            .then(function(event, listener) {
+                dataListener = function(d) {
+                    listener(d);
+                };
+                return response;
+            });
+        when(response.on).isCalledWith('end', jasmine.any(Function))
+            .then(function(event, listener) {
+                dataListener(new buffer.Buffer('{"foo":"bar"}'));
+                listener();
+                return response;
+            });
+        responseListener(response);
+    });
     it('supports forwarding errors', function() {
         var util = require('../src/petition-util');
         expect(util.forwardError).toBeDefined();

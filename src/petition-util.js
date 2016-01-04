@@ -37,6 +37,9 @@ var getJsonOverHttps = function (options) {
                     emitter.emit('data', JSON.parse(completeBuffer));
                 });
         }
+        else {
+            emitter.emit('error', new Error('Response status code was ' + res.statusCode));
+        }
     })
     .on('error', forwardError(emitter));
 
