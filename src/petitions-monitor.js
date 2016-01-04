@@ -75,6 +75,8 @@ function PetitionsMonitor(config) {
 
     /**
      * Add an event to emit when the check function returns true. The check function is passed the the new data. Returns the monitor.
+     * @param {string} event - The name of the event to add.
+     * @param {function} check - The predicate required to emit the event.
      */
     this.addMonitorEvent = function(event, check) {
         events.push({event : event, check : check});
@@ -83,6 +85,8 @@ function PetitionsMonitor(config) {
 
     /**
      * Add an event to emit when the check function returns true. The check function is passed the the new and old data. Returns the monitor.
+     * @param {string} event - The name of the event to add.
+     * @param {function} check - The check required to emit the event.
      */
     this.addMonitorDeltaEvent = function(event, check) {
         deltaEvents.push({event : event, check : check});
