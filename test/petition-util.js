@@ -4,11 +4,13 @@ var mockery = require('mockery'),
     buffer = require('buffer');
 
 describe("Petition utilities", function() {
-    var httpsMock = {
-        get : jasmine.createSpy('get')
-    };
+    var httpsMock;
 
-    beforeAll(function() {
+    beforeEach(function() {
+        httpsMock = {
+            get : jasmine.createSpy('get')
+        };
+
         mockery.enable({
             warnOnReplace : false,
             warnOnUnregistered : false,
@@ -16,7 +18,8 @@ describe("Petition utilities", function() {
         });
         mockery.registerMock('https', httpsMock);
     });
-    afterAll(function() {
+    afterEach(function() {
+        mockery.deregisterAll();
         mockery.disable();
     });
 
