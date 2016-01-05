@@ -153,11 +153,13 @@ util.inherits(PetitionsMonitor, EventEmitter);
 /**
  * New petition event.
  * @event PetitionsMonitor#new-petition
+ * @type {Petitions.Petition}
  */
 
 /**
  * Updated petition event.
  * @event PetitionsMonitor#updated-petition
+ * @type {Petitions.Petition}
  */
 
 /**
