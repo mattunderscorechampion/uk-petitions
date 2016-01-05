@@ -25,6 +25,14 @@ function debateTranscriptAvailable(data) {
     return data.attributes.debate !== null && data.attributes.debate.transcript_url !== null;
 }
 
+function debateScheduled(data) {
+    if (data.attributes.scheduled_debate_date) {
+        var date = new Date(data.attributes.scheduled_debate_date);
+        return !isNaN(date);
+    }
+    return false;
+}
+
 function deltaCheck(predicate, newData, oldData) {
     preconditions.samePetitionId(oldData, newData);
     return predicate(newData) && !predicate(oldData);
@@ -65,7 +73,8 @@ var checks = {
             preconditions.samePetitionId(oldData, newData);
             return debateTranscriptAvailable(newData) && !debateTranscriptAvailable(oldData);
         },
-        reachedSignatureDeltaCountProvider : reachedSignatureDeltaCountProvider
+        reachedSignatureDeltaCountProvider : reachedSignatureDeltaCountProvider,
+        debateScheduled : deltaCheck.bind(null, debateScheduled)
     }
 };
 
@@ -107,11 +116,17 @@ module.exports = {
          */
         debated : debated,
         /**
-         * Predicate that tests if the number of signatures required for a response has been reached.
+         * Predicate that tests if the petition has been debated and a transcript is available.
          * @function
          * @param {Petition} petition - A petition
          */
-        debateTranscriptAvailable : debateTranscriptAvailable
+        debateTranscriptAvailable : debateTranscriptAvailable,
+        /**
+         * Predicate that tests if the petition has been scheduled for debate.
+         * @function
+         * @param {Petition} petition - A petition
+         */
+        debateScheduled : debateScheduled
     },
     /**
      * Functions that can be used to check and compare petitions.
