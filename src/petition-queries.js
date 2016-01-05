@@ -9,18 +9,8 @@ var preconditions = {
     }
 };
 
-function reachedSignatureCountProvider(targetSignatureCount) {
-    return function(data) {
-        return data.attributes.signature_count >= targetSignatureCount;
-    };
-}
-
-function reachedSignatureDeltaCountProvider(targetSignatureCount) {
-    var predicate = reachedSignatureCountProvider(targetSignatureCount);
-    return function(newData, oldData) {
-        preconditions.samePetitionId(oldData, newData);
-        return predicate(newData) && !predicate(oldData);
-    };
+function reachedSignatureCount(targetSignatureCount, petition) {
+    return petition.attributes.signature_count >= targetSignatureCount;
 }
 
 function governmentResponded(data) {
@@ -33,6 +23,15 @@ function debated(data) {
 
 function debateTranscriptAvailable(data) {
     return data.attributes.debate !== null && data.attributes.debate.transcript_url !== null;
+}
+
+function deltaCheck(predicate, newData, oldData) {
+    preconditions.samePetitionId(oldData, newData);
+    return predicate(newData) && !predicate(oldData);
+}
+
+function reachedSignatureDeltaCountProvider(targetSignatureCount) {
+    return deltaCheck.bind(null, reachedSignatureCount.bind(null, targetSignatureCount));
 }
 
 var checks = {
@@ -76,22 +75,42 @@ module.exports = {
      * @namespace
      */
     predicates : {
-        reached10 : reachedSignatureCountProvider(10),
-        reached20 : reachedSignatureCountProvider(20),
-        reached50 : reachedSignatureCountProvider(50),
-        reached100 : reachedSignatureCountProvider(100),
-        reached250 : reachedSignatureCountProvider(250),
-        reached500 : reachedSignatureCountProvider(500),
-        reached1_000 : reachedSignatureCountProvider(1000),
-        reached5_000 : reachedSignatureCountProvider(5000),
-        reached10_000 : reachedSignatureCountProvider(10000),
-        reached50_000 : reachedSignatureCountProvider(50000),
-        reached100_000 : reachedSignatureCountProvider(100000),
-        reached500_000 : reachedSignatureCountProvider(500000),
-        reachedResponseThreshold : reachedSignatureCountProvider(10000),
-        reachedDebateThreshold : reachedSignatureCountProvider(100000),
+        reached10 : reachedSignatureCount.bind(null, 10),
+        reached20 : reachedSignatureCount.bind(null, 20),
+        reached50 : reachedSignatureCount.bind(null, 50),
+        reached100 : reachedSignatureCount.bind(null, 100),
+        reached250 : reachedSignatureCount.bind(null, 250),
+        reached500 : reachedSignatureCount.bind(null, 500),
+        reached1_000 : reachedSignatureCount.bind(null, 1000),
+        reached5_000 : reachedSignatureCount.bind(null, 5000),
+        reached10_000 : reachedSignatureCount.bind(null, 10000),
+        reached50_000 : reachedSignatureCount.bind(null, 50000),
+        reached100_000 : reachedSignatureCount.bind(null, 100000),
+        reached500_000 : reachedSignatureCount.bind(null, 500000),
+        /**
+         * Predicate that tests if the number of signatures required for a response has been reached.
+         * @function
+         * @param {Petition} petition - A petition
+         */
+        reachedResponseThreshold : reachedSignatureCount.bind(null, 10000),
+        /**
+         * Predicate that tests if the number of signatures required for a debate has been reached.
+         * @function
+         * @param {Petition} petition - A petition
+         */
+        reachedDebateThreshold : reachedSignatureCount.bind(null, 100000),
         governmentResponded : governmentResponded,
+        /**
+         * Predicate that tests if the petition has been debated.
+         * @function
+         * @param {Petition} petition - A petition
+         */
         debated : debated,
+        /**
+         * Predicate that tests if the number of signatures required for a response has been reached.
+         * @function
+         * @param {Petition} petition - A petition
+         */
         debateTranscriptAvailable : debateTranscriptAvailable
     },
     /**
