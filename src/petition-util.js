@@ -8,9 +8,7 @@ var https = require("https"),
  * Forward an error to another emitter.
  */
 var forwardError = function (emitter) {
-    return function (error) {
-        emitter.emit('error', error);
-    };
+    return emitter.emit.bind(emitter, 'error');
 };
 
 /**
