@@ -33,6 +33,11 @@ function debateScheduled(data) {
     return false;
 }
 
+function debateRescheduled(newData, oldData) {
+    preconditions.samePetitionId(newData, oldData);
+    return debateScheduled(newData) && debateScheduled(oldData) && newData.attributes.scheduled_debate_date !== oldData.attributes.scheduled_debate_date;
+}
+
 function deltaCheck(predicate, newData, oldData) {
     preconditions.samePetitionId(oldData, newData);
     return predicate(newData) && !predicate(oldData);
@@ -74,7 +79,14 @@ var checks = {
             return debateTranscriptAvailable(newData) && !debateTranscriptAvailable(oldData);
         },
         reachedSignatureDeltaCountProvider : reachedSignatureDeltaCountProvider,
-        debateScheduled : deltaCheck.bind(null, debateScheduled)
+        debateScheduled : deltaCheck.bind(null, debateScheduled),
+        /**
+         * Function that tests if a petition has been rescheduled.
+         * @function
+         * @param {Petition} newData - The latest data
+         * @param {Petition} oldData - The older data
+         */
+        debateRescheduled : debateRescheduled
     }
 };
 

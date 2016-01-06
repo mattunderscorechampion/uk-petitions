@@ -64,6 +64,13 @@ describe("Petition queries", function() {
             scheduled_debate_date : '2015-10-26'
         }
     };
+    var petition2WithDebateScheduledAtLaterDate = {
+        id: 2,
+        attributes : {
+            signature_count : 100005,
+            scheduled_debate_date : '2015-10-27'
+        }
+    };
     var petition2WithDebateScheduledAtInvalidDate = {
         id: 2,
         attributes : {
@@ -116,6 +123,16 @@ describe("Petition queries", function() {
         expect(queries.checks.delta.debateScheduled(petition2WithDebateScheduled, petition2WithDebateScheduled)).toBe(false);
         expect(function() {
             queries.checks.delta.debateScheduled(petition1With5, petition2WithDebateScheduled);
+        }).toThrowError();
+    });
+    it('provides function for checking that a debate has been rescheduled', function() {
+        expect(queries.checks.delta.debateRescheduled).toBeDefined();
+        expect(queries.checks.delta.debateRescheduled(petition2WithoutDebateScheduled, petition2WithoutDebateScheduled)).toBe(false);
+        expect(queries.checks.delta.debateRescheduled(petition2WithDebateScheduled, petition2WithoutDebateScheduled)).toBe(false);
+        expect(queries.checks.delta.debateRescheduled(petition2WithDebateScheduled, petition2WithDebateScheduled)).toBe(false);
+        expect(queries.checks.delta.debateRescheduled(petition2WithDebateScheduledAtLaterDate, petition2WithDebateScheduled)).toBe(true);
+        expect(function() {
+            queries.checks.delta.debateRescheduled(petition1With5, petition2WithDebateScheduled);
         }).toThrowError();
     });
 });
