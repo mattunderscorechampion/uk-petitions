@@ -1,6 +1,8 @@
 
 'use strict';
 
+var EnrichedPetition = require('./enriched-petition');
+
 var preconditions = {
     samePetitionId : function(petition0, petition1) {
         if (!checks.samePetitionId(petition0, petition1)) {
@@ -9,33 +11,67 @@ var preconditions = {
     }
 };
 
+function isEnriched(petition) {
+    return petition instanceof EnrichedPetition;
+}
+
 function reachedSignatureCount(targetSignatureCount, petition) {
-    return petition.attributes.signature_count >= targetSignatureCount;
-}
-
-function governmentResponded(data) {
-    return data.attributes.government_response !== null;
-}
-
-function debated(data) {
-    return data.attributes.debate !== null;
-}
-
-function debateTranscriptAvailable(data) {
-    return data.attributes.debate !== null && data.attributes.debate.transcript_url !== null;
-}
-
-function debateScheduled(data) {
-    if (data.attributes.scheduled_debate_date) {
-        var date = new Date(data.attributes.scheduled_debate_date);
-        return !isNaN(date);
+    if (isEnriched(petition)) {
+        return petition.signature_count >= targetSignatureCount;
     }
-    return false;
+    else {
+        return petition.attributes.signature_count >= targetSignatureCount;
+    }
 }
 
-function debateRescheduled(newData, oldData) {
-    preconditions.samePetitionId(newData, oldData);
-    return debateScheduled(newData) && debateScheduled(oldData) && newData.attributes.scheduled_debate_date !== oldData.attributes.scheduled_debate_date;
+function governmentResponded(petition) {
+    if (isEnriched(petition)) {
+        return petition.government_response !== null;
+    }
+    else {
+        return petition.attributes.government_response !== null;
+    }
+}
+
+function debated(petition) {
+    if (isEnriched(petition)) {
+        return petition.debate !== null;
+    }
+    else {
+        return petition.attributes.debate !== null;
+    }
+}
+
+function debateTranscriptAvailable(petition) {
+    if (isEnriched(petition)) {
+        return petition.debate !== null && petition.debate.transcript_url !== null;
+    }
+    else {
+        return petition.attributes.debate !== null && petition.attributes.debate.transcript_url !== null;
+    }
+}
+
+function debateScheduled(petition) {
+    if (isEnriched(petition)) {
+        return petition.scheduled_debate_date !== null;
+    }
+    else {
+        if (petition.attributes.scheduled_debate_date) {
+            var date = new Date(petition.attributes.scheduled_debate_date);
+            return !isNaN(date);
+        }
+        return false;
+    }
+}
+
+function debateRescheduled(newPetition, oldPetition) {
+    preconditions.samePetitionId(newPetition, oldPetition);
+    if (isEnriched(newPetition) && isEnriched(oldPetition)) {
+        return debateScheduled(newPetition) && debateScheduled(oldPetition) && newPetition.scheduled_debate_date.valueOf() !== oldPetition.scheduled_debate_date.valueOf();
+    }
+    else {
+        return debateScheduled(newPetition) && debateScheduled(oldPetition) && newPetition.attributes.scheduled_debate_date !== oldPetition.attributes.scheduled_debate_date;
+    }
 }
 
 function deltaCheck(predicate, newData, oldData) {
