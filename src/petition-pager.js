@@ -22,6 +22,7 @@ function PetitionPager(config) {
     var loadInterval = 500;
     var debug = function() {};
     var loadDetail = true;
+    var transform = Object.freeze;
     if (config) {
         if (config.loadInterval) {
             loadInterval = config.loadInterval;
@@ -43,17 +44,24 @@ function PetitionPager(config) {
         executor = new LoaderExecutor(loadInterval),
         setPetitionData = function (data) {
             var oldData = self.petitions[data.id];
+            var transformedData = transform(data);
+
+            if (!transformedData) {
+                self.emit('error', new Error('Failed to transform the petition data'));
+                return;
+            }
+
             if (oldData) {
                 // Replace with changed data
-                if (!equal(oldData, data)) {
-                    self.petitions[data.id] = data;
-                    self.emit('petition', data, oldData);
+                if (!equal(oldData, transformedData)) {
+                    self.petitions[data.id] = transformedData;
+                    self.emit('petition', transformedData, oldData);
                 }
             } else {
                 // Add new data
-                self.petitions[data.id] = Object.freeze(data);
+                self.petitions[data.id] = transformedData;
                 self.petitions.length = self.petitions.length + 1;
-                self.emit('petition', data);
+                self.emit('petition', transformedData);
             }
         };
 
