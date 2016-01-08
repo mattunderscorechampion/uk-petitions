@@ -22,7 +22,7 @@ function PetitionPager(config) {
     var loadInterval = 500;
     var debug = function() {};
     var loadDetail = true;
-    var transform = Object.freeze;
+    var transformer = Object.freeze;
     if (config) {
         if (config.loadInterval) {
             loadInterval = config.loadInterval;
@@ -35,6 +35,9 @@ function PetitionPager(config) {
         if (config.loadDetail !== undefined) {
             loadDetail = config.loadDetail;
         }
+        if (config.transformer) {
+            transformer = config.transformer;
+        }
     }
 
     var self = this,
@@ -44,7 +47,7 @@ function PetitionPager(config) {
         executor = new LoaderExecutor(loadInterval),
         setPetitionData = function (data) {
             var oldData = self.petitions[data.id];
-            var transformedData = transform(data);
+            var transformedData = transformer(data);
 
             if (!transformedData) {
                 self.emit('error', new Error('Failed to transform the petition data'));

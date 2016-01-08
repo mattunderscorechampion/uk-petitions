@@ -5,13 +5,14 @@ var util = require('util'),
     queries = require('./petition-queries'),
     EventEmitter = require('events'),
     PetitionPager = require('./petition-pager'),
-    equal = require('deep-equal');
+    equal = require('deep-equal'),
+    EnrichedPetition = require('./enriched-petition');
 
 function logDebug () {
     console.log.apply(null, arguments);
 }
 
-function standardAccepter (summary, petitions) {
+function acceptRaw(summary, petitions) {
     if (summary.attributes.state !== 'rejected' && summary.attributes.state !== 'closed') {
         var currentInfo = petitions[summary.id];
         if (currentInfo) {
@@ -26,6 +27,28 @@ function standardAccepter (summary, petitions) {
     return false;
 }
 
+function acceptEnriched (summary, petitions) {
+    if (summary.state !== 'rejected' && summary.state !== 'closed') {
+        var currentInfo = petitions[summary.id];
+        if (currentInfo) {
+            return currentInfo.signature_count !== summary.signature_count ||
+                !equal(currentInfo.government_response, summary.government_response) ||
+                !equal(currentInfo.debate, summary.debate);
+        }
+        else {
+            return true;
+        }
+    }
+    return false;
+}
+
+function standardAccepter (config, summary, petitions) {
+    if (config.enrich) {
+        return acceptEnriched(summary, petitions);
+    }
+    return acceptRaw(summary, petitions);
+}
+
 /**
  * Configuration for PetitionsMonitor.
  * @typedef {object} PetitionsMonitor~Config
@@ -34,6 +57,7 @@ function standardAccepter (summary, petitions) {
  * @property {boolean} debug - If debug logging should be enabled.
  * @property {boolean} loadDetail - If detailed petition information should be loaded.
  * @property {function} accepter - The accepting function.
+ * @property {boolean} enrich - If the petitions loaded should be enriched.
  */
 
 /**
@@ -51,7 +75,8 @@ function PetitionsMonitor(config) {
         loadDetail = true,
         events = [],
         deltaEvents = [],
-        accepter = standardAccepter;
+        accepter = standardAccepter.bind(null, config),
+        enrich = false;
 
     if (config) {
         if (config.initialInterval) {
@@ -69,6 +94,9 @@ function PetitionsMonitor(config) {
         }
         if (config.accepter !== undefined) {
             accepter = config.accepter;
+        }
+        if (config.enrich) {
+            enrich = true;
         }
     }
     debug('Debug enabled');
@@ -101,7 +129,8 @@ function PetitionsMonitor(config) {
         var pager = new PetitionPager({
             loadInterval : initialInterval,
             debug : passDebug,
-            loadDetail : loadDetail
+            loadDetail : loadDetail,
+            transformer : enrich ? function (raw) { return new EnrichedPetition(raw); } : null
         });
 
         pager
