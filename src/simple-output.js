@@ -4,6 +4,7 @@
 module.exports = {
     /**
      * Print out an error.
+     * @function
      */
     error : function (error) {
         console.error('Error: ' + error.message);
@@ -11,6 +12,7 @@ module.exports = {
 
     /**
      * Print out the action of a petition.
+     * @function
      */
     action : function (data) {
         console.log(data.attributes.action);
@@ -18,6 +20,7 @@ module.exports = {
 
     /**
      * Print out all the action and break down of signatures by country.
+     * @function
      */
     byCountry : function (data) {
         console.log(data.attributes.action);
@@ -30,6 +33,7 @@ module.exports = {
 
     /**
      * Print out all the action and break down of signatures of the top 5 countries.
+     * @function
      */
     withTop5Countries : function (data) {
         console.log('Action: %s', data.attributes.action);
@@ -49,6 +53,7 @@ module.exports = {
 
     /**
      * Print out all the action and total signature count.
+     * @function
      */
     withSignatureCount : function (data) {
         console.log('Action: %s', data.attributes.action);
@@ -57,6 +62,7 @@ module.exports = {
 
     /**
      * Print out all the action, total signature count and previous signature count.
+     * @function
      */
     withSignatureCountDiff : function (data, oldData) {
         if (oldData) {
@@ -71,6 +77,7 @@ module.exports = {
 
     /**
      * Print out all the attributes of a petition.
+     * @function
      */
     attributes : function (data) {
         console.log(data.attributes);

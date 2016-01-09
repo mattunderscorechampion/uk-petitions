@@ -1,5 +1,6 @@
 
 /**
+ * Petition information loaded from the data source.
  * @namespace Petitions
  */
 
