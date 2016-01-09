@@ -22,4 +22,16 @@ describe("EnrichedPetition", function() {
         expect(petition.scheduled_debate_date).toBeDefined();
         expect(petition.scheduled_debate_date).toEqual(new Date('2015-01-01'));
     });
+    it('derives additional properties', function() {
+        expect(petition.html_url).toBeDefined();
+        expect(petition.json_url).toBeDefined();
+        expect(petition.html_detail_url).toBeDefined();
+        expect(petition.html_response_url).toBeDefined();
+        expect(petition.html_debate_url).toBeDefined();
+        expect(petition.html_url).toBe('https://petition.parliament.uk/petitions/2');
+        expect(petition.json_url).toBe('https://petition.parliament.uk/petitions/2.json');
+        expect(petition.html_detail_url).toBe('https://petition.parliament.uk/petitions/2#details-content-0');
+        expect(petition.html_response_url).toBe('https://petition.parliament.uk/petitions/2?reveal_response=yes#response-threshold');
+        expect(petition.html_debate_url).toBe('https://petition.parliament.uk/petitions/2?#debate-threshold');
+    });
 });

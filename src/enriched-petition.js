@@ -1,4 +1,6 @@
 
+var util = require('util');
+
 function stringToDate(dateString) {
     if (dateString) {
         var date = new Date(dateString);
