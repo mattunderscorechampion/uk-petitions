@@ -48,7 +48,6 @@ function EnrichedPetition(rawPetition) {
             this[key] = rawPetition.attributes[key];
         }
     }
-    Object.freeze(this);
 }
 
 module.exports = EnrichedPetition;

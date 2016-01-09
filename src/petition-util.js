@@ -44,7 +44,19 @@ var getJsonOverHttps = function (options) {
     return emitter;
 };
 
+function recursiveFreeze(obj) {
+    if (obj === undefined || obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+    var propNames = Object.getOwnPropertyNames(obj);
+    propNames.forEach(function(name) {
+        recursiveFreeze(obj[name]);
+    });
+    return Object.freeze(obj);
+}
+
 module.exports = {
     forwardError : forwardError,
-    getJsonOverHttps : getJsonOverHttps
+    getJsonOverHttps : getJsonOverHttps,
+    recursiveFreeze : recursiveFreeze
 };

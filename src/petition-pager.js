@@ -22,7 +22,7 @@ function PetitionPager(config) {
     var loadInterval = 500;
     var debug = function() {};
     var loadDetail = true;
-    var transformer = Object.freeze;
+    var transformer = petitionUtil.recursiveFreeze;
     if (config) {
         if (config.loadInterval) {
             loadInterval = config.loadInterval;
@@ -36,7 +36,9 @@ function PetitionPager(config) {
             loadDetail = config.loadDetail;
         }
         if (config.transformer) {
-            transformer = config.transformer;
+            transformer = function (data) {
+                return petitionUtil.recursiveFreeze(config.transformer(data));
+            };
         }
     }
 
