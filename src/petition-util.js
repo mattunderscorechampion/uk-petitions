@@ -44,6 +44,10 @@ var getJsonOverHttps = function (options) {
     return emitter;
 };
 
+/**
+ * Freeze the object subgraph.
+ * @property {object} obj - The root object to freeze
+ */
 function recursiveFreeze(obj) {
     if (obj === undefined || obj === null || typeof obj !== 'object') {
         return obj;

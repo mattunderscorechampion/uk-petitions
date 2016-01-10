@@ -1,4 +1,6 @@
 
+'use strict';
+
 var petitions = require('..');
 
 describe("petitions", function() {

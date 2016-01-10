@@ -1,4 +1,6 @@
 
+'use strict';
+
 var mockery = require('mockery'),
     when = require('saywhen'),
     buffer = require('buffer');

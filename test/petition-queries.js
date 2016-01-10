@@ -1,4 +1,6 @@
 
+'use strict';
+
 describe("Petition queries", function() {
     var queries = require('../src/petition-queries'),
         EnrichedPetition = require('../src/enriched-petition');

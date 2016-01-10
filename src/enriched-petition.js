@@ -1,4 +1,6 @@
 
+'use strict';
+
 var util = require('util');
 
 function stringToDate(dateString) {

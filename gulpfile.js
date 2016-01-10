@@ -1,3 +1,6 @@
+
+'use strict';
+
 var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     jsdoc = require('gulp-jsdoc'),
