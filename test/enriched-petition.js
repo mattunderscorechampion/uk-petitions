@@ -1,4 +1,6 @@
 
+'use strict';
+
 describe("EnrichedPetition", function() {
     var EnrichedPetition = require('../src/enriched-petition');
 
