@@ -156,6 +156,11 @@ module.exports = {
          * @param {Petition} petition - A petition
          */
         reachedDebateThreshold : reachedSignatureCount.bind(null, 100000),
+        /**
+         * Predicate that tests if the government has responded to the petition.
+         * @function
+         * @param {Petition} petition - A petition
+         */
         governmentResponded : governmentResponded,
         /**
          * Predicate that tests if the petition has been debated.

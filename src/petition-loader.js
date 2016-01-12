@@ -16,6 +16,7 @@ function PetitionLoader(agent) {
      * Load the petition by Id. Returns an emitter. Emits either 'loaded' or 'error' events.
      * The 'loaded' event is passed the data of the petition.
      * The 'error' event is passed the Error.
+     * @return {Loading} - The emitter
      */
     this.load = function (petitionId) {
         var emitter = new EventEmitter();
@@ -34,15 +35,5 @@ function PetitionLoader(agent) {
         return emitter;
     };
 }
-
-/**
- * Emitted when there is an error loading the data.
- * @event PetitionLoader#error
- */
-
-/**
- * Emitted when the data has been loaded successfuly.
- * @event PetitionLoader#loaded
- */
 
 module.exports = PetitionLoader;
