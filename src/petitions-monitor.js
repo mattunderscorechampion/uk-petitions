@@ -49,6 +49,21 @@ function standardAccepter (config, summary, petitions) {
     return acceptRaw(summary, petitions);
 }
 
+function removeRaw (summary, petitions) {
+    return summary.attributes.state === 'rejected' || summary.attributes.state === 'closed';
+}
+
+function removeEnriched (summary, petitions) {
+    return summary.state === 'rejected' || summary.state === 'closed';
+}
+
+function standardRemover (config, summary, petitions) {
+    if (config.enrich) {
+        return removeEnriched(summary, petitions);
+    }
+    return removeRaw(summary, petitions);
+}
+
 /**
  * Configuration for PetitionsMonitor.
  * @typedef {object} PetitionsMonitor~Config
@@ -57,6 +72,7 @@ function standardAccepter (config, summary, petitions) {
  * @property {boolean} debug - If debug logging should be enabled.
  * @property {boolean} loadDetail - If detailed petition information should be loaded.
  * @property {function} accepter - The accepting function.
+ * @property {function} remover - The remover function.
  * @property {boolean} enrich - If the petitions loaded should be enriched.
  */
 
@@ -76,6 +92,7 @@ function PetitionsMonitor(config) {
         events = [],
         deltaEvents = [],
         accepter = standardAccepter.bind(null, config),
+        remover = standardRemover.bind(null, config),
         enrich = false;
 
     if (config) {
@@ -94,6 +111,9 @@ function PetitionsMonitor(config) {
         }
         if (config.accepter !== undefined) {
             accepter = config.accepter;
+        }
+        if (config.remover !== undefined) {
+            remover = config.remover;
         }
         if (config.enrich) {
             enrich = true;
@@ -167,12 +187,12 @@ function PetitionsMonitor(config) {
                 .on('loaded', function() {
                     debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
                     self.emit('loaded', pager.petitions);
-                    pager.populate(accepter);
+                    pager.populate(accepter, remover);
                 });
             self.emit('initial-load', pager.petitions);
-            pager.populate(accepter);
+            pager.populate(accepter, remover);
         })
-        .populate(accepter);
+        .populate(accepter, remover);
 
         return self;
     };

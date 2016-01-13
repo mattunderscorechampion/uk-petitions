@@ -85,9 +85,17 @@ function PetitionPager(config) {
         return self;
     };
 
-    var internalLoadPage = function(page, emitter, accepter) {
+    var internalLoadPage = function(page, emitter, accepter, remover) {
         var summaryHandlerProvider = function(latch) {
             return function(summary) {
+                if (remover && remover(summary, self.petitions)) {
+                    // Remove
+                    debug('Petition \'%s\' removed', summary.attributes.action);
+                    latch.release();
+                    delete self.petitions[summary.id];
+                    return;
+                }
+
                 if (accepter && !accepter(summary, self.petitions)) {
                     // Skip
                     debug('Petition \'%s\' filtered', summary.attributes.action);
@@ -166,7 +174,7 @@ function PetitionPager(config) {
         return self;
     };
 
-    this.populate = function (accepter) {
+    this.populate = function (accepter, remover) {
         var emitter = new EventEmitter();
 
         // Load the next page
@@ -174,7 +182,7 @@ function PetitionPager(config) {
             if (data.links.next !== null) {
                 var index = data.links.next.lastIndexOf('/'),
                     nextPath = data.links.next.substring(index);
-                    internalLoadPage(nextPath, emitter, accepter);
+                    internalLoadPage(nextPath, emitter, accepter, remover);
             }
             else {
                 self.emit('loaded', self);
@@ -182,7 +190,7 @@ function PetitionPager(config) {
         };
 
         emitter.on('page-loaded', loadNextPage);
-        internalLoadPage('/petitions.json?page=1&state=all', emitter, accepter);
+        internalLoadPage('/petitions.json?page=1&state=all', emitter, accepter, remover);
 
         return self;
     };
