@@ -179,6 +179,9 @@ function PetitionsMonitor(config) {
                 });
             }
         })
+        .on('removed-petition', function (newData, oldData) {
+            self.emit('removed-petition', newData, oldData);
+        })
         .on('loaded', function() {
             debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
             pager

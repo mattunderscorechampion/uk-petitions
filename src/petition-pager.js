@@ -68,6 +68,36 @@ function PetitionPager(config) {
                 self.petitions.length = self.petitions.length + 1;
                 self.emit('petition', transformedData);
             }
+        },
+        removePetitionData = function (data) {
+            var oldData = self.petitions[data.id];
+            var transformedData = transformer(data);
+
+            if (!transformedData) {
+                self.emit('error', new Error('Failed to transform the petition data'));
+                return;
+            }
+
+            if (oldData) {
+                delete self.petitions[data.id];
+                self.emit('removed-petition', transformedData, oldData);
+            }
+        },
+        detailLoader = function (id, action, latch, onSuccess) {
+            // Schedule task for loading petition detail
+            executor.execute(function() {
+                petitionLoader
+                    .load(id)
+                    .on('error', function (error) {
+                        debug('Error loading petition detail for \'%s\'', action);
+                        self.emit('error', error);
+                        latch.release();
+                    })
+                    .on('loaded', function (data) {
+                        onSuccess(data);
+                        latch.release();
+                    });
+            });
         };
 
     /**
@@ -89,10 +119,17 @@ function PetitionPager(config) {
         var summaryHandlerProvider = function(latch) {
             return function(summary) {
                 if (remover && remover(summary, self.petitions)) {
-                    // Remove
-                    debug('Petition \'%s\' removed', summary.attributes.action);
-                    latch.release();
-                    delete self.petitions[summary.id];
+                    if (!loadDetail) {
+                        debug('Petition \'%s\' removed', summary.attributes.action);
+                        removePetitionData(summary);
+                        latch.release();
+                    }
+                    else {
+                        detailLoader(summary.id, summary.attributes.action, latch, function(data) {
+                            debug('Petition \'%s\' detail stored', summary.attributes.action);
+                            removePetitionData(data);
+                        });
+                    }
                     return;
                 }
 
@@ -111,20 +148,9 @@ function PetitionPager(config) {
                     return;
                 }
 
-                // Schedule task for loading petition detail
-                executor.execute(function() {
-                    petitionLoader
-                        .load(summary.id)
-                        .on('error', function (error) {
-                            debug('Error loading petition detail for \'%s\'', summary.attributes.action);
-                            self.emit('error', error);
-                            latch.release();
-                        })
-                        .on('loaded', function (data) {
-                            debug('Petition \'%s\' detail stored', summary.attributes.action);
-                            setPetitionData(data);
-                            latch.release();
-                        });
+                detailLoader(summary.id, summary.attributes.action, latch, function(data) {
+                    debug('Petition \'%s\' detail stored', summary.attributes.action);
+                    setPetitionData(data);
                 });
             };
         };
