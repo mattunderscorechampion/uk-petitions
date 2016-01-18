@@ -1,7 +1,7 @@
 
 'use strict';
 
-var EventEmitter = require('events'),
+var Loading = require('./loading'),
     petitionUtil = require('./petition-util');
 
 var forwardError = petitionUtil.forwardError;
@@ -19,7 +19,7 @@ function PetitionLoader(agent) {
      * @return {Loading} - The emitter
      */
     this.load = function (petitionId) {
-        var emitter = new EventEmitter();
+        var emitter = new Loading();
 
         getJsonOverHttps({
             hostname: 'petition.parliament.uk',

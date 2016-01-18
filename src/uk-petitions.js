@@ -71,29 +71,6 @@
  */
 
 /**
- * Petition information loaded from the data source.
- * @namespace Loading
- */
-
-/**
- * The emitter returned by methods that load data from an external source.
- * @typedef {object} Loading.Loading
- * @fires Loading.Loading#error
- * @fires Loading.Loading#loaded
- */
-
-/**
- * Emitted when there is an error loading the data.
- * @event Loading#error
- */
-
-/**
- * Emitted when the data has been loaded successfuly.
- * @event Loading#loaded
- */
-
-
-/**
  * The petitions module.
  * @module petitions
  */

@@ -1,7 +1,7 @@
 
 'use strict';
 
-var EventEmitter = require('events'),
+var Loading = require('./loading'),
     petitionUtil = require('./petition-util');
 
 var forwardError = petitionUtil.forwardError;
@@ -20,7 +20,7 @@ function PetitionPageLoader(agent) {
      * @return {Loading} - The emitter
      */
     this.load = function (page) {
-        var emitter = new EventEmitter(),
+        var emitter = new Loading(),
             pathToLoad;
 
         if (typeof page === 'number') {
