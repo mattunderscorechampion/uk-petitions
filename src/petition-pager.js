@@ -223,14 +223,4 @@ function PetitionPager(config) {
 }
 util.inherits(PetitionPager, EventEmitter);
 
-/**
- * Emitted when there is an error loading the data.
- * @event PetitionPager#error
- */
-
-/**
- * Emitted when the data has been loaded successfuly.
- * @event PetitionPager#loaded
- */
-
 module.exports = PetitionPager;

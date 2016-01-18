@@ -219,9 +219,4 @@ util.inherits(PetitionsMonitor, EventEmitter);
  * @event PetitionsMonitor#initial-load
  */
 
-/**
- * Emited after all the data has been loaded after the first time.
- * @event PetitionsMonitor#loaded
- */
-
 module.exports = PetitionsMonitor;
