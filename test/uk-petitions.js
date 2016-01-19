@@ -16,9 +16,6 @@ describe("petitions", function() {
     it('has pager', function() {
         expect(petitions.PetitionPager).toBeDefined();
     });
-    it('has self running monitor', function() {
-        expect(petitions.monitor).toBeDefined();
-    });
     it('has predefined queries', function() {
         expect(petitions.queries).toBeDefined();
     });
