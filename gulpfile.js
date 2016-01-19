@@ -8,7 +8,7 @@ var gulp = require('gulp'),
     istanbul = require('gulp-istanbul');
 
 gulp.task('checks', function() {
-    gulp.src(['./src/*.js', './src/run/*.js'])
+    gulp.src(['./src/*.js', './src/examples/*.js'])
         .pipe(jshint({node: true}))
         .pipe(jshint.reporter('jshint-stylish'))
         .pipe(jshint.reporter('fail'))
@@ -40,7 +40,7 @@ gulp.task('test', function(done) {
 });
 
 gulp.task('doc', function() {
-    gulp.src(['./src/*.js', './src/run/*.js'])
+    gulp.src(['./src/*.js'])
         .pipe(jsdoc('./target/doc'))
 });
 
