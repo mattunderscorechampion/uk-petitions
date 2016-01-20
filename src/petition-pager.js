@@ -173,24 +173,6 @@ function PetitionPager(config) {
         });
     };
 
-    this.populateAll = function () {
-        return self.populate(function() {
-            return true;
-        });
-    };
-
-    this.populateOpen = function () {
-        return self.populate(function(summary) {
-            return summary.attributes.state === 'open';
-        });
-    };
-
-    this.populateInteresting = function () {
-        return self.populate(function(summary) {
-            return summary.attributes.state !== 'rejected' && summary.attributes.state !== 'closed';
-        });
-    };
-
     this.populateHot = function () {
         var emitter = new EventEmitter();
         emitter.on('page-loaded', function() {

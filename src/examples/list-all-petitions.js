@@ -7,4 +7,12 @@ var PetitionPager = require('../petition-pager'),
 new PetitionPager()
     .on('error', output.error)
     .on('petition', output.withSignatureCountDiff)
-    .populateAll();
+    .populate(
+        // Accept all
+        function() {
+            return true;
+        },
+        // Remove none
+        function() {
+            return false;
+        });
