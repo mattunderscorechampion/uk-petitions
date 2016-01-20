@@ -5,8 +5,7 @@ var util = require('util'),
     queries = require('./petition-queries'),
     EventEmitter = require('events'),
     PetitionPager = require('./petition-pager'),
-    equal = require('deep-equal'),
-    EnrichedPetition = require('./enriched-petition');
+    equal = require('deep-equal');
 
 function logDebug () {
     console.log.apply(null, arguments);
@@ -43,10 +42,10 @@ function acceptEnriched (summary, petitions) {
 }
 
 function standardAccepter (config, summary, petitions) {
-    if (config.enrich) {
-        return acceptEnriched(summary, petitions);
+    if (config.raw) {
+        return acceptRaw(summary, petitions);
     }
-    return acceptRaw(summary, petitions);
+    return acceptEnriched(summary, petitions);
 }
 
 function removeRaw (summary, petitions) {
@@ -58,10 +57,10 @@ function removeEnriched (summary, petitions) {
 }
 
 function standardRemover (config, summary, petitions) {
-    if (config.enrich) {
-        return removeEnriched(summary, petitions);
+    if (config.raw) {
+        return removeRaw(summary, petitions);
     }
-    return removeRaw(summary, petitions);
+    return removeEnriched(summary, petitions);
 }
 
 /**
@@ -73,7 +72,7 @@ function standardRemover (config, summary, petitions) {
  * @property {boolean} loadDetail - If detailed petition information should be loaded.
  * @property {function} accepter - The accepting function.
  * @property {function} remover - The remover function.
- * @property {boolean} enrich - If the petitions loaded should be enriched.
+ * @property {boolean} raw - If the petitions loaded should be raw.
  */
 
 /**
@@ -93,7 +92,7 @@ function PetitionsMonitor(config) {
         deltaEvents = [],
         accepter = standardAccepter.bind(null, config),
         remover = standardRemover.bind(null, config),
-        enrich = false;
+        raw = false;
 
     if (config) {
         if (config.initialInterval) {
@@ -115,8 +114,8 @@ function PetitionsMonitor(config) {
         if (config.remover !== undefined) {
             remover = config.remover;
         }
-        if (config.enrich) {
-            enrich = true;
+        if (config.raw) {
+            raw = true;
         }
     }
     debug('Debug enabled');
@@ -150,7 +149,7 @@ function PetitionsMonitor(config) {
             loadInterval : initialInterval,
             debug : passDebug,
             loadDetail : loadDetail,
-            transformer : enrich ? function (raw) { return new EnrichedPetition(raw); } : null
+            transformer : raw ? function (petiton) { return petiton; } : null
         });
 
         pager

@@ -9,7 +9,8 @@ var https = require("https"),
     Latch = require('./latch'),
     LoaderExecutor = require('./loader-executor'),
     petitionUtil = require('./petition-util'),
-    equal = require('deep-equal');
+    equal = require('deep-equal'),
+    EnrichedPetition = require('./enriched-petition');
 
 var forwardError = petitionUtil.forwardError;
 
@@ -19,10 +20,12 @@ var forwardError = petitionUtil.forwardError;
  */
 function PetitionPager(config) {
     EventEmitter.call(this);
-    var loadInterval = 500;
-    var debug = function() {};
-    var loadDetail = false;
-    var transformer = petitionUtil.recursiveFreeze;
+    var loadInterval = 500,
+        debug = function() {},
+        loadDetail = false,
+        transformer = function (raw) {
+            return petitionUtil.recursiveFreeze(new EnrichedPetition(raw));
+        };
     if (config) {
         if (config.loadInterval) {
             loadInterval = config.loadInterval;

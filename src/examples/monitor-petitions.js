@@ -6,7 +6,7 @@ var Monitor = require('../petitions-monitor'),
     util = require('util'),
     queries = require('../petition-queries');
 
-var m = new Monitor({debug: false, enrich : true});
+var m = new Monitor({debug: false});
 m.addSignatureNotification = function(signatures) {
     var event = util.format('reached-%d-signatures', signatures);
     this.addMonitorDeltaEvent(event, queries.checks.delta.reachedSignatureDeltaCountProvider(signatures));
