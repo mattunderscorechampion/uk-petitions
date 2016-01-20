@@ -33,6 +33,7 @@ var keysToTransform = {
  * @property {string} additional_details - The additional details about petition.
  * @property {number} signature_count - The number of signatures.
  * @property {string} state - The state of the petition.
+ * @property {boolean} detailed - If the petition has detailed information.
  * @property {Date} created_at - The timestamp petition was created.
  * @property {Date} government_response_at - The timestamp the government responded.
  * @property {Date} response_threshold_reached_at - The timestamp 10000 signatures was reached.
@@ -62,6 +63,7 @@ function EnrichedPetition(rawPetition) {
     this.html_detail_url = util.format('https://petition.parliament.uk/petitions/%d#details-content-0', this.id);
     this.html_response_url = util.format('https://petition.parliament.uk/petitions/%d?reveal_response=yes#response-threshold', this.id);
     this.html_debate_url = util.format('https://petition.parliament.uk/petitions/%d?#debate-threshold', this.id);
+    this.detailed = this.signatures_by_country === undefined;
 }
 
 module.exports = EnrichedPetition;
