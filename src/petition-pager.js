@@ -21,7 +21,7 @@ function PetitionPager(config) {
     EventEmitter.call(this);
     var loadInterval = 500;
     var debug = function() {};
-    var loadDetail = true;
+    var loadDetail = false;
     var transformer = petitionUtil.recursiveFreeze;
     if (config) {
         if (config.loadInterval) {

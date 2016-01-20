@@ -88,7 +88,7 @@ function PetitionsMonitor(config) {
         interval = 2000,
         passDebug = false,
         debug = function() {},
-        loadDetail = true,
+        loadDetail = false,
         events = [],
         deltaEvents = [],
         accepter = standardAccepter.bind(null, config),
