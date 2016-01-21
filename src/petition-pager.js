@@ -15,8 +15,18 @@ var https = require("https"),
 var forwardError = petitionUtil.forwardError;
 
 /**
+ * Configuration for PetitionPager.
+ * @typedef {object} PetitionPager~Config
+ * @property {number} loadInterval - The interval.
+ * @property {boolean} debug - If debug logging should be enabled.
+ * @property {boolean} loadDetail - If detailed petition information should be loaded.
+ * @property {function} transformer - A function to transform the petitions before stored or emitted.
+ */
+
+/**
  * Loads all the petition data according to a filter.
  * @constructor
+ * @param {PetitionPager~Config} config - Configuration for PetitionsMonitor.
  */
 function PetitionPager(config) {
     EventEmitter.call(this);
@@ -176,6 +186,10 @@ function PetitionPager(config) {
         });
     };
 
+    /**
+     * Load petitions without specifying a state.
+     * @return {PetitionPager} - Self
+     */
     this.populateHot = function () {
         var emitter = new EventEmitter();
         emitter.on('page-loaded', function() {
@@ -185,6 +199,12 @@ function PetitionPager(config) {
         return self;
     };
 
+    /**
+     * Load all petitions.
+     * @param {function} accepter - A predicate to test if a petition should be accepted.
+     * @param {function} remover - A predicate to test if a petition should be removed.
+     * @return {PetitionPager} - Self
+     */
     this.populate = function (accepter, remover) {
         var emitter = new EventEmitter();
 
