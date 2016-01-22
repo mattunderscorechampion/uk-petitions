@@ -28,9 +28,7 @@ function PetitionLoader(agent) {
             agent: agent
         })
         .on('error', forwardError(emitter))
-        .on('data', function (data) {
-            emitter.emit('loaded', data.data);
-        });
+        .on('data', emitter.loaded);
 
         return emitter;
     };

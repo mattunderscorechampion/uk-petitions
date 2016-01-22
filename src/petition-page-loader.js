@@ -33,11 +33,11 @@ function PetitionPageLoader(agent) {
             } else if (page instanceof Number) {
                 pathToLoad = '/petitions.json?page=' + page;
             } else {
-                emitter.emit('error', new Error('Problem parameter'));
+                emitter.error('Problem parameter');
                 return emitter;
             }
         } else {
-            emitter.emit('error', new Error('Problem parameter'));
+            emitter.error('Problem parameter');
             return emitter;
         }
 
@@ -48,9 +48,7 @@ function PetitionPageLoader(agent) {
             agent: agent
         })
         .on('error', forwardError(emitter))
-        .on('data', function (data) {
-            emitter.emit('loaded', data);
-        });
+        .on('data', emitter.loaded);
 
         return emitter;
     };
