@@ -3,7 +3,8 @@
 
 var mockery = require('mockery'),
     when = require('saywhen'),
-    buffer = require('buffer');
+    buffer = require('buffer'),
+    EventEmitter = require('events');
 
 describe("Petition utilities", function() {
     var httpsMock;
@@ -124,8 +125,14 @@ describe("Petition utilities", function() {
             });
         responseListener(response);
     });
-    it('supports forwarding errors', function() {
+    it('supports forwarding errors', function(done) {
         var util = require('../src/petition-util');
         expect(util.forwardError).toBeDefined();
+
+        var sourceEmitter = new EventEmitter();
+        var forwardingEmitter = new EventEmitter();
+        sourceEmitter.on('error', util.forwardError(forwardingEmitter));
+        forwardingEmitter.on('error', done);
+        sourceEmitter.emit('error', new Error('Test error'));
     });
 });
