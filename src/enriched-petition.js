@@ -63,7 +63,7 @@ function EnrichedPetition(rawPetition) {
     this.html_detail_url = util.format('https://petition.parliament.uk/petitions/%d#details-content-0', this.id);
     this.html_response_url = util.format('https://petition.parliament.uk/petitions/%d?reveal_response=yes#response-threshold', this.id);
     this.html_debate_url = util.format('https://petition.parliament.uk/petitions/%d?#debate-threshold', this.id);
-    this.detailed = this.signatures_by_country === undefined;
+    this.detailed = this.signatures_by_country !== undefined;
 }
 
 module.exports = EnrichedPetition;

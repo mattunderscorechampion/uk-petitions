@@ -11,6 +11,19 @@ describe("EnrichedPetition", function() {
             scheduled_debate_date : '2015-01-01'
         }
     });
+    var detailedPetition = new EnrichedPetition({
+        id: 2,
+        attributes : {
+            signature_count : 100005,
+            scheduled_debate_date : '2015-01-01',
+            signatures_by_country : {
+                country : {
+                    code : 'UK',
+                    signature_count : 100005
+                }
+            }
+        }
+    });
 
     it('has an ID', function() {
         expect(petition.id).toBeDefined();
@@ -35,5 +48,7 @@ describe("EnrichedPetition", function() {
         expect(petition.html_detail_url).toBe('https://petition.parliament.uk/petitions/2#details-content-0');
         expect(petition.html_response_url).toBe('https://petition.parliament.uk/petitions/2?reveal_response=yes#response-threshold');
         expect(petition.html_debate_url).toBe('https://petition.parliament.uk/petitions/2?#debate-threshold');
+        expect(petition.detailed).toBe(false);
+        expect(detailedPetition.detailed).toBe(true);
     });
 });
