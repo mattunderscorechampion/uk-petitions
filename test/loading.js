@@ -30,11 +30,4 @@ describe("Loading", function() {
         loading.onLoaded(done);
         loading.loaded('data');
     });
-    it('can forward errors', function(done) {
-        var loading = new Loading();
-        loading.onError(done);
-        var sourceEmitter = new EventEmitter();
-        loading.forwardErrors(sourceEmitter);
-        sourceEmitter.emit('error', new Error('Test error'));
-    });
 });
