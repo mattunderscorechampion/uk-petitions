@@ -4,7 +4,6 @@
 var Loading = require('./loading'),
     petitionUtil = require('./petition-util');
 
-var forwardError = petitionUtil.forwardError;
 var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 
 /**
@@ -27,7 +26,7 @@ function PetitionLoader(agent) {
             path: '/petitions/' + petitionId + '.json',
             agent: agent
         })
-        .on('error', forwardError(emitter))
+        .on('error', emitter.error)
         .on('data', emitter.loaded);
 
         return emitter;
