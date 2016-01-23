@@ -34,6 +34,15 @@ Loading.prototype.error = function(error) {
     }
     this.emit('error', '' + error);
 };
+Loading.prototype.onLoaded = function(handler) {
+    this.on('loaded', handler);
+};
+Loading.prototype.onError = function(handler) {
+    this.on('error', handler);
+};
+Loading.prototype.forwardErrors = function(emitter) {
+    emitter.on('error', this.emit.bind(this, 'error'));
+};
 
 /**
  * Emitted when there is an error loading the data.
