@@ -16,29 +16,33 @@ function Loading(config) {
 util.inherits(Loading, EventEmitter);
 Loading.prototype.loaded = function(data) {
     this.emit('loaded', data);
+    return this;
 };
 Loading.prototype.error = function(error) {
     if (typeof error === 'string') {
         this.emit('error', new Error(error));
-        return;
+        return this;
     }
     else if (typeof error === 'object') {
         if (error instanceof String) {
             this.emit('error', new Error(error));
-            return;
+            return this;
         }
         else if (error instanceof Error) {
             this.emit('error', error);
-            return;
+            return this;
         }
     }
     this.emit('error', '' + error);
+    return this;
 };
 Loading.prototype.onLoaded = function(handler) {
     this.on('loaded', handler);
+    return this;
 };
 Loading.prototype.onError = function(handler) {
     this.on('error', handler);
+    return this;
 };
 
 /**
