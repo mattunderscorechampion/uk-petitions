@@ -101,12 +101,12 @@ function PetitionPager(config) {
             executor.execute(function() {
                 petitionLoader
                     .load(id)
-                    .on('error', function (error) {
+                    .onError(function (error) {
                         debug('Error loading petition detail for \'%s\'', action);
                         self.emit('error', error);
                         latch.release();
                     })
-                    .on('loaded', function (data) {
+                    .onLoaded(function (data) {
                         onSuccess(data);
                         latch.release();
                     });
@@ -181,8 +181,8 @@ function PetitionPager(config) {
             debug('Loading page \'%s\'', page);
             pageLoader
                 .load(page)
-                .on('loaded', onPageLoaded)
-                .on('error', forwardError(self));
+                .onLoaded(onPageLoaded)
+                .onError(forwardError(self));
         });
     };
 
