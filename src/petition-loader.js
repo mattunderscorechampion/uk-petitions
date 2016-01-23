@@ -26,8 +26,10 @@ function PetitionLoader(agent) {
             path: '/petitions/' + petitionId + '.json',
             agent: agent
         })
-        .on('error', emitter.error)
-        .on('data', emitter.loaded);
+        .on('error', emitter.error.bind(emitter))
+        .on('data', function(data) {
+            emitter.loaded(data.data);
+        });
 
         return emitter;
     };

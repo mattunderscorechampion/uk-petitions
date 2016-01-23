@@ -47,8 +47,8 @@ function PetitionPageLoader(agent) {
             path: pathToLoad,
             agent: agent
         })
-        .on('error', emitter.error)
-        .on('data', emitter.loaded);
+        .on('error', emitter.error.bind(emitter))
+        .on('data', emitter.loaded.bind(emitter));
 
         return emitter;
     };
