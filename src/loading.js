@@ -14,10 +14,18 @@ function Loading(config) {
     EventEmitter.call(this);
 }
 util.inherits(Loading, EventEmitter);
+/**
+ * Emit loaded event.
+ * @return {Loading} - Self
+ */
 Loading.prototype.loaded = function(data) {
     this.emit('loaded', data);
     return this;
 };
+/**
+ * Emit error event.
+ * @return {Loading} - Self
+ */
 Loading.prototype.error = function(error) {
     if (typeof error === 'string') {
         this.emit('error', new Error(error));
@@ -36,10 +44,18 @@ Loading.prototype.error = function(error) {
     this.emit('error', '' + error);
     return this;
 };
+/**
+ * Add loaded event listener.
+ * @return {Loading} - Self
+ */
 Loading.prototype.onLoaded = function(handler) {
     this.on('loaded', handler);
     return this;
 };
+/**
+ * Add error event listener.
+ * @return {Loading} - Self
+ */
 Loading.prototype.onError = function(handler) {
     this.on('error', handler);
     return this;
