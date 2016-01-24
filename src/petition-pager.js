@@ -27,6 +27,7 @@ var forwardError = petitionUtil.forwardError;
  * Loads all the petition data according to a filter.
  * @constructor
  * @param {PetitionPager~Config} config - Configuration for PetitionsMonitor.
+ * @augments EventEmitter
  */
 function PetitionPager(config) {
     EventEmitter.call(this);
@@ -114,13 +115,18 @@ function PetitionPager(config) {
         };
 
     /**
-     * The petitions.
+     * The petitions map. Maps from petition ID to petition object. Also has
+     * length property.
+     * @member {object}
      */
     this.petitions = {
         length: 0
     };
     /**
      * Change the interval between loading pages.
+     * @function
+     * @param {number} newInterval - The new interval
+     * @return {PetitionPager} - Self
      */
     this.setPageLoadInterval = function(newInterval) {
         loadInterval = newInterval;

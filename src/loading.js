@@ -9,6 +9,7 @@ var EventEmitter = require('events'),
  * @constructor
  * @fires Loading#error
  * @fires Loading#loaded
+ * @augments EventEmitter
  */
 function Loading(config) {
     EventEmitter.call(this);

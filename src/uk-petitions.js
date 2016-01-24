@@ -73,6 +73,7 @@
 /**
  * The petitions module.
  * @module petitions
+ * @author Matt Champion
  */
 module.exports = {
     PetitionsMonitor : require('./petitions-monitor'),

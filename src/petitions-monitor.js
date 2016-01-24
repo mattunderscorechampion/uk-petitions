@@ -79,6 +79,7 @@ function standardRemover (config, summary, petitions) {
  * Monitors the petitions data for changes and generates a notification event for changes.
  * @constructor
  * @param {PetitionsMonitor~Config} config - Configuration for PetitionsMonitor.
+ * @augments EventEmitter
  */
 function PetitionsMonitor(config) {
     EventEmitter.call(this);
