@@ -4,7 +4,6 @@
 var Loading = require('./loading'),
     petitionUtil = require('./petition-util');
 
-var forwardError = petitionUtil.forwardError;
 var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 
 /**

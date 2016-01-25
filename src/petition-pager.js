@@ -12,8 +12,6 @@ var https = require("https"),
     equal = require('deep-equal'),
     EnrichedPetition = require('./enriched-petition');
 
-var forwardError = petitionUtil.forwardError;
-
 /**
  * Configuration for PetitionPager.
  * @typedef {object} PetitionPager~Config
@@ -188,7 +186,7 @@ function PetitionPager(config) {
             pageLoader
                 .load(page)
                 .onLoaded(onPageLoaded)
-                .onError(forwardError(self));
+                .onError(self.emit.bind(self, 'error'));
         });
     };
 

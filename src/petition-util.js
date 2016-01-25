@@ -5,13 +5,6 @@ var https = require("https"),
     EventEmitter = require('events');
 
 /**
- * Forward an error to another emitter.
- */
-var forwardError = function (emitter) {
-    return emitter.emit.bind(emitter, 'error');
-};
-
-/**
  * Request a JSON object over HTTPS. Returns an emitter. Emits 'response',
  * 'data' and 'error' events.
  * The response event is passed the HTTPS response.
@@ -39,7 +32,7 @@ var getJsonOverHttps = function (options) {
             emitter.emit('error', new Error('Response status code was ' + res.statusCode));
         }
     })
-    .on('error', forwardError(emitter));
+    .on('error', emitter.emit.bind(emitter, 'error'));
 
     return emitter;
 };
@@ -60,7 +53,6 @@ function recursiveFreeze(obj) {
 }
 
 module.exports = {
-    forwardError : forwardError,
     getJsonOverHttps : getJsonOverHttps,
     recursiveFreeze : recursiveFreeze
 };
