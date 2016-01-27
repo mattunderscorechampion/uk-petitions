@@ -18,7 +18,7 @@ function PetitionPageLoader(agent) {
      * @function
      * @return {Loading} - The emitter
      */
-    this.load = function (page) {
+    this.load = function load(page) {
         var emitter = new Loading(),
             pathToLoad;
 

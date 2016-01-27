@@ -1,85 +1,99 @@
 
 'use strict';
 
+function printError (error) {
+    console.error('Error: ' + error.message);
+}
+
+function action (data) {
+    console.log(data.attributes.action);
+}
+
+function byCountry (data) {
+    console.log(data.attributes.action);
+    var total_signatures = data.attributes.signature_count;
+    data.attributes.signatures_by_country.forEach(function (pair) {
+        var percentage = (pair.signature_count / total_signatures) * 100;
+        console.log('%s: %d (%d%%)', pair.name, pair.signature_count, percentage.toFixed(4));
+    });
+}
+
+function withTop5Countries (data) {
+    console.log('Action: %s', data.attributes.action);
+    console.log('Top 5 countries:');
+    var total_signatures = data.attributes.signature_count;
+    data.attributes.signatures_by_country
+        .slice()
+        .sort(function(country0, country1) {
+            return country1.signature_count - country0.signature_count;
+        })
+        .slice(0, Math.min(5, data.attributes.signatures_by_country.length))
+        .forEach(function (pair) {
+            var percentage = (pair.signature_count / total_signatures) * 100;
+            console.log('%s: %d (%d%%)', pair.name, pair.signature_count, percentage.toFixed(4));
+        });
+}
+
+function withSignatureCount (data) {
+    console.log('Action: %s', data.attributes.action);
+    console.log('Signatures: %d', data.attributes.signature_count);
+}
+
+function withSignatureCountDiff (data, oldData) {
+    if (oldData) {
+        console.log('Action: %s', data.attributes.action);
+        console.log('Signatures: %d (was %d)', data.attributes.signature_count, oldData.attributes.signature_count);
+    }
+    else {
+        console.log('Action: %s', data.attributes.action);
+        console.log('Signatures: %d', data.attributes.signature_count);
+    }
+}
+
+function attributes (data) {
+    console.log(data.attributes);
+}
+
 module.exports = {
     /**
      * Print out an error.
      * @function
      */
-    error : function (error) {
-        console.error('Error: ' + error.message);
-    },
+    error : printError,
 
     /**
      * Print out the action of a petition.
      * @function
      */
-    action : function (data) {
-        console.log(data.attributes.action);
-    },
+    action : action,
 
     /**
      * Print out all the action and break down of signatures by country.
      * @function
      */
-    byCountry : function (data) {
-        console.log(data.attributes.action);
-        var total_signatures = data.attributes.signature_count;
-        data.attributes.signatures_by_country.forEach(function (pair) {
-            var percentage = (pair.signature_count / total_signatures) * 100;
-            console.log('%s: %d (%d%%)', pair.name, pair.signature_count, percentage.toFixed(4));
-        });
-    },
+    byCountry : byCountry,
 
     /**
      * Print out all the action and break down of signatures of the top 5 countries.
      * @function
      */
-    withTop5Countries : function (data) {
-        console.log('Action: %s', data.attributes.action);
-        console.log('Top 5 countries:');
-        var total_signatures = data.attributes.signature_count;
-        data.attributes.signatures_by_country
-            .slice()
-            .sort(function(country0, country1) {
-                return country1.signature_count - country0.signature_count;
-            })
-            .slice(0, Math.min(5, data.attributes.signatures_by_country.length))
-            .forEach(function (pair) {
-                var percentage = (pair.signature_count / total_signatures) * 100;
-                console.log('%s: %d (%d%%)', pair.name, pair.signature_count, percentage.toFixed(4));
-            });
-    },
+    withTop5Countries : withTop5Countries,
 
     /**
      * Print out all the action and total signature count.
      * @function
      */
-    withSignatureCount : function (data) {
-        console.log('Action: %s', data.attributes.action);
-        console.log('Signatures: %d', data.attributes.signature_count);
-    },
+    withSignatureCount : withSignatureCount,
 
     /**
      * Print out all the action, total signature count and previous signature count.
      * @function
      */
-    withSignatureCountDiff : function (data, oldData) {
-        if (oldData) {
-            console.log('Action: %s', data.attributes.action);
-            console.log('Signatures: %d (was %d)', data.attributes.signature_count, oldData.attributes.signature_count);
-        }
-        else {
-            console.log('Action: %s', data.attributes.action);
-            console.log('Signatures: %d', data.attributes.signature_count);
-        }
-    },
+    withSignatureCountDiff : withSignatureCountDiff,
 
     /**
      * Print out all the attributes of a petition.
      * @function
      */
-    attributes : function (data) {
-        console.log(data.attributes);
-    }
+    attributes : attributes
 };

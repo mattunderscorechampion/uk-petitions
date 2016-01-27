@@ -7,12 +7,14 @@ function samePetitionId(petition0, petition1) {
     return petition0.id === petition1.id;
 }
 
-var preconditions = {
-    samePetitionId : function(petition0, petition1) {
-        if (!samePetitionId(petition0, petition1)) {
-            throw new Error('Petition IDs should be the same but are different');
-        }
+function samePetitionIdPrecondition(petition0, petition1) {
+    if (!samePetitionId(petition0, petition1)) {
+        throw new Error('Petition IDs should be the same but are different');
     }
+}
+
+var preconditions = {
+    samePetitionId : samePetitionIdPrecondition
 };
 
 function isEnriched(petition) {
@@ -85,6 +87,21 @@ function deltaCheck(predicate, newData, oldData) {
 
 function reachedSignatureDeltaCountProvider(targetSignatureCount) {
     return deltaCheck.bind(null, reachedSignatureCount.bind(null, targetSignatureCount));
+}
+
+function governmentRespondedCheck(newData, oldData) {
+    preconditions.samePetitionId(oldData, newData);
+    return governmentResponded(newData) && !governmentResponded(oldData);
+}
+
+function debatedCheck(newData, oldData) {
+    preconditions.samePetitionId(oldData, newData);
+    return debated(newData) && !debated(oldData);
+}
+
+function debateTranscriptAvailableCheck(newData, oldData) {
+    preconditions.samePetitionId(oldData, newData);
+    return debateTranscriptAvailable(newData) && !debateTranscriptAvailable(oldData);
 }
 
 module.exports = {
@@ -179,30 +196,21 @@ module.exports = {
              * @param {Petition} newData - The latest data
              * @param {Petition} oldData - The older data
              */
-            governmentResponded : function(newData, oldData) {
-                preconditions.samePetitionId(oldData, newData);
-                return governmentResponded(newData) && !governmentResponded(oldData);
-            },
+            governmentResponded : governmentRespondedCheck,
             /**
              * Function that tests if a petition has been debated since the first snapshot.
              * @function
              * @param {Petition} newData - The latest data
              * @param {Petition} oldData - The older data
              */
-            debated : function(newData, oldData) {
-                preconditions.samePetitionId(oldData, newData);
-                return debated(newData) && !debated(oldData);
-            },
+            debated : debatedCheck,
             /**
              * Function that tests if a debate transcript has become available since the first snapshot.
              * @function
              * @param {Petition} newData - The latest data
              * @param {Petition} oldData - The older data
              */
-            debateTranscriptAvailable : function(newData, oldData) {
-                preconditions.samePetitionId(oldData, newData);
-                return debateTranscriptAvailable(newData) && !debateTranscriptAvailable(oldData);
-            },
+            debateTranscriptAvailable : debateTranscriptAvailableCheck,
             reachedSignatureDeltaCountProvider : reachedSignatureDeltaCountProvider,
             /**
              * Function that tests if a debate on a petition has been scheduled since the first snapshot.

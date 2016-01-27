@@ -17,7 +17,7 @@ function PetitionLoader(agent) {
      * The 'error' event is passed the Error.
      * @return {Loading} - The emitter
      */
-    this.load = function (petitionId) {
+    this.load = function load(petitionId) {
         var emitter = new Loading();
 
         getJsonOverHttps({
