@@ -149,7 +149,7 @@ function PetitionsMonitor(config) {
      * Start the monitor. Returns the monitor.
      */
     this.start = function () {
-        debug('Starting monitor');
+        conf.debug('Starting monitor');
         var pager = new PetitionPager({
             loadInterval : conf.initialInterval,
             debug : conf.passDebug,
@@ -187,12 +187,12 @@ function PetitionsMonitor(config) {
             self.emit('removed-petition', newData, oldData);
         })
         .on('loaded', function() {
-            debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
+            conf.debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
             pager
                 .setPageLoadInterval(conf.interval)
                 .removeAllListeners('loaded')
                 .on('loaded', function() {
-                    debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
+                    conf.debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
                     self.emit('loaded', pager.petitions);
                     pager.populate(conf.accepter, conf.remover);
                 });
