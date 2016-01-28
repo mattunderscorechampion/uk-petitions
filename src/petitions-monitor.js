@@ -65,7 +65,7 @@ function standardRemover (config, summary, petitions) {
 
 /**
  * Configuration for PetitionsMonitor.
- * @typedef {object} PetitionsMonitor~Config
+ * @constructor
  * @property {number} initialInterval - The initial interval.
  * @property {number} interval - The interval.
  * @property {boolean} debug - If debug logging should be enabled.
