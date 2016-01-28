@@ -74,52 +74,56 @@ function standardRemover (config, summary, petitions) {
  * @property {function} remover - The remover function.
  * @property {boolean} raw - If the petitions loaded should be raw.
  */
+function PetitionsMonitorConfig(config) {
+    this.initialInterval = 200;
+    this.interval = 2000;
+    this.passDebug = false;
+    this.debug = function() {};
+    this.loadDetail = false;
+    this.accepter = standardAccepter.bind(null, this);
+    this.remover = standardRemover.bind(null, this);
+    this.raw = false;
+
+    if (config) {
+        if (config.initialInterval) {
+            this.initialInterval = config.initialInterval;
+        }
+        if (config.interval) {
+            this.interval = config.interval;
+        }
+        if (config.debug) {
+            this.passDebug = true;
+            this.debug = logDebug;
+        }
+        if (config.loadDetail !== undefined) {
+            this.loadDetail = config.loadDetail;
+        }
+        if (config.accepter !== undefined) {
+            this.accepter = config.accepter;
+        }
+        if (config.remover !== undefined) {
+            this.remover = config.remover;
+        }
+        if (config.raw) {
+            this.raw = true;
+        }
+    }
+}
 
 /**
  * Monitors the petitions data for changes and generates a notification event for changes.
  * @constructor
- * @param {PetitionsMonitor~Config} config - Configuration for PetitionsMonitor.
+ * @param {PetitionsMonitorConfig} config - Configuration for PetitionsMonitor.
  * @augments EventEmitter
  */
 function PetitionsMonitor(config) {
     EventEmitter.call(this);
     var self = this,
-        initialInterval = 200,
-        interval = 2000,
-        passDebug = false,
-        debug = function() {},
-        loadDetail = false,
         events = [],
         deltaEvents = [],
-        accepter = standardAccepter.bind(null, config),
-        remover = standardRemover.bind(null, config),
-        raw = false;
+        conf = new PetitionsMonitorConfig(config);
 
-    if (config) {
-        if (config.initialInterval) {
-            initialInterval = config.initialInterval;
-        }
-        if (config.interval) {
-            interval = config.interval;
-        }
-        if (config.debug) {
-            passDebug = true;
-            debug = logDebug;
-        }
-        if (config.loadDetail !== undefined) {
-            loadDetail = config.loadDetail;
-        }
-        if (config.accepter !== undefined) {
-            accepter = config.accepter;
-        }
-        if (config.remover !== undefined) {
-            remover = config.remover;
-        }
-        if (config.raw) {
-            raw = true;
-        }
-    }
-    debug('Debug enabled');
+    conf.debug('Debug enabled');
 
     /**
      * Add an event to emit when the check function returns true. The check function is passed the the new data. Returns the monitor.
@@ -147,10 +151,10 @@ function PetitionsMonitor(config) {
     this.start = function () {
         debug('Starting monitor');
         var pager = new PetitionPager({
-            loadInterval : initialInterval,
-            debug : passDebug,
-            loadDetail : loadDetail,
-            transformer : raw ? function (petiton) { return petiton; } : null
+            loadInterval : conf.initialInterval,
+            debug : conf.passDebug,
+            loadDetail : conf.loadDetail,
+            transformer : conf.raw ? function (petiton) { return petiton; } : null
         });
 
         pager
@@ -185,17 +189,17 @@ function PetitionsMonitor(config) {
         .on('loaded', function() {
             debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
             pager
-                .setPageLoadInterval(interval)
+                .setPageLoadInterval(conf.interval)
                 .removeAllListeners('loaded')
                 .on('loaded', function() {
                     debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
                     self.emit('loaded', pager.petitions);
-                    pager.populate(accepter, remover);
+                    pager.populate(conf.accepter, conf.remover);
                 });
             self.emit('initial-load', pager.petitions);
-            pager.populate(accepter, remover);
+            pager.populate(conf.accepter, conf.remover);
         })
-        .populate(accepter, remover);
+        .populate(conf.accepter, conf.remover);
 
         return self;
     };
