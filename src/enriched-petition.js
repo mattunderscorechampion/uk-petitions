@@ -25,9 +25,10 @@ var keysToTransform = {
 };
 
 /**
- * A petition enriched with additional properties and methods.
+ * The constructor foe enriched petitions.
  * @constructor
  * @param {Petitions.Petition} rawPetition - The petiton from the data source.
+ * @classdesc A petition enriched with additional properties and methods.
  * @property {string} action - The call to action.
  * @property {string} background - The background to the petition.
  * @property {string} additional_details - The additional details about petition.

@@ -7,8 +7,10 @@ var Loading = require('./loading'),
 var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 
 /**
- * Loads the data of a petition. It is stateless.
+ * Constructor for petition loaders.
  * @constructor
+ * @param {object} agent - The HTTP agemt to use to make requests.
+ * @classdesc Loads the data of a petition. It is stateless.
  */
 function PetitionLoader(agent) {
     /**

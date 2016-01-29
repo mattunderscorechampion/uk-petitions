@@ -13,8 +13,9 @@ var https = require("https"),
     EnrichedPetition = require('./enriched-petition');
 
 /**
- * Configuration for PetitionPager.
+ * Private constructor for petition pager config.
  * @constructor
+ * @classdesc Configuration for PetitionPager.
  * @property {number} loadInterval - The interval.
  * @property {boolean} debug - If debug logging should be enabled.
  * @property {boolean} loadDetail - If detailed petition information should be loaded.
@@ -49,9 +50,10 @@ function PetitionPagerConfig(config) {
 }
 
 /**
- * Loads all the petition data according to a filter.
+ * Constructor for petition pager.
  * @constructor
  * @param {PetitionPagerConfig} config - Configuration for PetitionsMonitor.
+ * @classdesc Loads all the petition data according to a filter.
  * @augments EventEmitter
  */
 function PetitionPager(config) {

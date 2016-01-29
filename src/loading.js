@@ -5,8 +5,9 @@ var EventEmitter = require('events'),
     util = require('util');
 
 /**
- * The emitter returned by methods that load data from an external source.
+ * Private constructor for Loading.
  * @constructor
+ * @classdesc The emitter returned by methods that load data from an external source.
  * @fires Loading#error
  * @fires Loading#loaded
  * @augments EventEmitter

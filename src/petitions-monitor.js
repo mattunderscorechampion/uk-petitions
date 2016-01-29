@@ -63,17 +63,18 @@ function standardRemover (config, summary, petitions) {
     return removeEnriched(summary, petitions);
 }
 
-/**
- * Configuration for PetitionsMonitor.
- * @constructor
- * @property {number} initialInterval - The initial interval.
- * @property {number} interval - The interval.
- * @property {boolean} debug - If debug logging should be enabled.
- * @property {boolean} loadDetail - If detailed petition information should be loaded.
- * @property {function} accepter - The accepting function.
- * @property {function} remover - The remover function.
- * @property {boolean} raw - If the petitions loaded should be raw.
- */
+ /**
+  * Private constructor for petition monitor config.
+  * @constructor
+  * @classdesc Configuration for PetitionsMonitor.
+  * @property {number} initialInterval - The initial interval.
+  * @property {number} interval - The interval.
+  * @property {boolean} debug - If debug logging should be enabled.
+  * @property {boolean} loadDetail - If detailed petition information should be loaded.
+  * @property {function} accepter - The accepting function.
+  * @property {function} remover - The remover function.
+  * @property {boolean} raw - If the petitions loaded should be raw.
+  */
 function PetitionsMonitorConfig(config) {
     this.initialInterval = 200;
     this.interval = 2000;
@@ -111,9 +112,13 @@ function PetitionsMonitorConfig(config) {
 }
 
 /**
- * Monitors the petitions data for changes and generates a notification event for changes.
+ * Constructor for petition pager.
  * @constructor
  * @param {PetitionsMonitorConfig} config - Configuration for PetitionsMonitor.
+ * @classdesc Monitors the petitions data for changes and generates a notification event for changes.
+ * @fires PetitionsMonitor#new-petition
+ * @fires PetitionsMonitor#updated-petition
+ * @fires PetitionsMonitor#initial-load
  * @augments EventEmitter
  */
 function PetitionsMonitor(config) {
