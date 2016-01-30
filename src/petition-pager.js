@@ -10,7 +10,7 @@ var https = require("https"),
     LoaderExecutor = require('./loader-executor'),
     petitionUtil = require('./petition-util'),
     equal = require('deep-equal'),
-    EnrichedPetition = require('./enriched-petition');
+    EnrichedPetition = require('../target/js/enriched-petition').EnrichedPetition;
 
 /**
  * Private constructor for petition pager config.

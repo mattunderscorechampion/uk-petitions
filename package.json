@@ -16,7 +16,12 @@
       "gulp-jshint" : "2.0.0",
       "jshint" : "2.8.0",
       "jshint-stylish" : "2.1.0",
+      "typescript" : "1.7.5",
+      "tslint" : "3.3.0",
       "gulp-jsdoc" : "0.1.5",
+      "gulp-typescript" : "2.10.0",
+      "gulp-typedoc" : "1.2.1",
+      "gulp-tslint" : "4.3.1",
       "mockery" : "1.4.0",
       "gulp-jasmine" : "2.2.1",
       "gulp-istanbul" : "0.10.3",
@@ -24,10 +29,11 @@
     },
 
     "scripts" : {
-        "build" : "npm install && gulp",
+        "build" : "npm run localclean && npm install && gulp",
         "list" : "npm run build && node src/examples/list-hot-petitions.js",
         "list-all" : "npm run build && node src/examples/list-all-petitions.js",
         "monitor" : "npm run build && node src/examples/monitor-petitions.js",
-        "clean" : "rm -rf node_modules"
+        "localclean" : "rm -rf target",
+        "clean" : "npm run localclean && rm -rf node_modules"
     }
 }

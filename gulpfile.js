@@ -5,7 +5,24 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     jsdoc = require('gulp-jsdoc'),
     jasmine = require('gulp-jasmine'),
-    istanbul = require('gulp-istanbul');
+    istanbul = require('gulp-istanbul'),
+    ts = require('gulp-typescript'),
+    tsdoc = require('gulp-typedoc'),
+    tslint = require('gulp-tslint');
+
+gulp.task('generate', function() {
+    var tsResult = gulp.src(['./src/*.ts'])
+        .pipe(ts({
+            target : 'ES5',
+            module : 'commonjs',
+            moduleResolution : 'node',
+            declaration : true
+        }));
+
+    tsResult
+        .js
+        .pipe(gulp.dest('target/js'));
+});
 
 gulp.task('checks', function() {
     gulp.src(['./src/*.js', './src/examples/*.js'])
@@ -18,6 +35,10 @@ gulp.task('checks', function() {
         .on('error', function(error) {
           console.error(error.message);
         });
+
+        gulp.src('./src/*.ts')
+            .pipe(tslint())
+            .pipe(tslint.report('verbose'))
 });
 
 gulp.task('test', function(done) {
@@ -42,6 +63,14 @@ gulp.task('test', function(done) {
 gulp.task('doc', function() {
     gulp.src(['./src/*.js'])
         .pipe(jsdoc('./target/doc'))
+    gulp.src(['./src/*.ts'])
+        .pipe(tsdoc({
+            target : 'ES5',
+            module : 'commonjs',
+            moduleResolution : 'node',
+            excludeNotExported: true,
+            out: './target/tsdoc'
+        }));
 });
 
-gulp.task('default', ['checks', 'test', 'doc']);
+gulp.task('default', ['generate', 'checks', 'test', 'doc']);

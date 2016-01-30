@@ -1,7 +1,7 @@
 
 'use strict';
 
-var EnrichedPetition = require('./enriched-petition');
+var EnrichedPetition = require('../target/js/enriched-petition').EnrichedPetition;
 
 function samePetitionId(petition0, petition1) {
     return petition0.id === petition1.id;
