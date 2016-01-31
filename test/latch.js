@@ -2,7 +2,7 @@
 'use strict';
 
 describe("Latch", function() {
-    var Latch = require('../src/latch');
+    var Latch = require('../target/js/latch').Latch;
 
     it('released if no count down', function(done) {
         var latch = new Latch(0);
