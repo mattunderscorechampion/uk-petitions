@@ -143,7 +143,7 @@ export class EnrichedPetition {
     scheduled_debate_date: Date;
 
     /**
-     * The constructor foe enriched petitions.
+     * The constructor for enriched petitions.
      * @param rawPetition The petiton from the data source.
      */
     constructor(rawPetition: any) {
