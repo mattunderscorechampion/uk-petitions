@@ -3,7 +3,7 @@
 
 describe("Petition queries", function() {
     var queries = require('../src/petition-queries'),
-        EnrichedPetition = require('../target/js/enriched-petition').EnrichedPetition;
+        EnrichedPetition = require('../target/js/public/enriched-petition').EnrichedPetition;
 
     var petition0With5 = {
         id : 0,

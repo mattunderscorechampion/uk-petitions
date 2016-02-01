@@ -6,11 +6,11 @@ var https = require("https"),
     EventEmitter = require('events'),
     PetitionLoader = require('./petition-loader'),
     PetitionPageLoader = require('./petition-page-loader'),
-    Latch = require('../target/js/latch').Latch,
+    Latch = require('../target/js/private/latch').Latch,
     LoaderExecutor = require('./loader-executor'),
     petitionUtil = require('./petition-util'),
     equal = require('deep-equal'),
-    EnrichedPetition = require('../target/js/enriched-petition').EnrichedPetition;
+    EnrichedPetition = require('../target/js/public/enriched-petition').EnrichedPetition;
 
 /**
  * Private constructor for petition pager config.

@@ -1,7 +1,6 @@
 
 'use strict';
 
-/// <reference path="src/util.d.ts" />
 import util = require('util');
 
 function stringToDate(dateString: string): Date {

@@ -11,7 +11,7 @@ var gulp = require('gulp'),
     tslint = require('gulp-tslint');
 
 gulp.task('generate', function() {
-    var tsResult = gulp.src(['./src/*.ts'])
+    var tsResult = gulp.src(['./src/ts/*/*.ts'])
         .pipe(ts({
             target : 'ES5',
             module : 'commonjs',
@@ -63,7 +63,7 @@ gulp.task('test', function(done) {
 gulp.task('doc', function() {
     gulp.src(['./src/*.js'])
         .pipe(jsdoc('./target/doc'))
-    gulp.src(['./src/*.ts'])
+    gulp.src(['./src/ts/public/*.ts'])
         .pipe(tsdoc({
             target : 'ES5',
             module : 'commonjs',
