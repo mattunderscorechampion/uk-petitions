@@ -27,11 +27,11 @@ describe("Petition utilities", function() {
     });
 
     it('supports HTTPS requests', function() {
-        var util = require('../src/petition-util');
+        var util = require('../target/js/private/petition-util');
         expect(util.getJsonOverHttps).toBeDefined();
     });
     it('fires an event when http requests complete', function(done) {
-        var util = require('../src/petition-util');
+        var util = require('../target/js/private/petition-util');
 
         var responseListener;
         when(httpsMock.get)
@@ -80,7 +80,7 @@ describe("Petition utilities", function() {
         responseListener(response);
     });
     it('fires an error event when http returns non-200 status code', function(done) {
-        var util = require('../src/petition-util');
+        var util = require('../target/js/private/petition-util');
 
         var responseListener;
         when(httpsMock.get)

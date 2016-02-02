@@ -1,6 +1,4 @@
 
-'use strict';
-
 /**
  * Executor for loader tasks. Listens to the 'error' and 'loaded' events of an
  * emitter returned by the task to poll after task has finished.

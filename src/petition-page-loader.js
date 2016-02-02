@@ -2,7 +2,7 @@
 'use strict';
 
 var Loading = require('./loading'),
-    petitionUtil = require('./petition-util');
+    petitionUtil = require('../target/js/private/petition-util');
 
 var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 

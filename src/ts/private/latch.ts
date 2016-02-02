@@ -1,6 +1,4 @@
 
-'use strict';
-
 /**
  * Latch to invoke callbacks when a counter reaches 0.
  */

@@ -8,7 +8,7 @@ var https = require("https"),
     PetitionPageLoader = require('./petition-page-loader'),
     Latch = require('../target/js/private/latch').Latch,
     LoaderExecutor = require('../target/js/private/loader-executor').LoaderExecutor,
-    petitionUtil = require('./petition-util'),
+    petitionUtil = require('../target/js/private/petition-util'),
     equal = require('deep-equal'),
     EnrichedPetition = require('../target/js/public/enriched-petition').EnrichedPetition;
 

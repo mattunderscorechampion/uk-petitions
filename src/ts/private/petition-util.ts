@@ -1,8 +1,9 @@
 
-'use strict';
+///<reference path="buffer.d.ts" />
 
-var https = require("https"),
-    EventEmitter = require('events');
+import events = require('event-emitter');
+import EventEmitter = require('events');
+import https = require('https');
 
 /**
  * Request a JSON object over HTTPS. Returns an emitter. Emits 'response',
@@ -12,7 +13,7 @@ var https = require("https"),
  * parsed from the JSON data.
  * If there is an error making the request an error event will be emitted.
  */
-var getJsonOverHttps = function (options) {
+export function getJsonOverHttps(options: any): events.EventEmitter {
     var emitter = new EventEmitter();
 
     https.get(options, function (res) {
@@ -20,12 +21,12 @@ var getJsonOverHttps = function (options) {
         if (res.statusCode === 200) {
             var buffers = [];
             res
-                .on('data', function (d) {
+                .on('data', function (d: Buffer) {
                     buffers.push(d);
                 })
                 .on('end', function () {
                     var completeBuffer = Buffer.concat(buffers);
-                    emitter.emit('data', JSON.parse(completeBuffer));
+                    emitter.emit('data', JSON.parse(completeBuffer.toString('utf8')));
                 });
         }
         else {
@@ -41,7 +42,7 @@ var getJsonOverHttps = function (options) {
  * Freeze the object subgraph.
  * @property {object} obj - The root object to freeze
  */
-function recursiveFreeze(obj) {
+export function recursiveFreeze(obj: any): any {
     if (obj === undefined || obj === null || typeof obj !== 'object') {
         return obj;
     }
@@ -51,8 +52,3 @@ function recursiveFreeze(obj) {
     });
     return Object.freeze(obj);
 }
-
-module.exports = {
-    getJsonOverHttps : getJsonOverHttps,
-    recursiveFreeze : recursiveFreeze
-};
