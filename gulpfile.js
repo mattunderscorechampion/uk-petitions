@@ -8,40 +8,35 @@ var gulp = require('gulp'),
     istanbul = require('gulp-istanbul'),
     ts = require('gulp-typescript'),
     tsdoc = require('gulp-typedoc'),
-    tslint = require('gulp-tslint');
+    tslint = require('gulp-tslint'),
+    merge = require('merge-stream');
 
 gulp.task('generate', function() {
-    var tsResult = gulp.src(['./src/ts/*/*.ts'])
+    return gulp.src(['./src/ts/*/*.ts'])
         .pipe(ts({
             target : 'ES5',
             module : 'commonjs',
             moduleResolution : 'node',
             declaration : true
-        }));
-
-    tsResult
+        }))
         .js
         .pipe(gulp.dest('target/js'));
 });
 
-gulp.task('checks', function() {
-    gulp.src(['./src/*.js', './src/examples/*.js'])
+gulp.task('checks', ['generate'], function() {
+    var checkJs = gulp.src(['./src/*.js', './src/examples/*.js'])
         .pipe(jshint({node: true}))
         .pipe(jshint.reporter('jshint-stylish'))
         .pipe(jshint.reporter('fail'))
-        .on('end', function() {
-          console.log('Checks complete');
-        })
-        .on('error', function(error) {
-          console.error(error.message);
-        });
 
-        gulp.src('./src/*.ts')
-            .pipe(tslint())
-            .pipe(tslint.report('verbose'))
+    var checkTs = gulp.src('./src/*.ts')
+        .pipe(tslint())
+        .pipe(tslint.report('verbose'));
+
+    return merge(checkJs, checkTs);
 });
 
-gulp.task('test', function(done) {
+gulp.task('test', ['checks'], function(done) {
     gulp.src(["./src/*.js"])
         .pipe(istanbul({
             includeUntested : true
@@ -60,10 +55,10 @@ gulp.task('test', function(done) {
         });
 });
 
-gulp.task('doc', function() {
-    gulp.src(['./src/*.js'])
-        .pipe(jsdoc('./target/doc'))
-    gulp.src(['./src/ts/public/*.ts'])
+gulp.task('doc', ['test'], function() {
+    var docJs = gulp.src(['./src/*.js'])
+        .pipe(jsdoc('./target/doc'));
+    var docTs = gulp.src(['./src/ts/public/*.ts'])
         .pipe(tsdoc({
             target : 'ES5',
             module : 'commonjs',
@@ -71,6 +66,8 @@ gulp.task('doc', function() {
             excludeNotExported: true,
             out: './target/tsdoc'
         }));
+
+    return merge(docJs, docTs);
 });
 
 gulp.task('default', ['generate', 'checks', 'test', 'doc']);

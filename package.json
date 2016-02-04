@@ -25,7 +25,8 @@
       "mockery" : "1.4.0",
       "gulp-jasmine" : "2.2.1",
       "gulp-istanbul" : "0.10.3",
-      "saywhen" : "1.1.0"
+      "saywhen" : "1.1.0",
+      "merge-stream" : "1.0.0"
     },
 
     "scripts" : {
