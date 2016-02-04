@@ -1,15 +1,13 @@
 
-'use strict';
-
-function printError (error) {
+export function error (error) {
     console.error('Error: ' + error.message);
 }
 
-function action (data) {
+export function action (data) {
     console.log(data.attributes.action);
 }
 
-function byCountry (data) {
+export function byCountry (data) {
     console.log(data.attributes.action);
     var total_signatures = data.attributes.signature_count;
     data.attributes.signatures_by_country.forEach(function (pair) {
@@ -18,7 +16,7 @@ function byCountry (data) {
     });
 }
 
-function withTop5Countries (data) {
+export function withTop5Countries (data) {
     console.log('Action: %s', data.attributes.action);
     console.log('Top 5 countries:');
     var total_signatures = data.attributes.signature_count;
@@ -34,12 +32,12 @@ function withTop5Countries (data) {
         });
 }
 
-function withSignatureCount (data) {
+export function withSignatureCount (data) {
     console.log('Action: %s', data.attributes.action);
     console.log('Signatures: %d', data.attributes.signature_count);
 }
 
-function withSignatureCountDiff (data, oldData) {
+export function withSignatureCountDiff (data, oldData) {
     if (oldData) {
         console.log('Action: %s', data.attributes.action);
         console.log('Signatures: %d (was %d)', data.attributes.signature_count, oldData.attributes.signature_count);
@@ -50,50 +48,6 @@ function withSignatureCountDiff (data, oldData) {
     }
 }
 
-function attributes (data) {
+export function attributes (data) {
     console.log(data.attributes);
 }
-
-module.exports = {
-    /**
-     * Print out an error.
-     * @function
-     */
-    error : printError,
-
-    /**
-     * Print out the action of a petition.
-     * @function
-     */
-    action : action,
-
-    /**
-     * Print out all the action and break down of signatures by country.
-     * @function
-     */
-    byCountry : byCountry,
-
-    /**
-     * Print out all the action and break down of signatures of the top 5 countries.
-     * @function
-     */
-    withTop5Countries : withTop5Countries,
-
-    /**
-     * Print out all the action and total signature count.
-     * @function
-     */
-    withSignatureCount : withSignatureCount,
-
-    /**
-     * Print out all the action, total signature count and previous signature count.
-     * @function
-     */
-    withSignatureCountDiff : withSignatureCountDiff,
-
-    /**
-     * Print out all the attributes of a petition.
-     * @function
-     */
-    attributes : attributes
-};

@@ -2,7 +2,7 @@
 'use strict';
 
 var Monitor = require('../petitions-monitor'),
-    output = require('../simple-output'),
+    output = require('../../target/js/private/simple-output'),
     util = require('util'),
     queries = require('../petition-queries');
 

@@ -81,5 +81,5 @@ module.exports = {
     PetitionPageLoader : require('./petition-page-loader'),
     PetitionPager : require('./petition-pager'),
     queries : require('./petition-queries'),
-    output : require('./simple-output')
+    output : require('../target/js/private/simple-output')
 };
