@@ -1,8 +1,7 @@
 
-///<reference path="buffer.d.ts" />
+/// <reference path="../node.d.ts" />
 
-import events = require('event-emitter');
-import EventEmitter = require('events');
+import events = require('events');
 import https = require('https');
 
 /**
@@ -14,7 +13,7 @@ import https = require('https');
  * If there is an error making the request an error event will be emitted.
  */
 export function getJsonOverHttps(options: any): events.EventEmitter {
-    var emitter = new EventEmitter();
+    var emitter = new events.EventEmitter();
 
     https.get(options, function (res) {
         emitter.emit('response', res);

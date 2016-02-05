@@ -1,5 +1,5 @@
 
-'use strict';
+/// <reference path="../node.d.ts" />
 
 import util = require('util');
 

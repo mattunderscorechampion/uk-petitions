@@ -2,7 +2,7 @@
 'use strict';
 
 describe("Loading", function() {
-    var Loading = require('../src/loading'),
+    var Loading = require('../target/js/public/loading').Loading,
         EventEmitter = require('events');
 
     it('is an emitter', function() {

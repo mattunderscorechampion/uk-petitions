@@ -23,3 +23,19 @@ declare var Buffer: {
     isBuffer(obj: any): obj is Buffer;
     concat(list: Buffer[], totalLength?: number): Buffer;
 };
+
+declare module "util" {
+    export function format(format: string, ...param: any[]): string;
+}
+
+declare module "https" {
+    import eventEmitter = require('events');
+    export function get(options: any, callback: {(response: any): void;}): eventEmitter.EventEmitter;
+}
+
+declare module "events" {
+    export class EventEmitter {
+        emit(eventName: string, eventObject: any): EventEmitter;
+        on(eventName: string, listener: {(eventObject: any): void;}): EventEmitter;
+    }
+}
