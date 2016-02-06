@@ -1,8 +1,10 @@
 
-'use strict';
 
-var Loading = require('../target/js/public/loading').Loading,
-    petitionUtil = require('../target/js/private/petition-util');
+
+/// <reference path="../node.d.ts" />
+
+import loading = require('./loading');
+import petitionUtil = require('../private/petition-util');
 
 var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 
@@ -12,21 +14,26 @@ var getJsonOverHttps = petitionUtil.getJsonOverHttps;
  * @param {object} agent - The HTTP agemt to use to make requests.
  * @classdesc Loads the data of a petition. It is stateless.
  */
-function PetitionLoader(agent) {
+export class PetitionLoader {
+    private agent: any;
+
+    constructor(agent: any) {
+        this.agent = agent;
+    }
     /**
      * Load the petition by Id. Returns an emitter. Emits either 'loaded' or 'error' events.
      * The 'loaded' event is passed the data of the petition.
      * The 'error' event is passed the Error.
      * @return {Loading} - The emitter
      */
-    this.load = function load(petitionId) {
-        var emitter = new Loading();
+    load(petitionId: number): loading.Loading {
+        var emitter = new loading.Loading();
 
         getJsonOverHttps({
             hostname: 'petition.parliament.uk',
             port: 443,
             path: '/petitions/' + petitionId + '.json',
-            agent: agent
+            agent: this.agent
         })
         .on('error', emitter.error.bind(emitter))
         .on('data', function(data) {
@@ -34,7 +41,5 @@ function PetitionLoader(agent) {
         });
 
         return emitter;
-    };
+    }
 }
-
-module.exports = PetitionLoader;

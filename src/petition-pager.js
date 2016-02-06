@@ -4,7 +4,7 @@
 var https = require("https"),
     util = require('util'),
     EventEmitter = require('events'),
-    PetitionLoader = require('./petition-loader'),
+    PetitionLoader = require('../target/js/public/petition-loader').PetitionLoader,
     PetitionPageLoader = require('./petition-page-loader'),
     Latch = require('../target/js/private/latch').Latch,
     LoaderExecutor = require('../target/js/private/loader-executor').LoaderExecutor,
