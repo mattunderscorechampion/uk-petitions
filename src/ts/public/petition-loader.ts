@@ -1,6 +1,4 @@
 
-
-
 /// <reference path="../node.d.ts" />
 
 import loading = require('./loading');

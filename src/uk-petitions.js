@@ -78,7 +78,7 @@
 module.exports = {
     PetitionsMonitor : require('./petitions-monitor'),
     PetitionLoader : require('../target/js/public/petition-loader').PetitionLoader,
-    PetitionPageLoader : require('./petition-page-loader'),
+    PetitionPageLoader : require('../target/js/public/petition-page-loader'),
     PetitionPager : require('./petition-pager'),
     queries : require('./petition-queries'),
     output : require('../target/js/private/simple-output')
