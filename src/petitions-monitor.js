@@ -4,7 +4,7 @@
 var util = require('util'),
     queries = require('./petition-queries'),
     EventEmitter = require('events'),
-    PetitionPager = require('./petition-pager'),
+    PetitionPager = require('../target/js/public/petition-pager').PetitionPager,
     equal = require('deep-equal');
 
 function logDebug () {

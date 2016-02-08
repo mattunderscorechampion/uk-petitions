@@ -31,11 +31,19 @@ declare module "util" {
 declare module "https" {
     import eventEmitter = require('events');
     export function get(options: any, callback: {(response: any): void;}): eventEmitter.EventEmitter;
+    export class Agent {
+        constructor(options: any);
+    }
 }
 
 declare module "events" {
     export class EventEmitter {
-        emit(eventName: string, eventObject: any): EventEmitter;
+        emit(eventName: string, ...eventObjects: any[]): EventEmitter;
         on(eventName: string, listener: {(eventObject: any): void;}): EventEmitter;
     }
+}
+
+declare module "deep-equal" {
+    function equal(...param: any[]): boolean;
+    export = equal;
 }

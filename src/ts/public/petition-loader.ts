@@ -15,7 +15,7 @@ var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 export class PetitionLoader {
     private agent: any;
 
-    constructor(agent: any) {
+    constructor(agent?: any) {
         this.agent = agent;
     }
     /**
