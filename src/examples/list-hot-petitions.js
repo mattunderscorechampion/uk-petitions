@@ -1,8 +1,8 @@
 
 'use strict';
 
-var PetitionPager = require('../petition-pager'),
-    output = require('../simple-output');
+var PetitionPager = require('../../target/js/public/petition-pager').PetitionPager,
+    output = require('../../target/js/private/simple-output');
 
 new PetitionPager()
     .on('error', output.error)
