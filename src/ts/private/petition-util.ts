@@ -12,7 +12,7 @@ import https = require('https');
  * parsed from the JSON data.
  * If there is an error making the request an error event will be emitted.
  */
-export function getJsonOverHttps(options: any): events.EventEmitter {
+export function getJsonOverHttps(options: https.RequestOptions): events.EventEmitter {
     var emitter = new events.EventEmitter();
 
     https.get(options, function (res) {

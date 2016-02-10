@@ -2,6 +2,7 @@
 /// <reference path="../node.d.ts" />
 
 import loading = require('./loading');
+import https = require('https');
 import petitionUtil = require('../private/petition-util');
 
 var getJsonOverHttps = petitionUtil.getJsonOverHttps;
@@ -13,9 +14,9 @@ var getJsonOverHttps = petitionUtil.getJsonOverHttps;
  * @classdesc Loads the data of a petition. It is stateless.
  */
 export class PetitionLoader {
-    private agent: any;
+    private agent: https.Agent;
 
-    constructor(agent?: any) {
+    constructor(agent?: https.Agent) {
         this.agent = agent;
     }
     /**

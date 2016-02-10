@@ -30,10 +30,20 @@ declare module "util" {
 
 declare module "https" {
     import eventEmitter = require('events');
-    export function get(options: any, callback: {(response: any): void;}): eventEmitter.EventEmitter;
-    export class Agent {
-        constructor(options: any);
+    export interface AgentOptions {
+        keepAlive?: boolean;
+        maxSockets?: number;
     }
+    export class Agent {
+        constructor(options: AgentOptions);
+    }
+    export interface RequestOptions {
+        hostname: string;
+        path: string;
+        port?: number;
+        agent?: Agent;
+    }
+    export function get(options: RequestOptions, callback: {(response: any): void;}): eventEmitter.EventEmitter;
 }
 
 declare module "events" {

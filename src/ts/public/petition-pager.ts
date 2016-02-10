@@ -62,7 +62,7 @@ export class PetitionPagerConfig {
  */
 export class PetitionPager extends events.EventEmitter {
     private conf: PetitionPagerConfig;
-    private agent: any = new https.Agent({ keepAlive: true, maxSockets: 1 });
+    private agent: https.Agent = new https.Agent({ keepAlive: true, maxSockets: 1 });
     private petitionLoader: petitionLoader.PetitionLoader = new petitionLoader.PetitionLoader();
     private pageLoader: petitionPageLoader.PetitionPageLoader = new petitionPageLoader.PetitionPageLoader();
     private executor: loaderExecutor.LoaderExecutor;
