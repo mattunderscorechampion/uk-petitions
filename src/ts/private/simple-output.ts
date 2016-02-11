@@ -1,6 +1,4 @@
 
-/// <reference path="../node.d.ts" />
-
 export function error (error: Error) {
     console.error('Error: ' + error.message);
 }
