@@ -1,7 +1,9 @@
 
 /// <reference path="../node.d.ts" />
+/// <reference path="./raw-petition.d.ts" />
 
 import util = require('util');
+import raw = require('raw-petition');
 
 function stringToDate(dateString: string): Date {
     if (dateString) {
@@ -145,7 +147,7 @@ export class EnrichedPetition {
      * The constructor for enriched petitions.
      * @param rawPetition The petiton from the data source.
      */
-    constructor(rawPetition: any) {
+    constructor(rawPetition: raw.Petition) {
         this.id = rawPetition.id;
         var transform = null;
         for (var key in rawPetition.attributes) {
