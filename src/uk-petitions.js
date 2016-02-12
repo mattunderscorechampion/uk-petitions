@@ -80,6 +80,6 @@ module.exports = {
     PetitionLoader : require('../target/js/public/petition-loader').PetitionLoader,
     PetitionPageLoader : require('../target/js/public/petition-page-loader').PetitionPageLoader,
     PetitionPager : require('../target/js/public/petition-pager').PetitionPager,
-    queries : require('./petition-queries'),
+    queries : require('../target/js/public/petition-queries'),
     output : require('../target/js/private/simple-output')
 };

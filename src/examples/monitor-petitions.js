@@ -4,7 +4,7 @@
 var Monitor = require('../petitions-monitor'),
     output = require('../../target/js/private/simple-output'),
     util = require('util'),
-    queries = require('../petition-queries');
+    queries = require('../../target/js/public/petition-queries');
 
 var m = new Monitor({debug: false});
 m.addSignatureNotification = function(signatures) {

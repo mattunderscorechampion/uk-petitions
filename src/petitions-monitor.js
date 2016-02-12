@@ -2,7 +2,7 @@
 'use strict';
 
 var util = require('util'),
-    queries = require('./petition-queries'),
+    queries = require('../target/js/public/petition-queries'),
     EventEmitter = require('events'),
     PetitionPager = require('../target/js/public/petition-pager').PetitionPager,
     equal = require('deep-equal');

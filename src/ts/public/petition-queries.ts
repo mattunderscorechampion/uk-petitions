@@ -1,9 +1,10 @@
 
-'use strict';
+/// <reference path="../node.d.ts" />
+/// <reference path="./raw-petition.d.ts" />
 
-var EnrichedPetition = require('../target/js/public/enriched-petition').EnrichedPetition;
+import enriched = require('./enriched-petition');
 
-function samePetitionId(petition0, petition1) {
+function samePetitionId(petition0: enriched.EnrichedPetition, petition1: enriched.EnrichedPetition) {
     return petition0.id === petition1.id;
 }
 
@@ -18,7 +19,7 @@ var preconditions = {
 };
 
 function isEnriched(petition) {
-    return petition instanceof EnrichedPetition;
+    return petition instanceof enriched.EnrichedPetition;
 }
 
 function reachedSignatureCount(targetSignatureCount, petition) {
@@ -57,14 +58,14 @@ function debateTranscriptAvailable(petition) {
     }
 }
 
-function debateScheduled(petition) {
+function debateScheduled(petition): boolean {
     if (isEnriched(petition)) {
         return petition.scheduled_debate_date !== null;
     }
     else {
         if (petition.attributes.scheduled_debate_date) {
-            var date = new Date(petition.attributes.scheduled_debate_date);
-            return !isNaN(date);
+            var date: Date = new Date(petition.attributes.scheduled_debate_date);
+            return !isNaN(date.getTime());
         }
         return false;
     }
@@ -104,7 +105,7 @@ function debateTranscriptAvailableCheck(newData, oldData) {
     return debateTranscriptAvailable(newData) && !debateTranscriptAvailable(oldData);
 }
 
-module.exports = {
+export = {
     /**
      * Predicates that can be used to evaluate petitions.
      * @namespace

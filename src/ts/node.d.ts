@@ -13,6 +13,14 @@ interface Buffer {
     indexOf(value: string | number | Buffer, byteOffset?: number): number;
 }
 
+interface Date {
+    constructor(date: string)
+
+    getTime(): number;
+}
+
+//export function isNaN(object: any): boolean;
+
 declare var Buffer: {
     new (str: string, encoding?: string): Buffer;
     new (size: number): Buffer;
