@@ -25,7 +25,7 @@ import enrichedPetition = require('./enriched-petition');
  */
 export class PetitionPagerConfig {
     loadInterval = 500;
-    debug = function(message: string, objects?: any[]) {};
+    debug = function(message: string, ...objects: any[]) {};
     loadDetail = false;
     transformer = function (raw) {
         return petitionUtil.recursiveFreeze(new enrichedPetition.EnrichedPetition(raw));

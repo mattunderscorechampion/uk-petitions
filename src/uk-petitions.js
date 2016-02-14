@@ -76,7 +76,7 @@
  * @author Matt Champion
  */
 module.exports = {
-    PetitionsMonitor : require('./petitions-monitor'),
+    PetitionsMonitor : require('../target/js/public/petitions-monitor').PetitionsMonitor,
     PetitionLoader : require('../target/js/public/petition-loader').PetitionLoader,
     PetitionPageLoader : require('../target/js/public/petition-page-loader').PetitionPageLoader,
     PetitionPager : require('../target/js/public/petition-pager').PetitionPager,

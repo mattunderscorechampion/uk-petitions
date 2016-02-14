@@ -1,12 +1,12 @@
 
 'use strict';
 
-var Monitor = require('../petitions-monitor'),
+var monitor = require('../../target/js/public/petitions-monitor'),
     output = require('../../target/js/private/simple-output'),
     util = require('util'),
     queries = require('../../target/js/public/petition-queries');
 
-var m = new Monitor({debug: false});
+var m = new monitor.PetitionsMonitor({debug: false, passDebug: true});
 m.addSignatureNotification = function(signatures) {
     var event = util.format('reached-%d-signatures', signatures);
     this.addMonitorDeltaEvent(event, queries.checks.delta.reachedSignatureDeltaCountProvider(signatures));

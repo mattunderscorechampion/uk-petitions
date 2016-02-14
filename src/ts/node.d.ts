@@ -57,7 +57,8 @@ declare module "https" {
 declare module "events" {
     export class EventEmitter {
         emit(eventName: string, ...eventObjects: any[]): EventEmitter;
-        on(eventName: string, listener: {(eventObject: any): void;}): EventEmitter;
+        on(eventName: string, listener: {(...eventObjects: any[]): void;}): EventEmitter;
+        removeAllListeners(eventName: string): EventEmitter;
     }
 }
 

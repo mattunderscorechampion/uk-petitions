@@ -1,11 +1,12 @@
 
-'use strict';
 
-var util = require('util'),
-    queries = require('../target/js/public/petition-queries'),
-    EventEmitter = require('events'),
-    PetitionPager = require('../target/js/public/petition-pager').PetitionPager,
-    equal = require('deep-equal');
+/// <reference path="../node.d.ts" />
+
+import events = require('events');
+import util = require('util');
+import queries = require('./petition-queries');
+import petitionPager = require('./petition-pager');
+import equal = require('deep-equal');
 
 function logDebug () {
     console.log.apply(null, arguments);
@@ -75,38 +76,40 @@ function standardRemover (config, summary, petitions) {
   * @property {function} remover - The remover function.
   * @property {boolean} raw - If the petitions loaded should be raw.
   */
-function PetitionsMonitorConfig(config) {
-    this.initialInterval = 200;
-    this.interval = 2000;
-    this.passDebug = false;
-    this.debug = function() {};
-    this.loadDetail = false;
-    this.accepter = standardAccepter.bind(null, this);
-    this.remover = standardRemover.bind(null, this);
-    this.raw = false;
+class PetitionsMonitorConfig {
+    initialInterval = 200;
+    interval = 2000;
+    passDebug: boolean = false;
+    debug = function(message: string, ...objects: any[]) {};
+    loadDetail = false;
+    accepter = standardAccepter.bind(null, this);
+    remover = standardRemover.bind(null, this);
+    raw: boolean = false;
 
-    if (config) {
-        if (config.initialInterval) {
-            this.initialInterval = config.initialInterval;
-        }
-        if (config.interval) {
-            this.interval = config.interval;
-        }
-        if (config.debug) {
-            this.passDebug = true;
-            this.debug = logDebug;
-        }
-        if (config.loadDetail !== undefined) {
-            this.loadDetail = config.loadDetail;
-        }
-        if (config.accepter !== undefined) {
-            this.accepter = config.accepter;
-        }
-        if (config.remover !== undefined) {
-            this.remover = config.remover;
-        }
-        if (config.raw) {
-            this.raw = true;
+    constructor(config?: any) {
+        if (config) {
+            if (config.initialInterval) {
+                this.initialInterval = config.initialInterval;
+            }
+            if (config.interval) {
+                this.interval = config.interval;
+            }
+            if (config.debug) {
+                this.passDebug = true;
+                this.debug = logDebug;
+            }
+            if (config.loadDetail !== undefined) {
+                this.loadDetail = config.loadDetail;
+            }
+            if (config.accepter !== undefined) {
+                this.accepter = config.accepter;
+            }
+            if (config.remover !== undefined) {
+                this.remover = config.remover;
+            }
+            if (config.raw) {
+                this.raw = true;
+            }
         }
     }
 }
@@ -121,46 +124,49 @@ function PetitionsMonitorConfig(config) {
  * @fires PetitionsMonitor#initial-load
  * @augments EventEmitter
  */
-function PetitionsMonitor(config) {
-    EventEmitter.call(this);
-    var self = this,
-        events = [],
-        deltaEvents = [],
-        conf = new PetitionsMonitorConfig(config);
+export class PetitionsMonitor extends events.EventEmitter {
+    private events = [];
+    private deltaEvents = [];
+    private conf: PetitionsMonitorConfig;
 
-    conf.debug('Debug enabled');
+    constructor(config: any) {
+        super();
+        this.conf = new PetitionsMonitorConfig(config);
+        this.conf.debug('Debug enabled');
+    }
 
     /**
      * Add an event to emit when the check function returns true. The check function is passed the the new data. Returns the monitor.
      * @param {string} event - The name of the event to add.
      * @param {function} check - The predicate required to emit the event.
      */
-    this.addMonitorEvent = function(event, check) {
-        events.push({event : event, check : check});
-        return self;
-    };
+    addMonitorEvent(event, check): PetitionsMonitor {
+        this.events.push({event : event, check : check});
+        return this;
+    }
 
     /**
      * Add an event to emit when the check function returns true. The check function is passed the the new and old data. Returns the monitor.
      * @param {string} event - The name of the event to add.
      * @param {function} check - The check required to emit the event.
      */
-    this.addMonitorDeltaEvent = function(event, check) {
-        deltaEvents.push({event : event, check : check});
-        return self;
-    };
+    addMonitorDeltaEvent(event, check): PetitionsMonitor {
+        this.deltaEvents.push({event : event, check : check});
+        return this;
+    }
 
     /**
      * Start the monitor. Returns the monitor.
      */
-    this.start = function () {
-        conf.debug('Starting monitor');
-        var pager = new PetitionPager({
-            loadInterval : conf.initialInterval,
-            debug : conf.passDebug,
-            loadDetail : conf.loadDetail,
-            transformer : conf.raw ? function (petiton) { return petiton; } : null
+    start(): PetitionsMonitor {
+        this.conf.debug('Starting monitor');
+        var pager: petitionPager.PetitionPager = new petitionPager.PetitionPager({
+            loadInterval : this.conf.initialInterval,
+            debug : this.conf.passDebug,
+            loadDetail : this.conf.loadDetail,
+            transformer : this.conf.raw ? function (petiton) { return petiton; } : null
         });
+        var self: PetitionsMonitor = this;
 
         pager
         .on('petition', function(newData, oldData) {
@@ -173,7 +179,7 @@ function PetitionsMonitor(config) {
             }
 
             // Check for events to emit based on the current value
-            events.forEach(function(registeredEvent) {
+            self.events.forEach(function(registeredEvent) {
                 if (registeredEvent.check(newData)) {
                     self.emit(registeredEvent.event, newData);
                 }
@@ -181,7 +187,7 @@ function PetitionsMonitor(config) {
 
             if (oldData) {
                 // Check for events to emit based on the current and previous values
-                deltaEvents.forEach(function(registeredEvent) {
+                self.deltaEvents.forEach(function(registeredEvent) {
                     if (registeredEvent.check(newData, oldData)) {
                         self.emit(registeredEvent.event, newData);
                     }
@@ -189,27 +195,26 @@ function PetitionsMonitor(config) {
             }
         })
         .on('removed-petition', function (newData, oldData) {
-            self.emit('removed-petition', newData, oldData);
+            this.emit('removed-petition', newData, oldData);
         })
         .on('loaded', function() {
-            conf.debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
+            this.conf.debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
             pager
-                .setPageLoadInterval(conf.interval)
+                .setPageLoadInterval(this.conf.interval)
                 .removeAllListeners('loaded')
                 .on('loaded', function() {
-                    conf.debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
+                    self.conf.debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
                     self.emit('loaded', pager.petitions);
-                    pager.populate(conf.accepter, conf.remover);
+                    pager.populate(self.conf.accepter, self.conf.remover);
                 });
-            self.emit('initial-load', pager.petitions);
-            pager.populate(conf.accepter, conf.remover);
-        })
-        .populate(conf.accepter, conf.remover);
+            this.emit('initial-load', pager.petitions);
+            pager.populate(this.conf.accepter, this.conf.remover);
+        });
+        pager.populate(this.conf.accepter, this.conf.remover);
 
-        return self;
-    };
+        return this;
+    }
 }
-util.inherits(PetitionsMonitor, EventEmitter);
 
 /**
  * New petition event.
@@ -227,5 +232,3 @@ util.inherits(PetitionsMonitor, EventEmitter);
  * Emited after all the data has been loaded for the first time.
  * @event PetitionsMonitor#initial-load
  */
-
-module.exports = PetitionsMonitor;
