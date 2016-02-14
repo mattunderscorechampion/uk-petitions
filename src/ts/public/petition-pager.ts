@@ -161,7 +161,7 @@ export class PetitionPager extends events.EventEmitter {
                     }
                     else {
                         self.detailLoader(summary.id, summary.attributes.action, latch, function(data) {
-                            self.conf.debug('Petition \'%s\' detail stored', summary.attributes.action);
+                            self.conf.debug('Petition \'%s\' detail removed', summary.attributes.action);
                             self.removePetitionData(data);
                         });
                     }
