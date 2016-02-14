@@ -195,10 +195,10 @@ export class PetitionsMonitor extends events.EventEmitter {
             }
         })
         .on('removed-petition', function (newData, oldData) {
-            this.emit('removed-petition', newData, oldData);
+            self.emit('removed-petition', newData, oldData);
         })
         .on('loaded', function() {
-            this.conf.debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
+            self.conf.debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
             pager
                 .setPageLoadInterval(this.conf.interval)
                 .removeAllListeners('loaded')
@@ -207,12 +207,12 @@ export class PetitionsMonitor extends events.EventEmitter {
                     self.emit('loaded', pager.petitions);
                     pager.populate(self.conf.accepter, self.conf.remover);
                 });
-            this.emit('initial-load', pager.petitions);
-            pager.populate(this.conf.accepter, this.conf.remover);
+            self.emit('initial-load', pager.petitions);
+            pager.populate(self.conf.accepter, self.conf.remover);
         });
-        pager.populate(this.conf.accepter, this.conf.remover);
+        pager.populate(self.conf.accepter, self.conf.remover);
 
-        return this;
+        return self;
     }
 }
 
