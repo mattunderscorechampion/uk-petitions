@@ -62,13 +62,14 @@ gulp.task('js-doc', function() {
         .pipe(jsdoc('./target/doc'));
 });
 
-gulp.task('ts-doc', ['generate'], function() {
+gulp.task('ts-doc', function() {
     return gulp.src(['./src/ts/public/*.ts'])
         .pipe(tsdoc({
             target : 'ES5',
             module : 'commonjs',
             moduleResolution : 'node',
             excludeNotExported: true,
+            excludeExternals: true,
             out: './target/tsdoc'
         }));
 });
