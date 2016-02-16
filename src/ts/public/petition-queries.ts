@@ -4,26 +4,22 @@
 
 import enriched = require('./enriched-petition');
 
-function samePetitionId(petition0: enriched.EnrichedPetition, petition1: enriched.EnrichedPetition) {
+var samePetitionId = function(petition0: enriched.EnrichedPetition, petition1: enriched.EnrichedPetition) {
     return petition0.id === petition1.id;
 }
 
-function samePetitionIdPrecondition(petition0, petition1) {
+var samePetitionIdPreconditionI = function(petition0, petition1) {
     if (!samePetitionId(petition0, petition1)) {
         throw new Error('Petition IDs should be the same but are different');
     }
 }
 
-var preconditions = {
-    samePetitionId : samePetitionIdPrecondition
-};
-
-function isEnriched(petition) {
+var isEnrichedI = function(petition) {
     return petition instanceof enriched.EnrichedPetition;
 }
 
-function reachedSignatureCount(targetSignatureCount, petition) {
-    if (isEnriched(petition)) {
+var reachedSignatureCountI = function(targetSignatureCount, petition) {
+    if (isEnrichedI(petition)) {
         return petition.signature_count >= targetSignatureCount;
     }
     else {
@@ -31,8 +27,8 @@ function reachedSignatureCount(targetSignatureCount, petition) {
     }
 }
 
-function governmentResponded(petition) {
-    if (isEnriched(petition)) {
+var governmentRespondedI = function(petition) {
+    if (isEnrichedI(petition)) {
         return petition.government_response !== null;
     }
     else {
@@ -40,8 +36,8 @@ function governmentResponded(petition) {
     }
 }
 
-function debated(petition) {
-    if (isEnriched(petition)) {
+var debatedI = function(petition) {
+    if (isEnrichedI(petition)) {
         return petition.debate !== null;
     }
     else {
@@ -49,8 +45,8 @@ function debated(petition) {
     }
 }
 
-function debateTranscriptAvailable(petition) {
-    if (isEnriched(petition)) {
+var debateTranscriptAvailableI = function(petition) {
+    if (isEnrichedI(petition)) {
         return petition.debate !== null && petition.debate.transcript_url !== null;
     }
     else {
@@ -58,8 +54,8 @@ function debateTranscriptAvailable(petition) {
     }
 }
 
-function debateScheduled(petition): boolean {
-    if (isEnriched(petition)) {
+var debateScheduledI = function(petition): boolean {
+    if (isEnrichedI(petition)) {
         return petition.scheduled_debate_date !== null;
     }
     else {
@@ -71,162 +67,159 @@ function debateScheduled(petition): boolean {
     }
 }
 
-function debateRescheduled(newPetition, oldPetition) {
-    preconditions.samePetitionId(newPetition, oldPetition);
-    if (isEnriched(newPetition) && isEnriched(oldPetition)) {
-        return debateScheduled(newPetition) && debateScheduled(oldPetition) && newPetition.scheduled_debate_date.valueOf() !== oldPetition.scheduled_debate_date.valueOf();
+var debateRescheduledI = function(newPetition, oldPetition) {
+    samePetitionIdPreconditionI(newPetition, oldPetition);
+    if (isEnrichedI(newPetition) && isEnrichedI(oldPetition)) {
+        return debateScheduledI(newPetition) && debateScheduledI(oldPetition) && newPetition.scheduled_debate_date.valueOf() !== oldPetition.scheduled_debate_date.valueOf();
     }
     else {
-        return debateScheduled(newPetition) && debateScheduled(oldPetition) && newPetition.attributes.scheduled_debate_date !== oldPetition.attributes.scheduled_debate_date;
+        return debateScheduledI(newPetition) && debateScheduledI(oldPetition) && newPetition.attributes.scheduled_debate_date !== oldPetition.attributes.scheduled_debate_date;
     }
 }
 
-function deltaCheck(predicate, newData, oldData) {
-    preconditions.samePetitionId(oldData, newData);
+var deltaCheckI = function(predicate, newData, oldData) {
+    samePetitionIdPreconditionI(oldData, newData);
     return predicate(newData) && !predicate(oldData);
 }
 
-function reachedSignatureDeltaCountProvider(targetSignatureCount) {
-    return deltaCheck.bind(null, reachedSignatureCount.bind(null, targetSignatureCount));
+var reachedSignatureDeltaCountProviderI = function(targetSignatureCount: number): {(petition: any): boolean;} {
+    return deltaCheckI.bind(null, reachedSignatureCountI.bind(null, targetSignatureCount));
 }
 
-function governmentRespondedCheck(newData, oldData) {
-    preconditions.samePetitionId(oldData, newData);
-    return governmentResponded(newData) && !governmentResponded(oldData);
+var governmentRespondedCheckI = function(newData, oldData) {
+    samePetitionIdPreconditionI(oldData, newData);
+    return governmentRespondedI(newData) && !governmentRespondedI(oldData);
 }
 
-function debatedCheck(newData, oldData) {
-    preconditions.samePetitionId(oldData, newData);
-    return debated(newData) && !debated(oldData);
+var debatedCheckI = function(newData, oldData) {
+    samePetitionIdPreconditionI(oldData, newData);
+    return debatedI(newData) && !debatedI(oldData);
 }
 
-function debateTranscriptAvailableCheck(newData, oldData) {
-    preconditions.samePetitionId(oldData, newData);
-    return debateTranscriptAvailable(newData) && !debateTranscriptAvailable(oldData);
+var debateTranscriptAvailableCheckI = function(newData, oldData) {
+    samePetitionIdPreconditionI(oldData, newData);
+    return debateTranscriptAvailableI(newData) && !debateTranscriptAvailableI(oldData);
 }
 
-export = {
+/**
+ * Predicates that can be used to evaluate petitions.
+ */
+export module predicates {
+    export var reached10 = reachedSignatureCountI.bind(null, 10);
+    export var reached20 = reachedSignatureCountI.bind(null, 20);
+    export var reached50 = reachedSignatureCountI.bind(null, 50);
+    export var reached100 = reachedSignatureCountI.bind(null, 100);
+    export var reached250 = reachedSignatureCountI.bind(null, 250);
+    export var reached500 = reachedSignatureCountI.bind(null, 500);
+    export var reached1_000 = reachedSignatureCountI.bind(null, 1000);
+    export var reached5_000 = reachedSignatureCountI.bind(null, 5000);
+    export var reached10_000 = reachedSignatureCountI.bind(null, 10000);
+    export var reached50_000 = reachedSignatureCountI.bind(null, 50000);
+    export var reached100_000 = reachedSignatureCountI.bind(null, 100000);
+    export var reached500_000 = reachedSignatureCountI.bind(null, 500000);
     /**
-     * Predicates that can be used to evaluate petitions.
+     * Predicate that tests if the number of signatures required for a response has been reached.
+     * @function
+     * @param {Petition} petition - A petition
+     */
+    export var reachedResponseThreshold = reachedSignatureCountI.bind(null, 10000);
+    /**
+     * Predicate that tests if the number of signatures required for a debate has been reached.
+     * @function
+     * @param {Petition} petition - A petition
+     */
+    export var reachedDebateThreshold = reachedSignatureCountI.bind(null, 100000);
+    /**
+     * Predicate that tests if the government has responded to the petition.
+     * @function
+     * @param {Petition} petition - A petition
+     */
+    export var governmentResponded = governmentRespondedI;
+    /**
+     * Predicate that tests if the petition has been debated.
+     * @function
+     * @param {Petition} petition - A petition
+     */
+    export var debated = debatedI;
+    /**
+     * Predicate that tests if the petition has been debated and a transcript is available.
+     * @function
+     * @param {Petition} petition - A petition
+     */
+    export var debateTranscriptAvailable = debateTranscriptAvailableI;
+    /**
+     * Predicate that tests if the petition has been scheduled for debate.
+     * @function
+     * @param {Petition} petition - A petition
+     */
+    export var debateScheduled = debateScheduledI;
+}
+
+/**
+ * Functions that can be used to check and compare petitions.
+ */
+export module checks {
+    /**
+     * Function that tests if two petitons have the same ID.
+     * @function
+     * @param {Petition} petition0 - A petition
+     * @param {Petition} petition1 - A petition
+     */
+    export var samePetition = samePetitionId;
+    /**
+     * Delta checks. Checks between two snapshots of the same petition.
      * @namespace
      */
-    predicates : {
-        reached10 : reachedSignatureCount.bind(null, 10),
-        reached20 : reachedSignatureCount.bind(null, 20),
-        reached50 : reachedSignatureCount.bind(null, 50),
-        reached100 : reachedSignatureCount.bind(null, 100),
-        reached250 : reachedSignatureCount.bind(null, 250),
-        reached500 : reachedSignatureCount.bind(null, 500),
-        reached1_000 : reachedSignatureCount.bind(null, 1000),
-        reached5_000 : reachedSignatureCount.bind(null, 5000),
-        reached10_000 : reachedSignatureCount.bind(null, 10000),
-        reached50_000 : reachedSignatureCount.bind(null, 50000),
-        reached100_000 : reachedSignatureCount.bind(null, 100000),
-        reached500_000 : reachedSignatureCount.bind(null, 500000),
+    export module delta {
+        export var reached10 = reachedSignatureDeltaCountProviderI(10);
+        export var reached20 = reachedSignatureDeltaCountProviderI(20);
+        export var reached50 = reachedSignatureDeltaCountProviderI(50);
+        export var reached100 = reachedSignatureDeltaCountProviderI(100);
+        export var reached250 = reachedSignatureDeltaCountProviderI(250);
+        export var reached500 = reachedSignatureDeltaCountProviderI(500);
+        export var reached1_000 = reachedSignatureDeltaCountProviderI(1000);
+        export var reached5_000 = reachedSignatureDeltaCountProviderI(5000);
+        export var reached10_000 = reachedSignatureDeltaCountProviderI(10000);
+        export var reached50_000 = reachedSignatureDeltaCountProviderI(50000);
+        export var reached100_000 = reachedSignatureDeltaCountProviderI(100000);
+        export var reached500_000 = reachedSignatureDeltaCountProviderI(500000);
+        export var reachedResponseThreshold = reachedSignatureDeltaCountProviderI(10000);
+        export var reachedDebateThreshold = reachedSignatureDeltaCountProviderI(100000);
         /**
-         * Predicate that tests if the number of signatures required for a response has been reached.
+         * Function that tests if the government has responded since the first snapshot.
          * @function
-         * @param {Petition} petition - A petition
+         * @param {Petition} newData - The latest data
+         * @param {Petition} oldData - The older data
          */
-        reachedResponseThreshold : reachedSignatureCount.bind(null, 10000),
+        export var governmentResponded = governmentRespondedCheckI;
         /**
-         * Predicate that tests if the number of signatures required for a debate has been reached.
+         * Function that tests if a petition has been debated since the first snapshot.
          * @function
-         * @param {Petition} petition - A petition
+         * @param {Petition} newData - The latest data
+         * @param {Petition} oldData - The older data
          */
-        reachedDebateThreshold : reachedSignatureCount.bind(null, 100000),
+        export var debated = debatedCheckI;
         /**
-         * Predicate that tests if the government has responded to the petition.
+         * Function that tests if a debate transcript has become available since the first snapshot.
          * @function
-         * @param {Petition} petition - A petition
+         * @param {Petition} newData - The latest data
+         * @param {Petition} oldData - The older data
          */
-        governmentResponded : governmentResponded,
+        export var debateTranscriptAvailable = debateTranscriptAvailableCheckI;
+        //export var reachedSignatureDeltaCountProvider = reachedSignatureDeltaCountProvider;
         /**
-         * Predicate that tests if the petition has been debated.
+         * Function that tests if a debate on a petition has been scheduled since the first snapshot.
          * @function
-         * @param {Petition} petition - A petition
+         * @param {Petition} newData - The latest data
+         * @param {Petition} oldData - The older data
          */
-        debated : debated,
+        export var debateScheduled = deltaCheckI.bind(null, debateScheduledI);
         /**
-         * Predicate that tests if the petition has been debated and a transcript is available.
+         * Function that tests if a debate on a petition has been rescheduled since the first snapshot.
          * @function
-         * @param {Petition} petition - A petition
+         * @param {Petition} newData - The latest data
+         * @param {Petition} oldData - The older data
          */
-        debateTranscriptAvailable : debateTranscriptAvailable,
-        /**
-         * Predicate that tests if the petition has been scheduled for debate.
-         * @function
-         * @param {Petition} petition - A petition
-         */
-        debateScheduled : debateScheduled
-    },
-    /**
-     * Functions that can be used to check and compare petitions.
-     * @namespace
-     */
-    checks : {
-        /**
-         * Function that tests if two petitons have the same ID.
-         * @function
-         * @param {Petition} petition0 - A petition
-         * @param {Petition} petition1 - A petition
-         */
-        samePetitionId : samePetitionId,
-        /**
-         * Delta checks. Checks between two snapshots of the same petition.
-         * @namespace
-         */
-        delta : {
-            reached10 : reachedSignatureDeltaCountProvider(10),
-            reached20 : reachedSignatureDeltaCountProvider(20),
-            reached50 : reachedSignatureDeltaCountProvider(50),
-            reached100 : reachedSignatureDeltaCountProvider(100),
-            reached250 : reachedSignatureDeltaCountProvider(250),
-            reached500 : reachedSignatureDeltaCountProvider(500),
-            reached1_000 : reachedSignatureDeltaCountProvider(1000),
-            reached5_000 : reachedSignatureDeltaCountProvider(5000),
-            reached10_000 : reachedSignatureDeltaCountProvider(10000),
-            reached50_000 : reachedSignatureDeltaCountProvider(50000),
-            reached100_000 : reachedSignatureDeltaCountProvider(100000),
-            reached500_000 : reachedSignatureDeltaCountProvider(500000),
-            reachedResponseThreshold : reachedSignatureDeltaCountProvider(10000),
-            reachedDebateThreshold : reachedSignatureDeltaCountProvider(100000),
-            /**
-             * Function that tests if the government has responded since the first snapshot.
-             * @function
-             * @param {Petition} newData - The latest data
-             * @param {Petition} oldData - The older data
-             */
-            governmentResponded : governmentRespondedCheck,
-            /**
-             * Function that tests if a petition has been debated since the first snapshot.
-             * @function
-             * @param {Petition} newData - The latest data
-             * @param {Petition} oldData - The older data
-             */
-            debated : debatedCheck,
-            /**
-             * Function that tests if a debate transcript has become available since the first snapshot.
-             * @function
-             * @param {Petition} newData - The latest data
-             * @param {Petition} oldData - The older data
-             */
-            debateTranscriptAvailable : debateTranscriptAvailableCheck,
-            reachedSignatureDeltaCountProvider : reachedSignatureDeltaCountProvider,
-            /**
-             * Function that tests if a debate on a petition has been scheduled since the first snapshot.
-             * @function
-             * @param {Petition} newData - The latest data
-             * @param {Petition} oldData - The older data
-             */
-            debateScheduled : deltaCheck.bind(null, debateScheduled),
-            /**
-             * Function that tests if a debate on a petition has been rescheduled since the first snapshot.
-             * @function
-             * @param {Petition} newData - The latest data
-             * @param {Petition} oldData - The older data
-             */
-            debateRescheduled : debateRescheduled
-        }
+        export var debateRescheduled = debateRescheduledI;
     }
-};
+}
