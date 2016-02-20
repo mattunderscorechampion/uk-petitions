@@ -76,10 +76,10 @@
  * @author Matt Champion
  */
 module.exports = {
-    PetitionsMonitor : require('../target/js/public/petitions-monitor').PetitionsMonitor,
-    PetitionLoader : require('../target/js/public/petition-loader').PetitionLoader,
-    PetitionPageLoader : require('../target/js/public/petition-page-loader').PetitionPageLoader,
-    PetitionPager : require('../target/js/public/petition-pager').PetitionPager,
-    queries : require('../target/js/public/petition-queries'),
-    output : require('../target/js/private/simple-output')
+    PetitionsMonitor : require('../target/js/public/petitions-monitor').UkPetitions,
+    PetitionLoader : require('../target/js/public/petition-loader').UkPetitions,
+    PetitionPageLoader : require('../target/js/public/petition-page-loader').UkPetitions,
+    PetitionPager : require('../target/js/public/petition-pager').UkPetitions,
+    queries : require('../target/js/public/petition-queries').UkPetitions,
+    output : require('../target/js/public/simple-output').UkPetitions
 };

@@ -26,6 +26,8 @@ var keysToTransform = {
     scheduled_debate_date : stringToDate
 };
 
+export module UkPetitions {
+
  /**
   * Breakdown of signatures by country.
   */
@@ -167,4 +169,6 @@ export class EnrichedPetition {
         this.html_debate_url = util.format('https://petition.parliament.uk/petitions/%d?#debate-threshold', this.id);
         this.detailed = this.signatures_by_country !== undefined;
     }
+}
+
 }

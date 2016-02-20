@@ -7,6 +7,10 @@ import petitionUtil = require('../private/petition-util');
 
 var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 
+/// <reference path="./loading.ts" />
+
+export module UkPetitions {
+
 /**
  * Constructor for petition loaders.
  * @constructor
@@ -25,8 +29,8 @@ export class PetitionLoader {
      * The 'error' event is passed the Error.
      * @return {Loading} - The emitter
      */
-    load(petitionId: number): loading.Loading {
-        var emitter = new loading.Loading();
+    load(petitionId: number): loading.UkPetitions.Loading {
+        var emitter = new loading.UkPetitions.Loading();
 
         getJsonOverHttps({
             hostname: 'petition.parliament.uk',
@@ -41,4 +45,6 @@ export class PetitionLoader {
 
         return emitter;
     }
+}
+
 }

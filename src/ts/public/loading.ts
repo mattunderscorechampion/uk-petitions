@@ -3,6 +3,8 @@
 
 import events = require('events');
 
+export module UkPetitions {
+
 /**
  * Private constructor for Loading.
  * @constructor
@@ -61,4 +63,6 @@ export class Loading extends events.EventEmitter {
         this.on('error', handler);
         return this;
     };
+}
+
 }

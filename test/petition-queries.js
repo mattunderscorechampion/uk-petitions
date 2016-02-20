@@ -2,8 +2,8 @@
 'use strict';
 
 describe("Petition queries", function() {
-    var queries = require('../target/js/public/petition-queries'),
-        EnrichedPetition = require('../target/js/public/enriched-petition').EnrichedPetition;
+    var queries = require('../target/js/public/petition-queries').UkPetitions,
+        EnrichedPetition = require('../target/js/public/enriched-petition').UkPetitions.EnrichedPetition;
 
     var petition0With5 = {
         id : 0,

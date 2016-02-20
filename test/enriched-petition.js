@@ -2,7 +2,7 @@
 'use strict';
 
 describe("EnrichedPetition", function() {
-    var EnrichedPetition = require('../target/js/public/enriched-petition').EnrichedPetition;
+    var EnrichedPetition = require('../target/js/public/enriched-petition').UkPetitions.EnrichedPetition;
 
     var petition = new EnrichedPetition({
         id: 2,

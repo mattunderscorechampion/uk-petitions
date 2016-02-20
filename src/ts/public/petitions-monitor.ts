@@ -114,6 +114,8 @@ class PetitionsMonitorConfig {
     }
 }
 
+export module UkPetitions {
+
 /**
  * Constructor for petition pager.
  * @constructor
@@ -160,7 +162,7 @@ export class PetitionsMonitor extends events.EventEmitter {
      */
     start(): PetitionsMonitor {
         this.conf.debug('Starting monitor');
-        var pager: petitionPager.PetitionPager = new petitionPager.PetitionPager({
+        var pager: petitionPager.UkPetitions.PetitionPager = new petitionPager.UkPetitions.PetitionPager({
             loadInterval : this.conf.initialInterval,
             debug : this.conf.passDebug,
             loadDetail : this.conf.loadDetail,
@@ -216,19 +218,4 @@ export class PetitionsMonitor extends events.EventEmitter {
     }
 }
 
-/**
- * New petition event.
- * @event PetitionsMonitor#new-petition
- * @type {Petitions.Petition|EnrichedPetition}
- */
-
-/**
- * Updated petition event.
- * @event PetitionsMonitor#updated-petition
- * @type {Petitions.Petition|EnrichedPetition}
- */
-
-/**
- * Emited after all the data has been loaded for the first time.
- * @event PetitionsMonitor#initial-load
- */
+}

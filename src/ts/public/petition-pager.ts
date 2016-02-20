@@ -2,17 +2,25 @@
 
 /// <reference path="../node.d.ts" />
 
-import loading = require('./loading');
 import latch = require('../private/latch');
 import petitionUtil = require('../private/petition-util');
 import util = require('util');
 import https = require("https");
 import events = require('events');
-import petitionLoader = require('./petition-loader');
-import petitionPageLoader = require('./petition-page-loader');
 import loaderExecutor = require('../private/loader-executor');
 import equal = require('deep-equal');
+
+import loading = require('./loading');
+import petitionLoader = require('./petition-loader');
+import petitionPageLoader = require('./petition-page-loader');
 import enrichedPetition = require('./enriched-petition');
+
+/// <reference path="./loading.ts" />
+/// <reference path="./petition-loader.ts" />
+/// <reference path="./petition-page-loader.ts" />
+/// <reference path="./enriched-petition.ts" />
+
+export module UkPetitions {
 
 /**
  * Private constructor for petition pager config.
@@ -28,7 +36,7 @@ export class PetitionPagerConfig {
     debug = function(message: string, ...objects: any[]) {};
     loadDetail = false;
     transformer = function (raw) {
-        return petitionUtil.recursiveFreeze(new enrichedPetition.EnrichedPetition(raw));
+        return petitionUtil.recursiveFreeze(new enrichedPetition.UkPetitions.EnrichedPetition(raw));
     };
 
     constructor(config: any) {
@@ -63,8 +71,8 @@ export class PetitionPagerConfig {
 export class PetitionPager extends events.EventEmitter {
     private conf: PetitionPagerConfig;
     private agent: https.Agent = new https.Agent({ keepAlive: true, maxSockets: 1 });
-    private petitionLoader: petitionLoader.PetitionLoader = new petitionLoader.PetitionLoader();
-    private pageLoader: petitionPageLoader.PetitionPageLoader = new petitionPageLoader.PetitionPageLoader();
+    private petitionLoader: petitionLoader.UkPetitions.PetitionLoader = new petitionLoader.UkPetitions.PetitionLoader();
+    private pageLoader: petitionPageLoader.UkPetitions.PetitionPageLoader = new petitionPageLoader.UkPetitions.PetitionPageLoader();
     private executor: loaderExecutor.LoaderExecutor;
 
     constructor(config: any) {
@@ -248,4 +256,6 @@ export class PetitionPager extends events.EventEmitter {
 
         return self;
     };
+}
+
 }

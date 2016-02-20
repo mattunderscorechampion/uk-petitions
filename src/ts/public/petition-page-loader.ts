@@ -7,6 +7,8 @@ import petitionUtil = require('../private/petition-util');
 
 var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 
+export module UkPetitions {
+
 /**
  * Constructor for petition page loaders.
  * @constructor
@@ -27,8 +29,8 @@ export class PetitionPageLoader {
      * @function
      * @return {Loading} - The emitter
      */
-    load(page: any): loading.Loading {
-        var emitter: loading.Loading = new loading.Loading();
+    load(page: any): loading.UkPetitions.Loading {
+        var emitter: loading.UkPetitions.Loading = new loading.UkPetitions.Loading();
         var pathToLoad: string;
 
         if (typeof page === 'number') {
@@ -60,4 +62,6 @@ export class PetitionPageLoader {
 
         return emitter;
     }
+}
+
 }

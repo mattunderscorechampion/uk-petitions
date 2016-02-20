@@ -4,7 +4,7 @@
 
 import enriched = require('./enriched-petition');
 
-var samePetitionId = function(petition0: enriched.EnrichedPetition, petition1: enriched.EnrichedPetition) {
+var samePetitionId = function(petition0: enriched.UkPetitions.EnrichedPetition, petition1: enriched.UkPetitions.EnrichedPetition) {
     return petition0.id === petition1.id;
 }
 
@@ -15,7 +15,7 @@ var samePetitionIdPreconditionI = function(petition0, petition1) {
 }
 
 var isEnrichedI = function(petition) {
-    return petition instanceof enriched.EnrichedPetition;
+    return petition instanceof enriched.UkPetitions.EnrichedPetition;
 }
 
 var reachedSignatureCountI = function(targetSignatureCount, petition) {
@@ -100,6 +100,8 @@ var debateTranscriptAvailableCheckI = function(newData, oldData) {
     samePetitionIdPreconditionI(oldData, newData);
     return debateTranscriptAvailableI(newData) && !debateTranscriptAvailableI(oldData);
 }
+
+export module UkPetitions {
 
 /**
  * Predicates that can be used to evaluate petitions.
@@ -222,4 +224,6 @@ export module checks {
          */
         export var debateRescheduled = debateRescheduledI;
     }
+}
+
 }
