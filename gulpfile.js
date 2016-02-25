@@ -23,20 +23,13 @@ gulp.task('generate', function() {
         .pipe(gulp.dest('target/js'));
 });
 
-gulp.task('js-checks', function() {
-    return gulp.src(['./src/*.js', './src/examples/*.js'])
-        .pipe(jshint({node: true}))
-        .pipe(jshint.reporter('jshint-stylish'))
-        .pipe(jshint.reporter('fail'));
-});
-
 gulp.task('ts-checks', ['generate'], function() {
     return gulp.src('./src/*.ts')
         .pipe(tslint())
         .pipe(tslint.report('verbose'));
 });
 
-gulp.task('checks', ['js-checks', 'ts-checks']);
+gulp.task('checks', ['ts-checks']);
 
 gulp.task('test', ['generate'], function(done) {
     gulp.src(["./src/*.js"])
@@ -57,11 +50,6 @@ gulp.task('test', ['generate'], function(done) {
         });
 });
 
-gulp.task('js-doc', function() {
-    return gulp.src(['./src/*.js'])
-        .pipe(jsdoc('./target/doc'));
-});
-
 gulp.task('ts-doc', function() {
     return gulp.src(['./src/ts/public/*.ts'])
         .pipe(tsdoc({
@@ -74,6 +62,6 @@ gulp.task('ts-doc', function() {
         }));
 });
 
-gulp.task('doc', ['js-doc', 'ts-doc']);
+gulp.task('doc', ['ts-doc']);
 
 gulp.task('default', ['generate', 'checks', 'test', 'doc']);
