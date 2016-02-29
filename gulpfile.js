@@ -57,7 +57,8 @@ gulp.task('ts-doc', function() {
             module : 'commonjs',
             moduleResolution : 'node',
             excludeNotExported: true,
-            excludeExternals: false,
+            includeDeclarations: true,
+            excludeExternals: true,
             out: './target/tsdoc'
         }));
 });
