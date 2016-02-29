@@ -56,6 +56,7 @@ gulp.task('ts-doc', function() {
             target : 'ES5',
             module : 'commonjs',
             moduleResolution : 'node',
+            mode : 'file',
             excludeNotExported: true,
             includeDeclarations: true,
             excludeExternals: true,
