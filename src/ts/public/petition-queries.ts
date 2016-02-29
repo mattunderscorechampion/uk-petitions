@@ -170,7 +170,6 @@ export module checks {
     export var samePetition = samePetitionId;
     /**
      * Delta checks. Checks between two snapshots of the same petition.
-     * @namespace
      */
     export module delta {
         export var reached10 = reachedSignatureDeltaCountProviderI(10);
