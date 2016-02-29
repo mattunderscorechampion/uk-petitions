@@ -1,5 +1,5 @@
 
-declare module "raw-petition" {
+export module UkPetitions {
     export interface Response {
         /**
          * Summary of the response.

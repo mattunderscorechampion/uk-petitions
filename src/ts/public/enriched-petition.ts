@@ -1,9 +1,10 @@
 
 /// <reference path="../node.d.ts" />
-/// <reference path="./raw-petition.d.ts" />
 
 import util = require('util');
-import raw = require('raw-petition');
+import raw = require('./raw-petition');
+
+/// <reference path="./raw-petition.ts" />
 
 function stringToDate(dateString: string): Date {
     if (dateString) {
@@ -27,42 +28,6 @@ var keysToTransform = {
 };
 
 export module UkPetitions {
-
- /**
-  * Breakdown of signatures by country.
-  */
- export interface SignaturesByCountry {
-     /**
-      * Name of the country.
-      */
-     name: string;
-     /**
-      * The number of signatures from that country.
-      */
-     signature_count: number;
- }
-
-/**
- * Breakdown of signatures by constituency.
- */
-export interface SignaturesByConstituency {
-    /**
-     * Name of the constituency.
-     */
-    name: string;
-    /**
-     * The ONS code.
-     */
-    ons_code: string;
-    /**
-     * The name of the MP for the constituency.
-     */
-    mp: string;
-    /**
-     * The number of signatures from that constituency.
-     */
-    signature_count: number;
-}
 
 /**
  * A petition enriched with additional properties and methods.
@@ -119,11 +84,11 @@ export class EnrichedPetition {
     /**
      * Breakdown of signatures by country.
      */
-    signatures_by_country: SignaturesByCountry[];
+    signatures_by_country: raw.UkPetitions.SignaturesByCountry[];
     /**
      * Breakdown of signatures by constituency.
      */
-    signatures_by_constituency: SignaturesByConstituency[];
+    signatures_by_constituency: raw.UkPetitions.SignaturesByConstituency[];
     /**
      * The timestamp petition was created.
      */
@@ -149,7 +114,7 @@ export class EnrichedPetition {
      * The constructor for enriched petitions.
      * @param rawPetition The petiton from the data source.
      */
-    constructor(rawPetition: raw.Petition) {
+    constructor(rawPetition: raw.UkPetitions.Petition) {
         this.id = rawPetition.id;
         var transform = null;
         for (var key in rawPetition.attributes) {

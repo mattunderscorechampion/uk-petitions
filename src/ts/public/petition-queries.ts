@@ -1,6 +1,5 @@
 
 /// <reference path="../node.d.ts" />
-/// <reference path="./raw-petition.d.ts" />
 
 import enriched = require('./enriched-petition');
 
