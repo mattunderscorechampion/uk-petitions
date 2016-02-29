@@ -10,14 +10,15 @@ var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 export module UkPetitions {
 
 /**
- * Constructor for petition page loaders.
- * @constructor
- * @param {object} agent - The HTTP agemt to use to make requests.
- * @classdesc Loads a page of petition summaries. It is stateless.
+ * Loads a page of petition summaries. It is stateless.
  */
 export class PetitionPageLoader {
     private agent: https.Agent;
 
+    /**
+     * Constructor for petition page loaders.
+     * @param agent The HTTP agemt to use to make requests.
+     */
     constructor(agent?: https.Agent) {
         this.agent = agent;
     }
@@ -26,8 +27,7 @@ export class PetitionPageLoader {
      * Load a page of petitions by number. Returns an emitter. Emits either 'loaded' or 'error' events.
      * The 'loaded' event is passed the data of the petition.
      * The 'error' event is passed the Error.
-     * @function
-     * @return {Loading} - The emitter
+     * @return The emitter
      */
     load(page: any): loading.UkPetitions.Loading {
         var emitter: loading.UkPetitions.Loading = new loading.UkPetitions.Loading();

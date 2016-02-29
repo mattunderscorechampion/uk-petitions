@@ -23,18 +23,24 @@ import enrichedPetition = require('./enriched-petition');
 export module UkPetitions {
 
 /**
- * Private constructor for petition pager config.
- * @constructor
- * @classdesc Configuration for PetitionPager.
- * @property {number} loadInterval - The interval.
- * @property {boolean} debug - If debug logging should be enabled.
- * @property {boolean} loadDetail - If detailed petition information should be loaded.
- * @property {function} transformer - A function to transform the petitions before stored or emitted.
+ * Configuration for PetitionPager.
  */
 export class PetitionPagerConfig {
+    /**
+     * The interval.
+     */
     loadInterval = 500;
+    /**
+     * If debug logging should be enabled.
+     */
     debug = function(message: string, ...objects: any[]) {};
+    /**
+     * If detailed petition information should be loaded.
+     */
     loadDetail = false;
+    /**
+     * A function to transform the petitions before stored or emitted.
+     */
     transformer = function (raw) {
         return petitionUtil.recursiveFreeze(new enrichedPetition.UkPetitions.EnrichedPetition(raw));
     };
@@ -62,11 +68,7 @@ export class PetitionPagerConfig {
 }
 
 /**
- * Constructor for petition pager.
- * @constructor
- * @param {PetitionPagerConfig} config - Configuration for PetitionsMonitor.
- * @classdesc Loads all the petition data according to a filter.
- * @augments EventEmitter
+ * Loads all the petition data according to a filter.
  */
 export class PetitionPager extends events.EventEmitter {
     private conf: PetitionPagerConfig;
@@ -75,6 +77,10 @@ export class PetitionPager extends events.EventEmitter {
     private pageLoader: petitionPageLoader.UkPetitions.PetitionPageLoader = new petitionPageLoader.UkPetitions.PetitionPageLoader();
     private executor: loaderExecutor.LoaderExecutor;
 
+    /**
+     * Constructor for petition pager.
+     * @param {PetitionPagerConfig} config - Configuration for PetitionsMonitor.
+     */
     constructor(config: any) {
         super();
         this.conf = new PetitionPagerConfig(config);
@@ -140,16 +146,14 @@ export class PetitionPager extends events.EventEmitter {
     /**
      * The petitions map. Maps from petition ID to petition object. Also has
      * length property.
-     * @member {object}
      */
     petitions: {[key:number]: any; length: number} = {
         length: 0
     };
     /**
      * Change the interval between loading pages.
-     * @function
-     * @param {number} newInterval - The new interval
-     * @return {PetitionPager} - Self
+     * @param {number} The new interval
+     * @return Self
      */
     setPageLoadInterval(newInterval) {
         this.conf.loadInterval = newInterval;
@@ -218,7 +222,7 @@ export class PetitionPager extends events.EventEmitter {
 
     /**
      * Load petitions without specifying a state.
-     * @return {PetitionPager} - Self
+     * @return Self
      */
     populateHot() {
         var emitter = new events.EventEmitter();
@@ -231,9 +235,9 @@ export class PetitionPager extends events.EventEmitter {
 
     /**
      * Load all petitions.
-     * @param {function} accepter - A predicate to test if a petition should be accepted.
-     * @param {function} remover - A predicate to test if a petition should be removed.
-     * @return {PetitionPager} - Self
+     * @param accepter A predicate to test if a petition should be accepted.
+     * @param remover A predicate to test if a petition should be removed.
+     * @return Self
      */
     populate(accepter, remover) {
         var emitter = new events.EventEmitter();

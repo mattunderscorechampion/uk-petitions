@@ -6,18 +6,13 @@ import events = require('events');
 export module UkPetitions {
 
 /**
- * Private constructor for Loading.
- * @constructor
- * @classdesc The emitter returned by methods that load data from an external source.
- * @fires Loading#error
- * @fires Loading#loaded
- * @augments EventEmitter
+ * The emitter returned by methods that load data from an external source.
  */
 export class Loading extends events.EventEmitter {
 
     /**
      * Emit loaded event.
-     * @return {Loading} - Self
+     * @return Self
      */
     loaded(data: any): Loading {
         this.emit('loaded', data);
@@ -26,7 +21,7 @@ export class Loading extends events.EventEmitter {
 
     /**
      * Emit error event.
-     * @return {Loading} - Self
+     * @return Self
      */
     error(error: any): Loading {
         if (typeof error === 'string') {
@@ -49,7 +44,7 @@ export class Loading extends events.EventEmitter {
 
     /**
      * Add loaded event listener.
-     * @return {Loading} - Self
+     * @return Self
      */
     onLoaded(handler: any): Loading {
         this.on('loaded', handler);
@@ -57,7 +52,7 @@ export class Loading extends events.EventEmitter {
     };
     /**
      * Add error event listener.
-     * @return {Loading} - Self
+     * @return Self
      */
     onError(handler: any): Loading {
         this.on('error', handler);

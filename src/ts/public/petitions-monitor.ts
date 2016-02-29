@@ -65,25 +65,40 @@ function standardRemover (config, summary, petitions) {
 }
 
  /**
-  * Private constructor for petition monitor config.
-  * @constructor
-  * @classdesc Configuration for PetitionsMonitor.
-  * @property {number} initialInterval - The initial interval.
-  * @property {number} interval - The interval.
-  * @property {boolean} debug - If debug logging should be enabled.
-  * @property {boolean} loadDetail - If detailed petition information should be loaded.
-  * @property {function} accepter - The accepting function.
-  * @property {function} remover - The remover function.
-  * @property {boolean} raw - If the petitions loaded should be raw.
+  * Configuration for PetitionsMonitor.
   */
 class PetitionsMonitorConfig {
+    /**
+     * The initial interval.
+     */
     initialInterval = 200;
+    /**
+     * The interval.
+     */
     interval = 2000;
+    /**
+     * If debug should be passed to the loaders.
+     */
     passDebug: boolean = false;
+    /**
+     * If debug logging should be enabled.
+     */
     debug = function(message: string, ...objects: any[]) {};
+    /**
+     * If detailed petition information should be loaded.
+     */
     loadDetail = false;
+    /**
+     * The accepting function.
+     */
     accepter = standardAccepter.bind(null, this);
+    /**
+     * The remover function.
+     */
     remover = standardRemover.bind(null, this);
+    /**
+     * If the petitions loaded should be raw.
+     */
     raw: boolean = false;
 
     constructor(config?: any) {
@@ -117,20 +132,17 @@ class PetitionsMonitorConfig {
 export module UkPetitions {
 
 /**
- * Constructor for petition pager.
- * @constructor
- * @param {PetitionsMonitorConfig} config - Configuration for PetitionsMonitor.
- * @classdesc Monitors the petitions data for changes and generates a notification event for changes.
- * @fires PetitionsMonitor#new-petition
- * @fires PetitionsMonitor#updated-petition
- * @fires PetitionsMonitor#initial-load
- * @augments EventEmitter
+ * Monitors the petitions data for changes and generates a notification event for changes.
  */
 export class PetitionsMonitor extends events.EventEmitter {
     private events = [];
     private deltaEvents = [];
     private conf: PetitionsMonitorConfig;
 
+    /**
+     * Constructor for petition pager.
+     * @param config Configuration for PetitionsMonitor.
+     */
     constructor(config: any) {
         super();
         this.conf = new PetitionsMonitorConfig(config);
@@ -139,8 +151,8 @@ export class PetitionsMonitor extends events.EventEmitter {
 
     /**
      * Add an event to emit when the check function returns true. The check function is passed the the new data. Returns the monitor.
-     * @param {string} event - The name of the event to add.
-     * @param {function} check - The predicate required to emit the event.
+     * @param event The name of the event to add.
+     * @param check The predicate required to emit the event.
      */
     addMonitorEvent(event, check): PetitionsMonitor {
         this.events.push({event : event, check : check});
@@ -149,8 +161,8 @@ export class PetitionsMonitor extends events.EventEmitter {
 
     /**
      * Add an event to emit when the check function returns true. The check function is passed the the new and old data. Returns the monitor.
-     * @param {string} event - The name of the event to add.
-     * @param {function} check - The check required to emit the event.
+     * @param event The name of the event to add.
+     * @param check The check required to emit the event.
      */
     addMonitorDeltaEvent(event, check): PetitionsMonitor {
         this.deltaEvents.push({event : event, check : check});
