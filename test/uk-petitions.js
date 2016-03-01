@@ -19,6 +19,15 @@ describe("petitions", function() {
     it('has predefined queries', function() {
         expect(petitions.queries).toBeDefined();
     });
+    it('has predefined checks', function() {
+        expect(petitions.queries.checks).toBeDefined();
+    });
+    it('has predefined delta checks', function() {
+        expect(petitions.queries.checks.delta).toBeDefined();
+    });
+    it('supports checking a petition has reached a number of signatures', function() {
+        expect(petitions.queries.checks.delta.reachedSignatureDeltaCountProvider).toBeDefined();
+    });
     it('has predefined output', function() {
         expect(petitions.output).toBeDefined();
     });
