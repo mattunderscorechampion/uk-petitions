@@ -206,7 +206,7 @@ export module checks {
          * @param {Petition} oldData - The older data
          */
         export var debateTranscriptAvailable = debateTranscriptAvailableCheckI;
-        //export var reachedSignatureDeltaCountProvider = reachedSignatureDeltaCountProvider;
+        export var reachedSignatureDeltaCountProvider = reachedSignatureDeltaCountProviderI;
         /**
          * Function that tests if a debate on a petition has been scheduled since the first snapshot.
          * @function
