@@ -16,17 +16,17 @@ describe("petitions", function() {
     it('has pager', function() {
         expect(petitions.PetitionPager).toBeDefined();
     });
-    it('has predefined queries', function() {
-        expect(petitions.queries).toBeDefined();
+    it('has predefined predicates', function() {
+        expect(petitions.predicates).toBeDefined();
     });
     it('has predefined checks', function() {
-        expect(petitions.queries.checks).toBeDefined();
+        expect(petitions.checks).toBeDefined();
     });
     it('has predefined delta checks', function() {
-        expect(petitions.queries.checks.delta).toBeDefined();
+        expect(petitions.checks.delta).toBeDefined();
     });
     it('supports checking a petition has reached a number of signatures', function() {
-        expect(petitions.queries.checks.delta.reachedSignatureDeltaCountProvider).toBeDefined();
+        expect(petitions.checks.delta.reachedSignatureDeltaCountProvider).toBeDefined();
     });
     it('has predefined output', function() {
         expect(petitions.output).toBeDefined();

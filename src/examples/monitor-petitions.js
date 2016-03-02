@@ -7,17 +7,17 @@ var ukPetitions = require('../../'),
 var m = new ukPetitions.PetitionsMonitor({debug: false, passDebug: true});
 m.addSignatureNotification = function(signatures) {
     var event = util.format('reached-%d-signatures', signatures);
-    this.addMonitorDeltaEvent(event, ukPetitions.queries.checks.delta.reachedSignatureDeltaCountProvider(signatures));
+    this.addMonitorDeltaEvent(event, ukPetitions.checks.delta.reachedSignatureDeltaCountProvider(signatures));
     return this.on(event, function(data) {
         console.log('Petition \'%s\' has reached %d signatures', data.action, signatures);
     });
 };
 
 m
-.addMonitorDeltaEvent('reached-response-threshold', ukPetitions.queries.checks.delta.reachedResponseThreshold)
-.addMonitorDeltaEvent('reached-debate-threshold', ukPetitions.queries.checks.delta.reachedDebateThreshold)
-.addMonitorDeltaEvent('government-response', ukPetitions.queries.checks.delta.governmentResponded)
-.addMonitorDeltaEvent('debate-transcript', ukPetitions.queries.checks.delta.debateTranscriptAvailable)
+.addMonitorDeltaEvent('reached-response-threshold', ukPetitions.checks.delta.reachedResponseThreshold)
+.addMonitorDeltaEvent('reached-debate-threshold', ukPetitions.checks.delta.reachedDebateThreshold)
+.addMonitorDeltaEvent('government-response', ukPetitions.checks.delta.governmentResponded)
+.addMonitorDeltaEvent('debate-transcript', ukPetitions.checks.delta.debateTranscriptAvailable)
 .setMaxListeners(20)
 .on('error', ukPetitions.output.error)
 .on('initial-load', function() {
