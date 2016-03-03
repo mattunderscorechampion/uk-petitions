@@ -2,10 +2,7 @@
 'use strict';
 
 var gulp = require('gulp'),
-    jshint = require('gulp-jshint'),
-    jsdoc = require('gulp-jsdoc'),
     jasmine = require('gulp-jasmine'),
-    istanbul = require('gulp-istanbul'),
     ts = require('gulp-typescript'),
     tsdoc = require('gulp-typedoc'),
     tslint = require('gulp-tslint'),
