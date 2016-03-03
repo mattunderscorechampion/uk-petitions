@@ -1,7 +1,7 @@
 
 'use strict';
 
-var ukPetitions = require('../../');
+var ukPetitions = require('../');
 
 new ukPetitions.PetitionPager()
     .on('error', ukPetitions.output.error)

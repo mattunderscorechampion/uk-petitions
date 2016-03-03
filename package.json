@@ -31,9 +31,9 @@
 
     "scripts" : {
         "build" : "npm run localclean && npm install && gulp",
-        "list" : "npm run build && node src/examples/list-hot-petitions.js",
-        "list-all" : "npm run build && node src/examples/list-all-petitions.js",
-        "monitor" : "npm run build && node src/examples/monitor-petitions.js",
+        "list" : "npm run build && node examples/list-hot-petitions.js",
+        "list-all" : "npm run build && node examples/list-all-petitions.js",
+        "monitor" : "npm run build && node examples/monitor-petitions.js",
         "localclean" : "rm -rf target",
         "clean" : "npm run localclean && rm -rf node_modules"
     }

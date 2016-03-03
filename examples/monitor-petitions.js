@@ -1,7 +1,7 @@
 
 'use strict';
 
-var ukPetitions = require('../../'),
+var ukPetitions = require('../'),
     util = require('util');
 
 var m = new ukPetitions.PetitionsMonitor({debug: false, passDebug: true});
