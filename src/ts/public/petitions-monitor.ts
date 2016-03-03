@@ -1,5 +1,4 @@
 
-
 /// <reference path="../node.d.ts" />
 
 import events = require('events');

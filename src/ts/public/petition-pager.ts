@@ -1,5 +1,4 @@
 
-
 /// <reference path="../node.d.ts" />
 
 import latch = require('../private/latch');
@@ -109,7 +108,6 @@ export class PetitionPager extends events.EventEmitter {
             this.emit('petition', transformedData);
         }
     }
-
 
     private removePetitionData(data) {
         var oldData = this.petitions[data.id];

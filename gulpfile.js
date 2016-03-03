@@ -24,8 +24,15 @@ gulp.task('generate', function() {
 });
 
 gulp.task('checks', ['generate'], function() {
-    return gulp.src('./src/*.ts')
-        .pipe(tslint())
+    return gulp.src('./src/ts/*/*.ts')
+        .pipe(tslint({
+            configuration : {
+                rules : {
+                    'class-name' : true,
+                    'no-consecutive-blank-lines' : true
+                }
+            }
+        }))
         .pipe(tslint.report('verbose'));
 });
 
