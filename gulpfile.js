@@ -47,9 +47,10 @@ gulp.task('doc', function() {
             module : 'commonjs',
             moduleResolution : 'node',
             mode : 'file',
-            excludeNotExported: true,
-            excludeExternals: true,
-            out: './target/doc'
+            excludeNotExported : true,
+            excludeExternals : true,
+            out : './target/doc',
+            readme : './typedocFrontpage.txt'
         }));
 });
 
