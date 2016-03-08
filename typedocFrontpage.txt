@@ -1,1 +1,13 @@
 API for uk-petitions
+
+PetitionLoader - loads a single petition
+
+PetitionPageLoader - loads a page of petitions
+
+PetitionPager - simplifies working with pages of petitions
+
+PetitionMonitor - monitors changes to petitions
+
+Raw petitions are the same as the JSON returned from the site.
+
+Enriched petitions are a flattened version of raw petitions with some derived values.
