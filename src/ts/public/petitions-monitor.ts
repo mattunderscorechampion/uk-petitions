@@ -130,103 +130,103 @@ class PetitionsMonitorConfig {
 
 export module UkPetitions {
 
-/**
- * Monitors the petitions data for changes and generates a notification event for changes.
- */
-export class PetitionsMonitor extends events.EventEmitter {
-    private events = [];
-    private deltaEvents = [];
-    private conf: PetitionsMonitorConfig;
-
     /**
-     * Constructor for petition pager.
-     * @param config Configuration for PetitionsMonitor.
+     * Monitors the petitions data for changes and generates a notification event for changes.
      */
-    constructor(config: any) {
-        super();
-        this.conf = new PetitionsMonitorConfig(config);
-        this.conf.debug('Debug enabled');
-    }
+    export class PetitionsMonitor extends events.EventEmitter {
+        private events = [];
+        private deltaEvents = [];
+        private conf: PetitionsMonitorConfig;
 
-    /**
-     * Add an event to emit when the check function returns true. The check function is passed the the new data. Returns the monitor.
-     * @param event The name of the event to add.
-     * @param check The predicate required to emit the event.
-     */
-    addMonitorEvent(event, check): PetitionsMonitor {
-        this.events.push({event : event, check : check});
-        return this;
-    }
+        /**
+         * Constructor for petition pager.
+         * @param config Configuration for PetitionsMonitor.
+         */
+        constructor(config: any) {
+            super();
+            this.conf = new PetitionsMonitorConfig(config);
+            this.conf.debug('Debug enabled');
+        }
 
-    /**
-     * Add an event to emit when the check function returns true. The check function is passed the the new and old data. Returns the monitor.
-     * @param event The name of the event to add.
-     * @param check The check required to emit the event.
-     */
-    addMonitorDeltaEvent(event, check): PetitionsMonitor {
-        this.deltaEvents.push({event : event, check : check});
-        return this;
-    }
+        /**
+         * Add an event to emit when the check function returns true. The check function is passed the the new data. Returns the monitor.
+         * @param event The name of the event to add.
+         * @param check The predicate required to emit the event.
+         */
+        addMonitorEvent(event, check): PetitionsMonitor {
+            this.events.push({event : event, check : check});
+            return this;
+        }
 
-    /**
-     * Start the monitor. Returns the monitor.
-     */
-    start(): PetitionsMonitor {
-        this.conf.debug('Starting monitor');
-        var pager: petitionPager.UkPetitions.PetitionPager = new petitionPager.UkPetitions.PetitionPager({
-            loadInterval : this.conf.initialInterval,
-            debug : this.conf.passDebug,
-            loadDetail : this.conf.loadDetail,
-            transformer : this.conf.raw ? function (petiton) { return petiton; } : null
-        });
-        var self: PetitionsMonitor = this;
+        /**
+         * Add an event to emit when the check function returns true. The check function is passed the the new and old data. Returns the monitor.
+         * @param event The name of the event to add.
+         * @param check The check required to emit the event.
+         */
+        addMonitorDeltaEvent(event, check): PetitionsMonitor {
+            this.deltaEvents.push({event : event, check : check});
+            return this;
+        }
 
-        pager
-        .on('petition', function(newData, oldData) {
-            // Emit new or update event
-            if (!oldData) {
-                self.emit('new-petition', newData);
-            }
-            else {
-                self.emit('updated-petition', newData, oldData);
-            }
-
-            // Check for events to emit based on the current value
-            self.events.forEach(function(registeredEvent) {
-                if (registeredEvent.check(newData)) {
-                    self.emit(registeredEvent.event, newData);
-                }
+        /**
+         * Start the monitor. Returns the monitor.
+         */
+        start(): PetitionsMonitor {
+            this.conf.debug('Starting monitor');
+            var pager: petitionPager.UkPetitions.PetitionPager = new petitionPager.UkPetitions.PetitionPager({
+                loadInterval : this.conf.initialInterval,
+                debug : this.conf.passDebug,
+                loadDetail : this.conf.loadDetail,
+                transformer : this.conf.raw ? function (petiton) { return petiton; } : null
             });
+            var self: PetitionsMonitor = this;
 
-            if (oldData) {
-                // Check for events to emit based on the current and previous values
-                self.deltaEvents.forEach(function(registeredEvent) {
-                    if (registeredEvent.check(newData, oldData)) {
+            pager
+            .on('petition', function(newData, oldData) {
+                // Emit new or update event
+                if (!oldData) {
+                    self.emit('new-petition', newData);
+                }
+                else {
+                    self.emit('updated-petition', newData, oldData);
+                }
+
+                // Check for events to emit based on the current value
+                self.events.forEach(function(registeredEvent) {
+                    if (registeredEvent.check(newData)) {
                         self.emit(registeredEvent.event, newData);
                     }
                 });
-            }
-        })
-        .on('removed-petition', function (newData, oldData) {
-            self.emit('removed-petition', newData, oldData);
-        })
-        .on('loaded', function() {
-            self.conf.debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
-            pager
-                .setPageLoadInterval(this.conf.interval)
-                .removeAllListeners('loaded')
-                .on('loaded', function() {
-                    self.conf.debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
-                    self.emit('loaded', pager.petitions);
-                    pager.populate(self.conf.accepter, self.conf.remover);
-                });
-            self.emit('initial-load', pager.petitions);
-            pager.populate(self.conf.accepter, self.conf.remover);
-        });
-        pager.populate(self.conf.accepter, self.conf.remover);
 
-        return self;
+                if (oldData) {
+                    // Check for events to emit based on the current and previous values
+                    self.deltaEvents.forEach(function(registeredEvent) {
+                        if (registeredEvent.check(newData, oldData)) {
+                            self.emit(registeredEvent.event, newData);
+                        }
+                    });
+                }
+            })
+            .on('removed-petition', function (newData, oldData) {
+                self.emit('removed-petition', newData, oldData);
+            })
+            .on('loaded', function() {
+                self.conf.debug('Initial petitions polled, found %d petitions, going again', pager.petitions.length);
+                pager
+                    .setPageLoadInterval(this.conf.interval)
+                    .removeAllListeners('loaded')
+                    .on('loaded', function() {
+                        self.conf.debug('All petitions polled, found %d petitions, going again', pager.petitions.length);
+                        self.emit('loaded', pager.petitions);
+                        pager.populate(self.conf.accepter, self.conf.remover);
+                    });
+                self.emit('initial-load', pager.petitions);
+                pager.populate(self.conf.accepter, self.conf.remover);
+            });
+            pager.populate(self.conf.accepter, self.conf.remover);
+
+            return self;
+        }
     }
-}
 
 }

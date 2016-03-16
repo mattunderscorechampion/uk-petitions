@@ -21,243 +21,243 @@ import enrichedPetition = require('./enriched-petition');
 
 export module UkPetitions {
 
-/**
- * Configuration for PetitionPager.
- */
-export class PetitionPagerConfig {
     /**
-     * The interval.
+     * Configuration for PetitionPager.
      */
-    loadInterval = 500;
-    /**
-     * If debug logging should be enabled.
-     */
-    debug = function(message: string, ...objects: any[]) {};
-    /**
-     * If detailed petition information should be loaded.
-     */
-    loadDetail = false;
-    /**
-     * A function to transform the petitions before stored or emitted.
-     */
-    transformer = function (raw) {
-        return petitionUtil.recursiveFreeze(new enrichedPetition.UkPetitions.EnrichedPetition(raw));
-    };
-
-    constructor(config: any) {
-        if (config) {
-            if (config.loadInterval) {
-                this.loadInterval = config.loadInterval;
-            }
-            if (config.debug) {
-                this.debug = function() {
-                    console.log.apply(null, arguments);
-                };
-            }
-            if (config.loadDetail !== undefined) {
-                this.loadDetail = config.loadDetail;
-            }
-            if (config.transformer) {
-                this.transformer = function (data) {
-                    return petitionUtil.recursiveFreeze(config.transformer(data));
-                };
-            }
-        }
-    }
-}
-
-/**
- * Loads all the petition data according to a filter.
- */
-export class PetitionPager extends events.EventEmitter {
-    private conf: PetitionPagerConfig;
-    private agent: https.Agent = new https.Agent({ keepAlive: true, maxSockets: 1 });
-    private petitionLoader: petitionLoader.UkPetitions.PetitionLoader = new petitionLoader.UkPetitions.PetitionLoader();
-    private pageLoader: petitionPageLoader.UkPetitions.PetitionPageLoader = new petitionPageLoader.UkPetitions.PetitionPageLoader();
-    private executor: loaderExecutor.LoaderExecutor;
-
-    /**
-     * Constructor for petition pager.
-     * @param {PetitionPagerConfig} config - Configuration for PetitionsMonitor.
-     */
-    constructor(config: any) {
-        super();
-        this.conf = new PetitionPagerConfig(config);
-        this.executor = new loaderExecutor.LoaderExecutor(this.conf.loadInterval);
-    }
-
-    private setPetitionData(data) {
-        var oldData = this.petitions[data.id];
-        var transformedData = this.conf.transformer(data);
-
-        if (!transformedData) {
-            this.emit('error', new Error('Failed to transform the petition data'));
-            return;
-        }
-
-        if (oldData) {
-            // Replace with changed data
-            if (!equal(oldData, transformedData)) {
-                this.petitions[data.id] = transformedData;
-                this.emit('petition', transformedData, oldData);
-            }
-        } else {
-            // Add new data
-            this.petitions[data.id] = transformedData;
-            this.petitions.length = this.petitions.length + 1;
-            this.emit('petition', transformedData);
-        }
-    }
-
-    private removePetitionData(data) {
-        var oldData = this.petitions[data.id];
-        var transformedData = this.conf.transformer(data);
-
-        if (!transformedData) {
-            this.emit('error', new Error('Failed to transform the petition data'));
-            return;
-        }
-
-        if (oldData) {
-            delete this.petitions[data.id];
-            this.emit('removed-petition', transformedData, oldData);
-        }
-    }
-
-    private detailLoader(id, action, latch, onSuccess) {
-            // Schedule task for loading petition detail
-            this.executor.execute(function() {
-                this.petitionLoader
-                    .load(id)
-                    .onError(function (error) {
-                        this.conf.debug('Error loading petition detail for \'%s\'', action);
-                        this.emit('error', error);
-                        latch.release();
-                    })
-                    .onLoaded(function (data) {
-                        onSuccess(data);
-                        latch.release();
-                    });
-            });
+    export class PetitionPagerConfig {
+        /**
+         * The interval.
+         */
+        loadInterval = 500;
+        /**
+         * If debug logging should be enabled.
+         */
+        debug = function(message: string, ...objects: any[]) {};
+        /**
+         * If detailed petition information should be loaded.
+         */
+        loadDetail = false;
+        /**
+         * A function to transform the petitions before stored or emitted.
+         */
+        transformer = function (raw) {
+            return petitionUtil.recursiveFreeze(new enrichedPetition.UkPetitions.EnrichedPetition(raw));
         };
 
-    /**
-     * The petitions map. Maps from petition ID to petition object. Also has
-     * length property.
-     */
-    petitions: {[key:number]: any; length: number} = {
-        length: 0
-    };
-    /**
-     * Change the interval between loading pages.
-     * @param {number} The new interval
-     * @return Self
-     */
-    setPageLoadInterval(newInterval) {
-        this.conf.loadInterval = newInterval;
-        this.executor.setInterval(newInterval);
-        return this;
-    };
+        constructor(config: any) {
+            if (config) {
+                if (config.loadInterval) {
+                    this.loadInterval = config.loadInterval;
+                }
+                if (config.debug) {
+                    this.debug = function() {
+                        console.log.apply(null, arguments);
+                    };
+                }
+                if (config.loadDetail !== undefined) {
+                    this.loadDetail = config.loadDetail;
+                }
+                if (config.transformer) {
+                    this.transformer = function (data) {
+                        return petitionUtil.recursiveFreeze(config.transformer(data));
+                    };
+                }
+            }
+        }
+    }
 
-    internalLoadPage(page, emitter, accepter?, remover?) {
-        var self: PetitionPager = this;
-        var summaryHandlerProvider = function(latch) {
-            return function(summary) {
-                if (remover && remover(summary, self.petitions)) {
-                    if (!self.conf.loadDetail) {
-                        self.conf.debug('Petition \'%s\' removed', summary.attributes.action);
-                        self.removePetitionData(summary);
-                        latch.release();
-                    }
-                    else {
-                        self.detailLoader(summary.id, summary.attributes.action, latch, function(data) {
-                            self.conf.debug('Petition \'%s\' detail removed', summary.attributes.action);
-                            self.removePetitionData(data);
+    /**
+     * Loads all the petition data according to a filter.
+     */
+    export class PetitionPager extends events.EventEmitter {
+        private conf: PetitionPagerConfig;
+        private agent: https.Agent = new https.Agent({ keepAlive: true, maxSockets: 1 });
+        private petitionLoader: petitionLoader.UkPetitions.PetitionLoader = new petitionLoader.UkPetitions.PetitionLoader();
+        private pageLoader: petitionPageLoader.UkPetitions.PetitionPageLoader = new petitionPageLoader.UkPetitions.PetitionPageLoader();
+        private executor: loaderExecutor.LoaderExecutor;
+
+        /**
+         * Constructor for petition pager.
+         * @param {PetitionPagerConfig} config - Configuration for PetitionsMonitor.
+         */
+        constructor(config: any) {
+            super();
+            this.conf = new PetitionPagerConfig(config);
+            this.executor = new loaderExecutor.LoaderExecutor(this.conf.loadInterval);
+        }
+
+        private setPetitionData(data) {
+            var oldData = this.petitions[data.id];
+            var transformedData = this.conf.transformer(data);
+
+            if (!transformedData) {
+                this.emit('error', new Error('Failed to transform the petition data'));
+                return;
+            }
+
+            if (oldData) {
+                // Replace with changed data
+                if (!equal(oldData, transformedData)) {
+                    this.petitions[data.id] = transformedData;
+                    this.emit('petition', transformedData, oldData);
+                }
+            } else {
+                // Add new data
+                this.petitions[data.id] = transformedData;
+                this.petitions.length = this.petitions.length + 1;
+                this.emit('petition', transformedData);
+            }
+        }
+
+        private removePetitionData(data) {
+            var oldData = this.petitions[data.id];
+            var transformedData = this.conf.transformer(data);
+
+            if (!transformedData) {
+                this.emit('error', new Error('Failed to transform the petition data'));
+                return;
+            }
+
+            if (oldData) {
+                delete this.petitions[data.id];
+                this.emit('removed-petition', transformedData, oldData);
+            }
+        }
+
+        private detailLoader(id, action, latch, onSuccess) {
+                // Schedule task for loading petition detail
+                this.executor.execute(function() {
+                    this.petitionLoader
+                        .load(id)
+                        .onError(function (error) {
+                            this.conf.debug('Error loading petition detail for \'%s\'', action);
+                            this.emit('error', error);
+                            latch.release();
+                        })
+                        .onLoaded(function (data) {
+                            onSuccess(data);
+                            latch.release();
                         });
-                    }
-                    return;
-                }
-
-                if (accepter && !accepter(summary, self.petitions)) {
-                    // Skip
-                    self.conf.debug('Petition \'%s\' filtered', summary.attributes.action);
-                    latch.release();
-                    return;
-                }
-
-                if (!self.conf.loadDetail) {
-                    // Store summary data
-                    self.conf.debug('Petition \'%s\' summary stored', summary.attributes.action);
-                    self.setPetitionData(summary);
-                    latch.release();
-                    return;
-                }
-
-                self.detailLoader(summary.id, summary.attributes.action, latch, function(data) {
-                    self.conf.debug('Petition \'%s\' detail stored', summary.attributes.action);
-                    self.setPetitionData(data);
                 });
             };
+
+        /**
+         * The petitions map. Maps from petition ID to petition object. Also has
+         * length property.
+         */
+        petitions: {[key:number]: any; length: number} = {
+            length: 0
+        };
+        /**
+         * Change the interval between loading pages.
+         * @param {number} The new interval
+         * @return Self
+         */
+        setPageLoadInterval(newInterval) {
+            this.conf.loadInterval = newInterval;
+            this.executor.setInterval(newInterval);
+            return this;
         };
 
-        var onPageLoaded = function(summary) {
-            var currentLatch = new latch.Latch(summary.data.length);
-            currentLatch.onRelease(function () {
-                self.conf.debug('Page \'%s\' loaded', page);
-                emitter.emit('page-loaded', summary);
+        internalLoadPage(page, emitter, accepter?, remover?) {
+            var self: PetitionPager = this;
+            var summaryHandlerProvider = function(latch) {
+                return function(summary) {
+                    if (remover && remover(summary, self.petitions)) {
+                        if (!self.conf.loadDetail) {
+                            self.conf.debug('Petition \'%s\' removed', summary.attributes.action);
+                            self.removePetitionData(summary);
+                            latch.release();
+                        }
+                        else {
+                            self.detailLoader(summary.id, summary.attributes.action, latch, function(data) {
+                                self.conf.debug('Petition \'%s\' detail removed', summary.attributes.action);
+                                self.removePetitionData(data);
+                            });
+                        }
+                        return;
+                    }
+
+                    if (accepter && !accepter(summary, self.petitions)) {
+                        // Skip
+                        self.conf.debug('Petition \'%s\' filtered', summary.attributes.action);
+                        latch.release();
+                        return;
+                    }
+
+                    if (!self.conf.loadDetail) {
+                        // Store summary data
+                        self.conf.debug('Petition \'%s\' summary stored', summary.attributes.action);
+                        self.setPetitionData(summary);
+                        latch.release();
+                        return;
+                    }
+
+                    self.detailLoader(summary.id, summary.attributes.action, latch, function(data) {
+                        self.conf.debug('Petition \'%s\' detail stored', summary.attributes.action);
+                        self.setPetitionData(data);
+                    });
+                };
+            };
+
+            var onPageLoaded = function(summary) {
+                var currentLatch = new latch.Latch(summary.data.length);
+                currentLatch.onRelease(function () {
+                    self.conf.debug('Page \'%s\' loaded', page);
+                    emitter.emit('page-loaded', summary);
+                });
+                summary.data.forEach(summaryHandlerProvider(currentLatch));
+            };
+
+            self.executor.execute(function() {
+                self.conf.debug('Loading page \'%s\'', page);
+                self.pageLoader
+                    .load(page)
+                    .onLoaded(onPageLoaded)
+                    .onError(self.emit.bind(self, 'error'));
             });
-            summary.data.forEach(summaryHandlerProvider(currentLatch));
         };
 
-        self.executor.execute(function() {
-            self.conf.debug('Loading page \'%s\'', page);
-            self.pageLoader
-                .load(page)
-                .onLoaded(onPageLoaded)
-                .onError(self.emit.bind(self, 'error'));
-        });
-    };
-
-    /**
-     * Load petitions without specifying a state.
-     * @return Self
-     */
-    populateHot() {
-        var emitter = new events.EventEmitter();
-        emitter.on('page-loaded', function() {
-            this.emit('loaded', this);
-        });
-        this.internalLoadPage(1, emitter);
-        return this;
-    };
-
-    /**
-     * Load all petitions.
-     * @param accepter A predicate to test if a petition should be accepted.
-     * @param remover A predicate to test if a petition should be removed.
-     * @return Self
-     */
-    populate(accepter, remover) {
-        var emitter = new events.EventEmitter();
-        var self = this;
-
-        // Load the next page
-        var loadNextPage = function (data) {
-            if (data.links.next !== null) {
-                var index = data.links.next.lastIndexOf('/'),
-                    nextPath = data.links.next.substring(index);
-                    self.internalLoadPage(nextPath, emitter, accepter, remover);
-            }
-            else {
-                self.emit('loaded', self);
-            }
+        /**
+         * Load petitions without specifying a state.
+         * @return Self
+         */
+        populateHot() {
+            var emitter = new events.EventEmitter();
+            emitter.on('page-loaded', function() {
+                this.emit('loaded', this);
+            });
+            this.internalLoadPage(1, emitter);
+            return this;
         };
 
-        emitter.on('page-loaded', loadNextPage);
-        self.internalLoadPage('/petitions.json?page=1&state=all', emitter, accepter, remover);
+        /**
+         * Load all petitions.
+         * @param accepter A predicate to test if a petition should be accepted.
+         * @param remover A predicate to test if a petition should be removed.
+         * @return Self
+         */
+        populate(accepter, remover) {
+            var emitter = new events.EventEmitter();
+            var self = this;
 
-        return self;
-    };
-}
+            // Load the next page
+            var loadNextPage = function (data) {
+                if (data.links.next !== null) {
+                    var index = data.links.next.lastIndexOf('/'),
+                        nextPath = data.links.next.substring(index);
+                        self.internalLoadPage(nextPath, emitter, accepter, remover);
+                }
+                else {
+                    self.emit('loaded', self);
+                }
+            };
+
+            emitter.on('page-loaded', loadNextPage);
+            self.internalLoadPage('/petitions.json?page=1&state=all', emitter, accepter, remover);
+
+            return self;
+        };
+    }
 
 }

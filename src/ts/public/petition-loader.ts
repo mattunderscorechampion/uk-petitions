@@ -11,41 +11,41 @@ var getJsonOverHttps = petitionUtil.getJsonOverHttps;
 
 export module UkPetitions {
 
-/**
- * Loads the data of a petition. It is stateless.
- */
-export class PetitionLoader {
-    private agent: https.Agent;
-
     /**
-     * Constructor for petition loaders.
-     * @param agent The HTTP agemt to use to make requests.
+     * Loads the data of a petition. It is stateless.
      */
-    constructor(agent?: https.Agent) {
-        this.agent = agent;
-    }
-    /**
-     * Load the petition by Id. Returns an emitter. Emits either 'loaded' or 'error' events.
-     * The 'loaded' event is passed the data of the petition.
-     * The 'error' event is passed the Error.
-     * @return The emitter
-     */
-    load(petitionId: number): loading.UkPetitions.Loading {
-        var emitter = new loading.UkPetitions.Loading();
+    export class PetitionLoader {
+        private agent: https.Agent;
 
-        getJsonOverHttps({
-            hostname: 'petition.parliament.uk',
-            port: 443,
-            path: '/petitions/' + petitionId + '.json',
-            agent: this.agent
-        })
-        .on('error', emitter.error.bind(emitter))
-        .on('data', function(data) {
-            emitter.loaded(data.data);
-        });
+        /**
+         * Constructor for petition loaders.
+         * @param agent The HTTP agemt to use to make requests.
+         */
+        constructor(agent?: https.Agent) {
+            this.agent = agent;
+        }
+        /**
+         * Load the petition by Id. Returns an emitter. Emits either 'loaded' or 'error' events.
+         * The 'loaded' event is passed the data of the petition.
+         * The 'error' event is passed the Error.
+         * @return The emitter
+         */
+        load(petitionId: number): loading.UkPetitions.Loading {
+            var emitter = new loading.UkPetitions.Loading();
 
-        return emitter;
+            getJsonOverHttps({
+                hostname: 'petition.parliament.uk',
+                port: 443,
+                path: '/petitions/' + petitionId + '.json',
+                agent: this.agent
+            })
+            .on('error', emitter.error.bind(emitter))
+            .on('data', function(data) {
+                emitter.loaded(data.data);
+            });
+
+            return emitter;
+        }
     }
-}
 
 }
