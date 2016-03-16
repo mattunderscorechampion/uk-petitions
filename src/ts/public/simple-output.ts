@@ -1,6 +1,8 @@
 
 export module UkPetitions {
 
+export module output {
+
 export function error (error: Error) {
     console.error('Error: ' + error.message);
 }
@@ -107,6 +109,8 @@ export function attributes (data) {
     else {
         console.log(data);
     }
+}
+
 }
 
 }

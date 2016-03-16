@@ -10,5 +10,5 @@ module.exports = {
     PetitionPager : require('../target/js/public/petition-pager').UkPetitions.PetitionPager,
     checks : queries.checks,
     predicates : queries.predicates,
-    output : require('../target/js/public/simple-output').UkPetitions
+    output : require('../target/js/public/simple-output').UkPetitions.output
 };
