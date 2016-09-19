@@ -23,6 +23,7 @@ gulp.task('generate', function() {
 gulp.task('checks', ['generate'], function() {
     return gulp.src('./src/ts/*/*.ts')
         .pipe(tslint({
+            formatter: 'verbose',
             configuration : {
                 rules : {
                     'class-name' : true,
@@ -30,7 +31,7 @@ gulp.task('checks', ['generate'], function() {
                 }
             }
         }))
-        .pipe(tslint.report('verbose'));
+        .pipe(tslint.report());
 });
 
 gulp.task('test', ['generate'], function() {
