@@ -106,54 +106,84 @@ export module UkPetitions {
      * Predicates that can be used to evaluate petitions.
      */
     export module predicates {
-        export var reached10: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 10);
-        export var reached20: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 20);
-        export var reached50: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 50);
-        export var reached100: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 100);
-        export var reached250: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 250);
-        export var reached500: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 500);
-        export var reached1_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 1000);
-        export var reached5_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 5000);
-        export var reached10_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 10000);
-        export var reached50_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 50000);
-        export var reached100_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 100000);
-        export var reached500_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 500000);
+        export function reached10(petition: any): boolean {
+            return reachedSignatureCountI(10, petition);
+        }
+        export function reached20(petition: any): boolean {
+            return reachedSignatureCountI(20, petition);
+        }
+        export function reached50(petition: any): boolean {
+            return reachedSignatureCountI(50, petition);
+        }
+        export function reached100(petition: any): boolean {
+            return reachedSignatureCountI(100, petition);
+        }
+        export function reached250(petition: any): boolean {
+            return reachedSignatureCountI(250, petition);
+        }
+        export function reached500(petition: any): boolean {
+            return reachedSignatureCountI(500, petition);
+        }
+        export function reached1_000(petition: any): boolean {
+            return reachedSignatureCountI(1000, petition);
+        }
+        export function reached5_000(petition: any): boolean {
+            return reachedSignatureCountI(5000, petition);
+        }
+        export function reached10_000(petition: any): boolean {
+            return reachedSignatureCountI(10000, petition);
+        }
+        export function reached50_000(petition: any): boolean {
+            return reachedSignatureCountI(50000, petition);
+        }
+        export function reached100_000(petition: any): boolean {
+            return reachedSignatureCountI(100000, petition);
+        }
+        export function reached500_000(petition: any): boolean {
+            return reachedSignatureCountI(500000, petition);
+        }
         /**
          * Predicate that tests if the number of signatures required for a response has been reached.
-         * @function
          * @param {Petition} petition - A petition
          */
-        export var reachedResponseThreshold: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 10000);
+        export function reachedResponseThreshold(petition: any): boolean {
+            return reachedSignatureCountI(10000, petition);
+        }
         /**
          * Predicate that tests if the number of signatures required for a debate has been reached.
-         * @function
          * @param {Petition} petition - A petition
          */
-        export var reachedDebateThreshold: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 100000);
+        export function reachedDebateThreshold(petition: any): boolean {
+            return reachedSignatureCountI(100000, petition);
+        }
         /**
          * Predicate that tests if the government has responded to the petition.
-         * @function
          * @param {Petition} petition - A petition
          */
-        export var governmentResponded: {(petition: any): boolean} = governmentRespondedI;
+        export function governmentResponded(petition: any): boolean {
+            return governmentRespondedI(petition);
+        }
         /**
          * Predicate that tests if the petition has been debated.
-         * @function
          * @param {Petition} petition - A petition
          */
-        export var debated: {(petition: any): boolean} = debatedI;
+        export function debated(petition: any): boolean {
+            return debatedI(petition);
+        }
         /**
          * Predicate that tests if the petition has been debated and a transcript is available.
-         * @function
          * @param {Petition} petition - A petition
          */
-        export var debateTranscriptAvailable: {(petition: any): boolean} = debateTranscriptAvailableI;
+        export function debateTranscriptAvailable(petition: any): boolean {
+            return debateTranscriptAvailableI(petition);
+        }
         /**
          * Predicate that tests if the petition has been scheduled for debate.
-         * @function
          * @param {Petition} petition - A petition
          */
-        export var debateScheduled: {(petition: any): boolean} = debateScheduledI;
+        export function debateScheduled(petition: any): boolean {
+            return debateScheduledI(petition);
+        }
     }
 
     /**
@@ -162,7 +192,6 @@ export module UkPetitions {
     export module checks {
         /**
          * Function that tests if two petitons have the same ID.
-         * @function
          * @param {Petition} petition0 - A petition
          * @param {Petition} petition1 - A petition
          */
