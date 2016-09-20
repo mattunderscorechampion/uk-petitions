@@ -106,54 +106,54 @@ export module UkPetitions {
      * Predicates that can be used to evaluate petitions.
      */
     export module predicates {
-        export var reached10 = reachedSignatureCountI.bind(null, 10);
-        export var reached20 = reachedSignatureCountI.bind(null, 20);
-        export var reached50 = reachedSignatureCountI.bind(null, 50);
-        export var reached100 = reachedSignatureCountI.bind(null, 100);
-        export var reached250 = reachedSignatureCountI.bind(null, 250);
-        export var reached500 = reachedSignatureCountI.bind(null, 500);
-        export var reached1_000 = reachedSignatureCountI.bind(null, 1000);
-        export var reached5_000 = reachedSignatureCountI.bind(null, 5000);
-        export var reached10_000 = reachedSignatureCountI.bind(null, 10000);
-        export var reached50_000 = reachedSignatureCountI.bind(null, 50000);
-        export var reached100_000 = reachedSignatureCountI.bind(null, 100000);
-        export var reached500_000 = reachedSignatureCountI.bind(null, 500000);
+        export var reached10: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 10);
+        export var reached20: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 20);
+        export var reached50: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 50);
+        export var reached100: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 100);
+        export var reached250: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 250);
+        export var reached500: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 500);
+        export var reached1_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 1000);
+        export var reached5_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 5000);
+        export var reached10_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 10000);
+        export var reached50_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 50000);
+        export var reached100_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 100000);
+        export var reached500_000: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 500000);
         /**
          * Predicate that tests if the number of signatures required for a response has been reached.
          * @function
          * @param {Petition} petition - A petition
          */
-        export var reachedResponseThreshold = reachedSignatureCountI.bind(null, 10000);
+        export var reachedResponseThreshold: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 10000);
         /**
          * Predicate that tests if the number of signatures required for a debate has been reached.
          * @function
          * @param {Petition} petition - A petition
          */
-        export var reachedDebateThreshold = reachedSignatureCountI.bind(null, 100000);
+        export var reachedDebateThreshold: {(petition: any): boolean} = reachedSignatureCountI.bind(null, 100000);
         /**
          * Predicate that tests if the government has responded to the petition.
          * @function
          * @param {Petition} petition - A petition
          */
-        export var governmentResponded = governmentRespondedI;
+        export var governmentResponded: {(petition: any): boolean} = governmentRespondedI;
         /**
          * Predicate that tests if the petition has been debated.
          * @function
          * @param {Petition} petition - A petition
          */
-        export var debated = debatedI;
+        export var debated: {(petition: any): boolean} = debatedI;
         /**
          * Predicate that tests if the petition has been debated and a transcript is available.
          * @function
          * @param {Petition} petition - A petition
          */
-        export var debateTranscriptAvailable = debateTranscriptAvailableI;
+        export var debateTranscriptAvailable: {(petition: any): boolean} = debateTranscriptAvailableI;
         /**
          * Predicate that tests if the petition has been scheduled for debate.
          * @function
          * @param {Petition} petition - A petition
          */
-        export var debateScheduled = debateScheduledI;
+        export var debateScheduled: {(petition: any): boolean} = debateScheduledI;
     }
 
     /**
