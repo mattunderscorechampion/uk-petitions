@@ -195,61 +195,98 @@ export module UkPetitions {
          * @param {Petition} petition0 - A petition
          * @param {Petition} petition1 - A petition
          */
-        export var samePetition = samePetitionId;
+        export function samePetition(petition0: any, petition1: any): boolean {
+            return samePetitionId(petition0, petition1);
+        }
         /**
          * Delta checks. Checks between two snapshots of the same petition.
          */
         export module delta {
-            export var reached10 = reachedSignatureDeltaCountProviderI(10);
-            export var reached20 = reachedSignatureDeltaCountProviderI(20);
-            export var reached50 = reachedSignatureDeltaCountProviderI(50);
-            export var reached100 = reachedSignatureDeltaCountProviderI(100);
-            export var reached250 = reachedSignatureDeltaCountProviderI(250);
-            export var reached500 = reachedSignatureDeltaCountProviderI(500);
-            export var reached1_000 = reachedSignatureDeltaCountProviderI(1000);
-            export var reached5_000 = reachedSignatureDeltaCountProviderI(5000);
-            export var reached10_000 = reachedSignatureDeltaCountProviderI(10000);
-            export var reached50_000 = reachedSignatureDeltaCountProviderI(50000);
-            export var reached100_000 = reachedSignatureDeltaCountProviderI(100000);
-            export var reached500_000 = reachedSignatureDeltaCountProviderI(500000);
-            export var reachedResponseThreshold = reachedSignatureDeltaCountProviderI(10000);
-            export var reachedDebateThreshold = reachedSignatureDeltaCountProviderI(100000);
+            export function reached10(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 10), newData, oldData);
+            }
+            export function reached20(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 20), newData, oldData);
+            }
+            export function reached50(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 50), newData, oldData);
+            }
+            export function reached100(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 100), newData, oldData);
+            }
+            export function reached250(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 250), newData, oldData);
+            }
+            export function reached500(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 500), newData, oldData);
+            }
+            export function reached1_000(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 1000), newData, oldData);
+            }
+            export function reached5_000(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 5000), newData, oldData);
+            }
+            export function reached10_000(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 10000), newData, oldData);
+            }
+            export function reached50_000(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 50000), newData, oldData);
+            }
+            export function reached100_000(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 100000), newData, oldData);
+            }
+            export function reached500_000(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 500000), newData, oldData);
+            }
+            export function reachedResponseThreshold(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 10000), newData, oldData);
+            }
+            export function reachedDebateThreshold(newData: any, oldData: any): boolean {
+                return deltaCheckI(reachedSignatureCountI.bind(null, 100000), newData, oldData);
+            }
             /**
              * Function that tests if the government has responded since the first snapshot.
-             * @function
              * @param {Petition} newData - The latest data
              * @param {Petition} oldData - The older data
              */
-            export var governmentResponded = governmentRespondedCheckI;
+            export function governmentResponded(newData: any, oldData: any): boolean {
+                return governmentRespondedCheckI(newData, oldData);
+            }
             /**
              * Function that tests if a petition has been debated since the first snapshot.
-             * @function
              * @param {Petition} newData - The latest data
              * @param {Petition} oldData - The older data
              */
-            export var debated = debatedCheckI;
+            export function debated(newData: any, oldData: any): boolean {
+                return debatedCheckI(newData, oldData);
+            }
             /**
              * Function that tests if a debate transcript has become available since the first snapshot.
-             * @function
              * @param {Petition} newData - The latest data
              * @param {Petition} oldData - The older data
              */
-            export var debateTranscriptAvailable = debateTranscriptAvailableCheckI;
-            export var reachedSignatureDeltaCountProvider = reachedSignatureDeltaCountProviderI;
+            export function debateTranscriptAvailable(newData: any, oldData: any): boolean {
+                return debateTranscriptAvailableCheckI(newData, oldData);
+            }
+            export function reachedSignatureDeltaCountProvider(count: number): {(petition: any): boolean;} {
+                return reachedSignatureDeltaCountProviderI(count);
+            }
             /**
              * Function that tests if a debate on a petition has been scheduled since the first snapshot.
-             * @function
              * @param {Petition} newData - The latest data
              * @param {Petition} oldData - The older data
              */
-            export var debateScheduled = deltaCheckI.bind(null, debateScheduledI);
+            export function debateScheduled(newData: any, oldData: any): boolean {
+                return deltaCheckI(debateScheduledI, newData, oldData);
+            }
             /**
              * Function that tests if a debate on a petition has been rescheduled since the first snapshot.
-             * @function
              * @param {Petition} newData - The latest data
              * @param {Petition} oldData - The older data
              */
-            export var debateRescheduled = debateRescheduledI;
+            export function debateRescheduled(newData: any, oldData: any): boolean {
+                return debateRescheduledI(newData, oldData);
+            }
         }
     }
 
