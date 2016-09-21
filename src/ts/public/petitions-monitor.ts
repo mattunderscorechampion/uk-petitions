@@ -168,6 +168,24 @@ export module UkPetitions {
             return this;
         }
 
+        on(eventName: string, listener: {(...eventObjects: any[]): void;}): PetitionsMonitor;
+        /**
+         * @event A new petition has been added
+         */
+        on(eventName: 'new-petition', listener: {(...eventObjects: any[]): void;}): PetitionsMonitor;
+        /**
+         * @event An existing petition has been updated
+         */
+        on(eventName: 'updated-petition', listener: {(...eventObjects: any[]): void;}): PetitionsMonitor;
+        /**
+         * @event An existing petition has been removed
+         */
+        on(eventName: 'removed-petition', listener: {(...eventObjects: any[]): void;}): PetitionsMonitor;
+        on(eventName: string, listener: {(...eventObjects: any[]): void;}): PetitionsMonitor {
+            super.on(eventName, listener);
+            return this;
+        }
+
         /**
          * Start the monitor. Returns the monitor.
          */
