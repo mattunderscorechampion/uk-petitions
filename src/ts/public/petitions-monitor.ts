@@ -172,16 +172,16 @@ export module UkPetitions {
         /**
          * @event A new petition has been added
          */
-        on(eventName: 'new-petition', listener: {(...eventObjects: any[]): void;}): PetitionsMonitor;
+        on(eventName: 'new-petition', listener: {(newPetition: any): void;}): PetitionsMonitor;
         /**
          * @event An existing petition has been updated
          */
-        on(eventName: 'updated-petition', listener: {(...eventObjects: any[]): void;}): PetitionsMonitor;
+        on(eventName: 'updated-petition', listener: {(newPetitionData: any, oldPetitionData: any): void;}): PetitionsMonitor;
         /**
          * @event An existing petition has been removed
          */
-        on(eventName: 'removed-petition', listener: {(...eventObjects: any[]): void;}): PetitionsMonitor;
-        on(eventName: string, listener: {(...eventObjects: any[]): void;}): PetitionsMonitor {
+        on(eventName: 'removed-petition', listener: {(removedPetiton: any): void;}): PetitionsMonitor;
+        on(eventName: string, listener: {(petition: any): void;}): PetitionsMonitor {
             super.on(eventName, listener);
             return this;
         }
