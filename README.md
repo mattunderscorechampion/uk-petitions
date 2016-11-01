@@ -1,6 +1,8 @@
 
 Tools for working with Petitions listed at parliament.uk.
 
+[Library API documentation](https://mattunderscorechampion.github.io/uk-petitions/)
+
 The data available from petition.parliament.uk appears distinct from the data
 that will be made available through data.parliament.uk described at
 http://explore.data.parliament.uk/?learnmore=Public%20Petitions which looks as
